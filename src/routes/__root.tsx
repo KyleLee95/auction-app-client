@@ -14,16 +14,13 @@ import { Icons } from "@/components/icons";
 import {
   NavigationMenu,
   NavigationMenuContent,
-  NavigationMenuIndicator,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
-  NavigationMenuViewport,
 } from "@/components/ui/navigation-menu";
 import { CommandMenu } from "@/components/ui/command-menu";
-import { Input } from "@/components/ui/input";
 import { MobileNav } from "@/components/mobile-menu";
 import { cn } from "@/lib/utils";
 
@@ -45,7 +42,7 @@ const ListItem = React.forwardRef<
           ref={ref}
           className={cn(
             "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-            className,
+            className
           )}
           {...props}
         >

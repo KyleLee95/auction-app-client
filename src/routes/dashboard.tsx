@@ -1,18 +1,9 @@
-import {
-  Outlet,
-  createFileRoute,
-  useLocation,
-  useNavigate,
-} from "@tanstack/react-router";
+import { Outlet, createFileRoute } from "@tanstack/react-router";
 import {
   NavigationMenu,
   NavigationMenuList,
   NavigationMenuItem,
-  NavigationMenuTrigger,
-  NavigationMenuViewport,
-  NavigationMenuContent,
   NavigationMenuLink,
-  NavigationMenuIndicator,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { Link } from "@tanstack/react-router";
@@ -21,25 +12,25 @@ export const Route = createFileRoute("/dashboard")({
   component: RouteComponent,
 });
 
-const tabItems = [
-  {
-    name: "Summary",
-    to: "/dashboard/summary",
-  },
-
-  {
-    name: "Sell",
-    to: "/dashboard/sell",
-  },
-  {
-    name: "Auctions",
-    to: "/dashboard/auctions",
-  },
-  {
-    name: "Watchlist",
-    to: "/dashboard/watchlist",
-  },
-];
+// const tabItems = [
+//   {
+//     name: "Summary",
+//     to: "/dashboard/summary",
+//   },
+//
+//   {
+//     name: "Sell",
+//     to: "/dashboard/sell",
+//   },
+//   {
+//     name: "Auctions",
+//     to: "/dashboard/auctions",
+//   },
+//   {
+//     name: "Watchlist",
+//     to: "/dashboard/watchlist",
+//   },
+// ];
 
 function RouteComponent() {
   return (

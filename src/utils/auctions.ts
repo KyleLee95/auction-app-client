@@ -1,7 +1,7 @@
-import { produce } from "immer";
+// import { produce } from "immer";
 
-type PickAsRequired<TValue, TKey extends keyof TValue> = Omit<TValue, TKey> &
-  Required<Pick<TValue, TKey>>;
+// type PickAsRequired<TValue, TKey extends keyof TValue> = Omit<TValue, TKey> &
+//   Required<Pick<TValue, TKey>>;
 
 /* Types */
 export interface Auction {

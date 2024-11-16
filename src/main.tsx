@@ -20,7 +20,7 @@ Amplify.configure(outputs);
 const router = createRouter({
   routeTree,
   defaultErrorComponent: ({ error }) => {
-    <div>{error}</div>;
+    <div>{error.message}</div>;
   },
   context: {
     auth: undefined!,

@@ -1,6 +1,9 @@
 import React from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
+import {
+  // useMutation,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import {
   Form,
   FormField,
@@ -42,17 +45,17 @@ function RouteComponent() {
   const auctionQuery = useSuspenseQuery(auctionQueryOptions(params.auctionId));
   const auction = auctionQuery.data[0];
 
-  const mutation = useMutation({
-    mutationFn: (values: z.infer<typeof formSchema>) => {
-      return fetch(`/api/auctions/${auction._id}}`, {
-        method: "PUT",
-        body: JSON.stringify(values),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-    },
-  });
+  // const mutation = useMutation({
+  //   mutationFn: (values: z.infer<typeof formSchema>) => {
+  //     return fetch(`/api/auctions/${auction._id}}`, {
+  //       method: "PUT",
+  //       body: JSON.stringify(values),
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
+  //   },
+  // });
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -62,18 +65,20 @@ function RouteComponent() {
       description: auction.description,
       categories: "",
       starting_price: auction.starting_price,
-      start_time: auction.start_time,
-      end_time: auction.end_time,
+      start_time: auction.start_time.toString(),
+      end_time: auction.end_time.toString(),
     },
   });
 
+  // React.DOMAttributes<HTMLFormElement>.onSubmit?: React.FormEventHandler<HTMLFormElement> | undefined
   function onSubmit(event: React.SyntheticEvent) {
+    event.preventDefault();
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    event.preventDefault();
-    console.log("event", event);
-    const values = new FormData(event.target);
-    mutation.mutate(values);
+    // event?.preventDefault();
+    // console.log("event", event);
+    // const values = new FormData(event.currentTarget);
+    // mutation.mutate(values);
   }
 
   return (

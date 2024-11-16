@@ -1,11 +1,14 @@
-import { queryOptions, useMutation } from "@tanstack/react-query";
+import {
+  queryOptions,
+  // useMutation
+} from "@tanstack/react-query";
 import {
   fetchAuctions,
   fetchAuctionById,
   // fetchauctionById,
 } from "./auctions";
 
-import { queryClient } from "../main";
+// import { queryClient } from "../main";
 
 export const auctionsQueryOptions = queryOptions({
   queryKey: ["auctions"],
