@@ -12,8 +12,20 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      "/api": {
-        target: "http://localhost:8000",
+      "/api/auctions": {
+        target: "http://localhost:3000",
+        changeOrigin: true,
+      },
+      "/api/bids": {
+        target: "http://localhost:3000",
+        changeOrigin: true,
+      },
+      "/api/watchlist": {
+        target: "http://localhost:3000",
+        changeOrigin: true,
+      },
+      "/api/category": {
+        target: "http://localhost:3000",
         changeOrigin: true,
       },
     },

@@ -7,19 +7,26 @@ import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/dashboard/auctions/")({
   loader: ({ context: { queryClient } }) => {
-    return queryClient.ensureQueryData(auctionsQueryOptions);
+    return queryClient.ensureQueryData(
+      auctionsQueryOptions("c1eb0520-90a1-7030-7847-c8ca5bfbe65e")
+    );
   },
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const auctionsQuery = useSuspenseQuery(auctionsQueryOptions);
-  const auctions = auctionsQuery.data;
+  const auctionsQuery = useSuspenseQuery(
+    auctionsQueryOptions("c1eb0520-90a1-7030-7847-c8ca5bfbe65e")
+  );
+  const auctions = auctionsQuery.data.auctions;
+  if (!auctions) {
+    return <div>No auctions found</div>;
+  }
   return (
     <div className="mx-4">
-      {auctions.map((auction) => {
+      {auctions.map((auction: any) => {
         return (
-          <Card key={auction._id} className="my-2">
+          <Card key={auction.id} className="my-2">
             <CardHeader>
               <CardTitle>{auction.title}</CardTitle>
             </CardHeader>
