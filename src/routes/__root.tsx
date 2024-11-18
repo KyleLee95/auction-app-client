@@ -104,7 +104,11 @@ function SiteHeader({ className }: Props) {
 
         <MobileNav />
         <div className="flex items-center gap-2 justify-center">
-          <div className="hidden md:flex w-16 mr-4">Logo</div>
+          <Link to="/">
+            <div className="hidden md:flex w-16 mr-4">
+              <img src="/logoipsum-332.svg" />
+            </div>
+          </Link>
 
           <div className="flex-1 w-full max-w-full">
             <CommandMenu />
@@ -140,7 +144,7 @@ function SiteHeader({ className }: Props) {
                 className={navigationMenuTriggerStyle()}
                 asChild
               >
-                <Link to="/dashboard/sell">Dashboard</Link>
+                <Link to="/dashboard/sell">Sell</Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
 
