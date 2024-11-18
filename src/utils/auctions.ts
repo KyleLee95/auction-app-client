@@ -77,9 +77,10 @@ export async function fetchUserAuctions(userId: string): Promise<{
   return { auctions: auctions, bidOnAuctions: bidOnAuctions };
 }
 
-export async function fetchAuctionById(
-  auctionId: string
-): Promise<CompleteAuction[]> {
+export async function fetchAuctionById(auctionId: string): Promise<{
+  auctions: CompleteAuction[];
+  bidOnAuctions: IBidModelWithAuction[];
+}> {
   const res = await fetch(`/api/auctions/${auctionId}`, {
     method: "GET",
     headers: {

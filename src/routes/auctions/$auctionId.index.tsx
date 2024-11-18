@@ -9,12 +9,56 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import React, { useState, useEffect } from "react";
+
+interface CountdownProps {
+  endTime: string; // ISO datetime string
+}
+
+const Countdown: React.FC<CountdownProps> = ({ endTime }) => {
+  const [timeLeft, setTimeLeft] = useState<string>("");
+
+  useEffect(() => {
+    const updateCountdown = () => {
+      const now = new Date();
+      const end = new Date(endTime);
+      const difference = end.getTime() - now.getTime();
+
+      if (difference <= 0) {
+        setTimeLeft("Auction ended");
+        return;
+      }
+
+      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((difference / (1000 * 60)) % 60);
+      const seconds = Math.floor((difference / 1000) % 60);
+
+      setTimeLeft(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+    };
+
+    const intervalId = setInterval(updateCountdown, 1000);
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
+  }, [endTime]);
+
+  return (
+    <div>
+      <h2 className="text-xl">Time Left:</h2>
+      <p className="font-bold">{timeLeft}</p>
+    </div>
+  );
+};
+
+export default Countdown;
 
 export const Route = createFileRoute("/auctions/$auctionId/")({
-  params: {},
   loader: (opts) => {
     opts.context.queryClient.ensureQueryData(
-      auctionQueryOptions(opts.params.auctionId),
+      auctionQueryOptions(opts.params.auctionId)
     );
   },
   component: RouteComponent,
@@ -73,16 +117,42 @@ export function CarouselDemo() {
 function RouteComponent() {
   const params = Route.useParams();
   const auctionQuery = useSuspenseQuery(auctionQueryOptions(params.auctionId));
-  const auction = auctionQuery.data[0];
+  console.log(auctionQuery);
+  const auction = auctionQuery.data.auctions[0];
+
+  if (!auction) {
+    return "Loading...";
+  }
 
   return (
     <div className="flex flex-wrap">
-      <div className="flex-none">
+      <div className="flex-none bg-red-500">
         <CarouselDemo />
       </div>
-      <div className="flex-grow">
-        <h1>{auction.title}</h1>
-        <p>{auction.description}</p>
+      <div className="flex-grow bg-slate-500 md:ml-20">
+        <div className="ml-4">
+          <h1 className="text-xl">{auction.title}</h1>
+
+          <h2>
+            $
+            {auction?.bids?.length
+              ? auction.bids[auction.bids.length - 1].amount
+              : auction.startPrice}
+          </h2>
+          <Countdown endTime={auction.endTime} />
+
+          {auction.buyItNowEnabled ? <Button>Add to Cart</Button> : null}
+          <form
+            className="flex flex-col max-w-sm"
+            onSubmit={() => console.log("submit bid logic")}
+          >
+            <Input placeholder="Enter your bid amount here" />
+            <Button className="mt-4" type="submit">
+              Bid
+            </Button>
+          </form>
+          <p className="mt-4">{auction.description}</p>
+        </div>
       </div>
     </div>
   );

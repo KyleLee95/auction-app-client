@@ -18,7 +18,7 @@ export const AuctionModelInput = z.object({
   startPrice: z.number(), // Accepts number from client
   shippingPrice: z.number(),
   startTime: z.coerce.date(),
-  endTime: z.coerce.date(),
+  endTime: z.string(),
   isActive: z.boolean(),
   buyerId: z.string().nullish(),
   sellerId: z.string(),
@@ -26,9 +26,9 @@ export const AuctionModelInput = z.object({
   buyItNowEnabled: z.boolean(),
   deleted: z.boolean(),
   flagged: z.boolean(),
-  closedAt: z.coerce.date().optional().nullish(),
-  createdAt: z.coerce.date(),
-  updatedAt: z.coerce.date(),
+  closedAt: z.string().optional().nullish(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
 });
 
 // Input schema for client input (expects `startPrice` as `number`)
@@ -38,8 +38,8 @@ export const AuctionModel = z.object({
   description: z.string(),
   startPrice: z.number(),
   shippingPrice: z.number(),
-  startTime: z.coerce.date(),
-  endTime: z.coerce.date(),
+  startTime: z.string(),
+  endTime: z.string(),
   isActive: z.boolean(),
   buyerId: z.string().nullish().optional(),
   sellerId: z.string(),
@@ -47,9 +47,9 @@ export const AuctionModel = z.object({
   buyItNowEnabled: z.boolean(),
   deleted: z.boolean(),
   flagged: z.boolean(),
-  closedAt: z.coerce.date().optional().nullish(),
-  createdAt: z.coerce.date(),
-  updatedAt: z.coerce.date(),
+  closedAt: z.string().optional().nullish(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
 });
 
 // CompleteAuction interface with explicit types
@@ -59,17 +59,17 @@ export interface CompleteAuction {
   description: string;
   startPrice: number;
   shippingPrice: number;
-  startTime: Date;
-  endTime: Date;
+  startTime: string;
+  endTime: string;
   isActive: boolean;
   buyItNowEnabled: boolean;
   deleted: boolean;
   flagged: boolean;
   sellerId: string;
   buyerId?: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-  closedAt?: Date | null;
+  createdAt: string;
+  updatedAt: string;
+  closedAt?: string | null;
   seller: CompleteUser;
   bids: CompleteBid[];
   categories: CompleteCategory[];
@@ -82,8 +82,8 @@ export interface IncludeAuction {
   description: string;
   startPrice: number;
   shippingPrice: number;
-  startTime: Date;
-  endTime: Date;
+  startTime: string;
+  endTime: string;
   quantity: number;
   isActive: boolean;
   buyItNowEnabled: boolean;
@@ -91,9 +91,9 @@ export interface IncludeAuction {
   flagged: boolean;
   sellerId: string;
   buyerId?: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-  closedAt?: Date | null;
+  createdAt: string;
+  updatedAt: string;
+  closedAt?: string | null;
   seller: CompleteUser;
   bids: CompleteBid[];
 }

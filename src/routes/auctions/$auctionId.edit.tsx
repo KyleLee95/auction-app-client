@@ -43,7 +43,7 @@ function RouteComponent() {
   const params = Route.useParams();
 
   const auctionQuery = useSuspenseQuery(auctionQueryOptions(params.auctionId));
-  const auction = auctionQuery.data[0];
+  const auction = auctionQuery.data.auctions[0];
 
   // const mutation = useMutation({
   //   mutationFn: (values: z.infer<typeof formSchema>) => {
@@ -64,9 +64,9 @@ function RouteComponent() {
       title: auction.title,
       description: auction.description,
       categories: "",
-      starting_price: auction.starting_price,
-      start_time: auction.start_time.toString(),
-      end_time: auction.end_time.toString(),
+      starting_price: auction.startPrice,
+      start_time: auction.startTime.toString(),
+      end_time: auction.endTime.toString(),
     },
   });
 
