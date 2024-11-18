@@ -126,10 +126,6 @@ function SiteHeader({ className }: Props) {
       <div className="hidden justify-center md:flex h-14 items-center px-4">
         <NavigationMenu className={cn("", className)}>
           <NavigationMenuList>
-            <HeaderMenuList />
-            <HeaderMenuList />
-            <HeaderMenuList />
-            <HeaderMenuList />
             <NavigationMenuItem>
               <NavigationMenuLink
                 className={navigationMenuTriggerStyle()}
@@ -147,6 +143,11 @@ function SiteHeader({ className }: Props) {
                 <Link to="/dashboard/sell">Dashboard</Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
+
+            <HeaderMenuList />
+            <HeaderMenuList />
+            <HeaderMenuList />
+            <HeaderMenuList />
           </NavigationMenuList>
         </NavigationMenu>
       </div>
