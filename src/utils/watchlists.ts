@@ -4,7 +4,7 @@
 //   Required<Pick<TValue, TKey>>;
 
 /* Types */
-import { IBidModelWithAuction, type CompleteAuction } from "../types";
+import { type CompleteWatchList } from "../types";
 // export interface Auction {
 //   _id: string;
 //   title: string;
@@ -46,17 +46,16 @@ import { IBidModelWithAuction, type CompleteAuction } from "../types";
 // let auctionsPromise: Promise<void> | undefined = undefined;
 // let usersPromise: Promise<void> | undefined = undefined;
 
-export type AuctionsSortBy = "" | "" | "";
+// export type AuctionsSortBy = "" | "" | "";
 
-export async function fetchUserAuctions(userId: string): Promise<{
-  auctions: CompleteAuction[];
-  bidOnAuctions: IBidModelWithAuction[];
+export async function fetchUserWatchlists(userId: string): Promise<{
+  watchlists: CompleteWatchList[];
 }> {
   // {
   //   filterBy,
   //   sortBy,
   // }: { filterBy?: string; sortBy: AuctionsSortBy } = {}
-  const res = await fetch(`/api/auctions?userId=${userId}`, {
+  const res = await fetch(`/api/watchlist?userId=${userId}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -65,15 +64,14 @@ export async function fetchUserAuctions(userId: string): Promise<{
   if (!res.ok) {
     console.error("fetch auctions error", res.statusText);
   }
-  const { auctions, bidOnAuctions } = await res.json();
-  return { auctions: auctions, bidOnAuctions: bidOnAuctions };
+  const { watchlists } = await res.json();
+  return { watchlists: watchlists };
 }
 
-export async function fetchAuctionById(auctionId: string): Promise<{
-  auctions: CompleteAuction[];
-  bidOnAuctions: IBidModelWithAuction[];
+export async function fetchWatchlistById(watchlistId: string): Promise<{
+  watchlists: CompleteWatchList[];
 }> {
-  const res = await fetch(`/api/auctions/${auctionId}`, {
+  const res = await fetch(`/api/watchlist/${watchlistId}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

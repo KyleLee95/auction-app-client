@@ -2,11 +2,8 @@ import {
   queryOptions,
   // useMutation
 } from "@tanstack/react-query";
-import {
-  fetchUserAuctions,
-  fetchAuctionById,
-  // fetchauctionById,
-} from "./auctions";
+import { fetchUserAuctions, fetchAuctionById } from "./auctions";
+import { fetchUserWatchlists, fetchWatchlistById } from "./watchlists";
 
 // import { queryClient } from "../main";
 
@@ -15,12 +12,27 @@ export const auctionsQueryOptions = (userId: string) =>
     queryKey: ["auctions", userId],
     queryFn: () => fetchUserAuctions(userId),
   });
+
 export const auctionQueryOptions = (auctionId: string) =>
   queryOptions({
     queryKey: ["auctions", auctionId],
     queryFn: () => fetchAuctionById(auctionId),
   });
-//
+
+//get all of a user's watchlists
+export const watchlistsQueryOptions = (userId: string) =>
+  queryOptions({
+    queryKey: ["watchlists", userId],
+    queryFn: () => fetchUserWatchlists(userId),
+  });
+
+//get a watchlist by id
+export const watchlistQueryOptions = (watchlistId: string) =>
+  queryOptions({
+    queryKey: ["watchlists", watchlistId],
+    queryFn: () => fetchWatchlistById(watchlistId),
+  });
+
 // export const usersQueryOptions = (opts: {
 //   filterBy?: string;
 //   sortBy?: "name" | "id" | "email";

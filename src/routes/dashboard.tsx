@@ -12,26 +12,6 @@ export const Route = createFileRoute("/dashboard")({
   component: RouteComponent,
 });
 
-// const tabItems = [
-//   {
-//     name: "Summary",
-//     to: "/dashboard/summary",
-//   },
-//
-//   {
-//     name: "Sell",
-//     to: "/dashboard/sell",
-//   },
-//   {
-//     name: "Auctions",
-//     to: "/dashboard/auctions",
-//   },
-//   {
-//     name: "Watchlist",
-//     to: "/dashboard/watchlist",
-//   },
-// ];
-
 function RouteComponent() {
   return (
     <div className="flex flex-row flex-wrap mx-auto h-full min-h-72">
@@ -61,7 +41,7 @@ function RouteComponent() {
                 className={navigationMenuTriggerStyle()}
                 asChild
               >
-                <Link to="/dashboard/watchlist">Watchlist</Link>
+                <Link to="/dashboard/watchlists">Watchlist</Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>

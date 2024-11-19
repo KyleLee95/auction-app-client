@@ -1,16 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { AuctionCard } from "@/components/dashboard-auction-card";
-import { CompleteAuction } from "@/types/auction";
-
-export const Route = createFileRoute("/dashboard/auctions/")({
+import { useAuthenticator } from "@aws-amplify/ui-react";
+export const Route = createFileRoute("/dashboard/watchlists/")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  const { user } = useAuthenticator();
   return (
     <div className="mx-2">
-      auctions?
-      {/*auctions.map((auction: CompleteAuction) => {
+      ??sasndfioasdfnasof
+      {/*.map((auction: CompleteAuction) => {
         return <AuctionCard auction={auction} key={auction.id} />;
       })*/}
     </div>

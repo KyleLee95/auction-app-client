@@ -7,7 +7,6 @@ import {
 import { QueryClient } from "@tanstack/react-query";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import type { Auth } from "../utils/auth";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
@@ -25,7 +24,6 @@ import { MobileNav } from "@/components/mobile-menu";
 import { cn } from "@/lib/utils";
 
 export const Route = createRootRouteWithContext<{
-  auth: Auth;
   queryClient: QueryClient;
 }>()({
   component: App,

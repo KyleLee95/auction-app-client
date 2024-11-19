@@ -4,7 +4,6 @@ import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 // Import the generated route tree
 import { routeTree } from "./routeTree.gen";
-import { auth } from "./utils/auth";
 import { ThemeProvider } from "./components/theme-provider";
 import "./index.css";
 export const queryClient = new QueryClient();
@@ -30,7 +29,6 @@ const router = createRouter({
     <div>{error.message}</div>;
   },
   context: {
-    auth: undefined!,
     queryClient,
   },
 });
@@ -51,7 +49,7 @@ if (!rootElement.innerHTML) {
       <QueryClientProvider client={queryClient}>
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
           <Authenticator>
-            <RouterProvider router={router} context={{ auth }} />
+            <RouterProvider router={router} />
           </Authenticator>
         </ThemeProvider>
       </QueryClientProvider>

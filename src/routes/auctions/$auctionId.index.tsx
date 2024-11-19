@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from "react";
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
