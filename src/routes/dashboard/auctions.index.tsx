@@ -4,6 +4,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { Card, CardTitle, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
+import { CompleteAuction } from "@/types/auction";
 
 export const Route = createFileRoute("/dashboard/auctions/")({
   loader: ({ context: { queryClient } }) => {
@@ -24,7 +25,7 @@ function RouteComponent() {
   }
   return (
     <div className="mx-4">
-      {auctions.map((auction: any) => {
+      {auctions.map((auction: CompleteAuction) => {
         return (
           <Card key={auction.id} className="my-2">
             <CardHeader>
@@ -35,14 +36,13 @@ function RouteComponent() {
                 <img src="https://i.ebayimg.com/images/g/Uw4AAOSwscxnGWRH/s-l500.webp" />
                 <div>{auction.description}</div>
                 <div className="flex flex-col">
-                  <Link to={`/auctions/${auction._id}`}>
+                  <Link to={`/auctions/${auction.id}`}>
                     <Button className="my-4">View</Button>
                   </Link>
 
-                  <Link to={`/auctions/${auction._id}/edit`}>
+                  <Link to={`/auctions/${auction.id}/edit`}>
                     <Button className="my-4">Edit</Button>
                   </Link>
-                  <Button className="my-4">End</Button>
                 </div>
               </div>
             </CardContent>
