@@ -60,7 +60,13 @@ export const Route = createFileRoute("/auctions/$auctionId/")({
 const images = [
   {
     id: 1,
-    src: "https://i.ebayimg.com/images/g/~PoAAOSwz8tmUi~B/s-l1600.jpg",
+    src: "https://i.ebayimg.com/images/g/d2UAAOSwuydmWSOT/s-l1600.jpg",
+    alt: "test",
+  },
+
+  {
+    id: 2,
+    src: "https://i.ebayimg.com/images/g/rZ0AAOSw6HdmWSOT/s-l1600.jpg",
     alt: "test",
   },
 ];
@@ -76,25 +82,28 @@ function RouteComponent() {
   return (
     <div className="flex flex-wrap mt-10">
       <ImageCarousel images={images} />
+
+      <div
+        id="auction-info-container"
+        className="mt-4 lg:ml-20 w-full lg:w-1/2"
+      >
+        <h1 className="text-xl">{auction.title}</h1>
+        <h2>
+          $
+          {auction?.bids?.length
+            ? auction.bids[auction.bids.length - 1].amount
+            : auction.startPrice}
+        </h2>
+
+        <Countdown endTime={auction.endTime} />
+
+        <p className="mt-4">{auction.description}</p>
+
+        {auction.buyItNowEnabled ? (
+          <Button className="my-4 w-11/12">Add to Cart</Button>
+        ) : null}
+        <BidModal />
+      </div>
     </div>
   );
 }
-
-// <div id="auction-info-container" className="ml-20 w-full lg:w-1/2">
-//   <h1 className="text-xl">{auction.title}</h1>
-//   <h2>
-//     $
-//     {auction?.bids?.length
-//       ? auction.bids[auction.bids.length - 1].amount
-//       : auction.startPrice}
-//   </h2>
-//
-//   <Countdown endTime={auction.endTime} />
-//
-//   <p className="mt-4">{auction.description}</p>
-//
-//   {auction.buyItNowEnabled ? (
-//     <Button className="my-4 w-11/12">Add to Cart</Button>
-//   ) : null}
-//   <BidModal />
-// </div>

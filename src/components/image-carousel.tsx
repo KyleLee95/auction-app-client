@@ -14,7 +14,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images }) => {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full max-w-md max-h-md">
       {/* Large Image Display */}
       <div className="mb-4">
         <Carousel>
@@ -23,7 +23,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images }) => {
               key={image.id}
               className={cn("carousel-item", {
                 "opacity-100": index === currentIndex,
-                "opacity-0": index !== currentIndex,
+                "opacity-0 hidden": index !== currentIndex,
               })}
             >
               <img
