@@ -4,5 +4,5 @@ export const Route = createFileRoute("/dashboard/")({
 });
 
 function RouteComponent() {
-  return "Hello /dashboard/idnex!";
+  return "Hello /dashboard/index!";
 }

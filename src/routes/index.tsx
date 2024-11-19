@@ -6,7 +6,6 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const { user, signOut } = useAuthenticator();
-  console.log("user", user);
   return (
     <main>
       <h1>{user?.signInDetails?.loginId}'s todos</h1>
