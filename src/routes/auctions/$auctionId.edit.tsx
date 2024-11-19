@@ -1,4 +1,5 @@
 import React from "react";
+import { useAuthenticator } from "@aws-amplify/ui-react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import {
@@ -49,6 +50,9 @@ function RouteComponent() {
   const auctionQuery = useSuspenseQuery(auctionQueryOptions(params.auctionId));
   const auction = auctionQuery.data.auctions[0];
 
+  const { user } = useAuthenticator();
+
+  console.log("user", user);
   const mutation = useMutation({
     mutationFn: async (formData: FormData) => {
       console.log("data?", formData);
@@ -252,7 +256,6 @@ function RouteComponent() {
             />
             <div className="mt-6 flex items-center justify-end gap-x-6">
               <Button type="submit">Submit</Button>
-
               <Button>Cancel</Button>
             </div>
           </div>

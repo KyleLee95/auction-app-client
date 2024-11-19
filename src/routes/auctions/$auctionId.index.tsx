@@ -1,8 +1,9 @@
+import React, { useState, useEffect } from "react";
+import { useAuthenticator } from "@aws-amplify/ui-react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { auctionQueryOptions } from "../../utils/queryOptions";
 import { Button } from "@/components/ui/button";
-import React, { useState, useEffect } from "react";
 import { ImageCarousel } from "@/components/image-carousel";
 import { BidModal } from "@/components/bid-modal";
 import {
@@ -102,6 +103,10 @@ function RouteComponent() {
   const params = Route.useParams();
   const auctionQuery = useSuspenseQuery(auctionQueryOptions(params.auctionId));
   const auction = auctionQuery.data.auctions[0];
+
+  const { user } = useAuthenticator();
+
+  console.log("user", user);
   if (!auction) {
     return "Loading...";
   }
@@ -131,6 +136,13 @@ function RouteComponent() {
             <Button className="my-4 w-11/12">Add to Cart</Button>
           ) : null}
           <BidModal />
+
+          {user?.userId === auction.sellerId ? (
+            <Button className="my-4 w-11/12"> Edit </Button>
+          ) : null}
+          {user?.userId === auction.sellerId ? (
+            <Button className="w-11/12"> Delete </Button>
+          ) : null}
         </div>
       </div>
     </div>
