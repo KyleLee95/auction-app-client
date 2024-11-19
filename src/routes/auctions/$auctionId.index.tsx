@@ -5,10 +5,38 @@ import { Button } from "@/components/ui/button";
 import React, { useState, useEffect } from "react";
 import { ImageCarousel } from "@/components/image-carousel";
 import { BidModal } from "@/components/bid-modal";
-
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { CompleteAuction } from "@/types/auction";
 interface CountdownProps {
   endTime: string; // ISO datetime string
 }
+
+const QuantitySelect = ({ auction }: { auction: CompleteAuction }) => {
+  return (
+    <Select>
+      <SelectTrigger className="w-[280px]">
+        <SelectValue placeholder="Select a quantity" />
+      </SelectTrigger>
+      <SelectContent>
+        {Array.from({ length: auction.quantity }, (_, i) => i + 1).map(
+          (num) => {
+            return (
+              <SelectItem key={num} value={String(num)}>
+                {num}
+              </SelectItem>
+            );
+          }
+        )}
+      </SelectContent>
+    </Select>
+  );
+};
 
 const Countdown: React.FC<CountdownProps> = ({ endTime }) => {
   const [timeLeft, setTimeLeft] = useState<string>("");
@@ -74,7 +102,6 @@ function RouteComponent() {
   const params = Route.useParams();
   const auctionQuery = useSuspenseQuery(auctionQueryOptions(params.auctionId));
   const auction = auctionQuery.data.auctions[0];
-
   if (!auction) {
     return "Loading...";
   }
@@ -98,11 +125,13 @@ function RouteComponent() {
         <Countdown endTime={auction.endTime} />
 
         <p className="mt-4">{auction.description}</p>
-
-        {auction.buyItNowEnabled ? (
-          <Button className="my-4 w-11/12">Add to Cart</Button>
-        ) : null}
-        <BidModal />
+        <div id="btn-group" className="mt-4">
+          <QuantitySelect auction={auction} />
+          {auction.buyItNowEnabled ? (
+            <Button className="my-4 w-11/12">Add to Cart</Button>
+          ) : null}
+          <BidModal />
+        </div>
       </div>
     </div>
   );

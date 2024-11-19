@@ -1,9 +1,6 @@
 import React from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  // useMutation,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import {
   Form,
   FormField,
@@ -36,11 +33,14 @@ const formSchema = z.object({
     .min(1, { message: "Description cannot be empty" })
     .max(250, { message: "Description cannot be longer than 250 characters" }),
 
-  buyItNowEnabled: z.boolean(),
   startTime: z.coerce.date(),
   endTime: z.coerce.date(),
-  categories: z.string(),
   startPrice: z.coerce.number(),
+  categories: z.string(),
+  shippingPrice: z.number(),
+  isActive: z.boolean(),
+  quantity: z.number().int(),
+  buyItNowEnabled: z.boolean(),
 });
 
 function RouteComponent() {
@@ -49,19 +49,22 @@ function RouteComponent() {
   const auctionQuery = useSuspenseQuery(auctionQueryOptions(params.auctionId));
   const auction = auctionQuery.data.auctions[0];
 
-  // const mutation = useMutation({
-  //   mutationFn: (values: z.infer<typeof formSchema>) => {
-  //     return fetch(`/api/auctions/${auction._id}}`, {
-  //       method: "PUT",
-  //       body: JSON.stringify(values),
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //     });
-  //   },
-  // });
+  const mutation = useMutation({
+    mutationFn: async (formData: FormData) => {
+      console.log("data?", formData);
+      const res = await fetch(`/api/auctions/${auction.id}`, {
+        method: "PUT",
+        body: JSON.stringify(Object.fromEntries(formData)),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
+      console.log("res", data);
+      return res;
+    },
+  });
 
-  // 1. Define your form.
   const startTimeDate = new Date(auction.startTime);
   const endTime = new Date(auction.endTime);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -73,19 +76,18 @@ function RouteComponent() {
       startPrice: auction.startPrice,
       startTime: startTimeDate,
       endTime: endTime,
+      shippingPrice: auction.shippingPrice,
+      isActive: auction.isActive,
+      quantity: auction.quantity,
+      buyItNowEnabled: auction.buyItNowEnabled,
     },
   });
 
   // React.DOMAttributes<HTMLFormElement>.onSubmit?: React.FormEventHandler<HTMLFormElement> | undefined
-  function onSubmit(event: React.SyntheticEvent) {
+  const onSubmit = (event: React.SyntheticEvent) => {
     event.preventDefault();
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    // event?.preventDefault();
-    // console.log("event", event);
-    // const values = new FormData(event.currentTarget);
-    // mutation.mutate(values);
-  }
+    mutation.mutate(new FormData(event.target));
+  };
 
   return (
     <Form {...form}>
@@ -207,7 +209,42 @@ function RouteComponent() {
                     />
                   </FormControl>
                   <FormDescription>
-                    The time the auction should end
+                    The time the auction should end.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="shippingPrice"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Shipping Price</FormLabel>
+                  <FormControl>
+                    <Input placeholder="shadcn" type="number" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    The amount the buyer will be charged for shipping.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="quantity"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Quantity</FormLabel>
+                  <FormControl>
+                    <Input placeholder="shadcn" type="number" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    The number of the item that is available, e.g. if you have
+                    10 identitcal T-shirts for sale then the quantity is 10.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

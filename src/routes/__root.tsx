@@ -38,7 +38,7 @@ const ListItem = React.forwardRef<
   return (
     <li>
       <NavigationMenuLink asChild>
-        <a
+        <Link
           ref={ref}
           className={cn(
             "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
@@ -50,7 +50,7 @@ const ListItem = React.forwardRef<
           <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
             {children}
           </p>
-        </a>
+        </Link>
       </NavigationMenuLink>
     </li>
   );
@@ -61,7 +61,7 @@ function HeaderMenuList() {
   return (
     <NavigationMenuItem>
       <NavigationMenuTrigger className={navigationMenuTriggerStyle()}>
-        Item One
+        Category
       </NavigationMenuTrigger>
       <NavigationMenuContent>
         <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
@@ -117,8 +117,8 @@ function SiteHeader({ className }: Props) {
           <nav className="flex items-center gap-0.5">
             <Button variant="ghost" size="icon" className="h-8  px-0">
               <Link to="/">
-                <Icons.gitHub className="h-4 w-4" />
-                <span className="sr-only">GitHub</span>
+                <Icons.cart className="h-4 w-4" />
+                <span className="sr-only">cart</span>
               </Link>
             </Button>
             <ModeToggle />
