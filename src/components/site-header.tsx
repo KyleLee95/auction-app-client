@@ -92,7 +92,7 @@ function SiteHeader({ className }: Props) {
     { display: "Electronics", name: "electronics" },
     { display: "Sporting Goods", name: "sporting-goods" },
     { display: "Jewely & Watches", name: "jewelry-watches" },
-    { display: "Collectibles", name: "Collectibles" },
+    { display: "Collectibles", name: "collectibles" },
   ];
 
   interface Category {
@@ -156,7 +156,9 @@ function SiteHeader({ className }: Props) {
                     className={navigationMenuTriggerStyle()}
                     asChild
                   >
-                    <Link to="/search">{category.display}</Link>
+                    <Link to={`/search?category=${category.name}`}>
+                      {category.display}
+                    </Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
               );
