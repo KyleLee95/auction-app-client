@@ -2,6 +2,7 @@ import { createRoot } from "react-dom/client";
 import { StrictMode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "./components/theme-provider";
+import { Authenticator } from "@aws-amplify/ui-react";
 import { App } from "./app";
 import "./index.css";
 export const queryClient = new QueryClient();
@@ -26,11 +27,13 @@ if (!rootElement.innerHTML) {
   const root = createRoot(rootElement);
   root.render(
     <StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-          <App />
-        </ThemeProvider>
-      </QueryClientProvider>
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        <Authenticator>
+          <QueryClientProvider client={queryClient}>
+            <App />
+          </QueryClientProvider>
+        </Authenticator>
+      </ThemeProvider>
     </StrictMode>
   );
 }

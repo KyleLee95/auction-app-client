@@ -4,10 +4,10 @@ import {
   Route,
   createBrowserRouter,
   createRoutesFromElements,
-  useRouteError,
 } from "react-router-dom";
-import { QueryClient } from "@tanstack/react-query";
+import { Authenticator } from "@aws-amplify/ui-react";
 
+import { QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import { DashboardPage } from "@/routes/dashboard/dashboard-page";
@@ -15,24 +15,12 @@ import { DashboardAuctionList } from "@/routes/dashboard/dashboard-auction-list"
 import { DashboardSellList } from "@/routes/dashboard/dashboard-sell-list";
 import { DashboardWatchlistList } from "@/routes/dashboard/dashboard-watchlists-list";
 
+import { SearchPage } from "@/routes/search/search-page";
+import { SearchPageResultsFeed } from "@/routes/search/search-feed";
+
 import { SiteHeader } from "@/components/site-header";
-
+import { ErrorPage } from "@/routes/error-page";
 import { Index } from "@/routes/index";
-
-export default function ErrorPage() {
-  const error = useRouteError();
-  console.error(error);
-
-  return (
-    <div id="error-page">
-      <h1>Oops!</h1>
-      <p>Sorry, an unexpected error has occurred.</p>
-      <p>
-        <i>{error?.statusText || error?.message}</i>
-      </p>
-    </div>
-  );
-}
 
 const RootLayout = () => {
   return (
@@ -53,7 +41,7 @@ const RootLayout = () => {
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<RootLayout />}>
+    <Route path="/" element={<RootLayout />} errorElement={<ErrorPage />}>
       <Route index element={<Index />} />
       <Route errorElement={<ErrorPage />}>
         <Route path="dashboard" element={<DashboardPage />}>
@@ -68,7 +56,8 @@ const router = createBrowserRouter(
         />
         <Route path="/auctions/:auctionId" element={<>auctionId</>} />
         <Route path="/auctions/:auctionId/edit" element={<>auctionId/edit</>} />
-        <Route path="search" element={<>search page</>} />
+
+        <Route path="search" element={<SearchPage />} />
       </Route>
     </Route>
   ),
