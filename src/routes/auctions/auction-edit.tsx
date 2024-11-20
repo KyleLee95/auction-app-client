@@ -1,6 +1,5 @@
 import React from "react";
 import { useAuthenticator } from "@aws-amplify/ui-react";
-import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import {
   Form,
@@ -21,10 +20,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-export const Route = createFileRoute("/auctions/$auctionId/edit")({
-  component: RouteComponent,
-});
-
 const formSchema = z.object({
   title: z.string().min(15, {
     message: "Title must be at least 15 characters.",
@@ -44,9 +39,7 @@ const formSchema = z.object({
   buyItNowEnabled: z.boolean(),
 });
 
-function RouteComponent() {
-  const params = Route.useParams();
-
+function AuctionEdit() {
   const auctionQuery = useSuspenseQuery(auctionQueryOptions(params.auctionId));
   const auction = auctionQuery.data.auctions[0];
 
@@ -264,3 +257,4 @@ function RouteComponent() {
     </Form>
   );
 }
+export { AuctionEdit };

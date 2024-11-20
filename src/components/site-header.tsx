@@ -1,12 +1,4 @@
 import React from "react";
-import {
-  Link,
-  createRootRouteWithContext,
-  Outlet,
-} from "@tanstack/react-router";
-import { QueryClient } from "@tanstack/react-query";
-import { TanStackRouterDevtools } from "@tanstack/router-devtools";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
@@ -22,13 +14,7 @@ import {
 import { CommandMenu } from "@/components/ui/command-menu";
 import { MobileNav } from "@/components/mobile-menu";
 import { cn } from "@/lib/utils";
-
-export const Route = createRootRouteWithContext<{
-  queryClient: QueryClient;
-}>()({
-  component: App,
-});
-
+import { Link } from "react-router-dom";
 const ListItem = React.forwardRef<
   React.ElementRef<"a">,
   React.ComponentPropsWithoutRef<"a">
@@ -37,6 +23,7 @@ const ListItem = React.forwardRef<
     <li>
       <NavigationMenuLink asChild>
         <Link
+          to="/"
           ref={ref}
           className={cn(
             "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
@@ -169,9 +156,7 @@ function SiteHeader({ className }: Props) {
                     className={navigationMenuTriggerStyle()}
                     asChild
                   >
-                    <Link to="/search" search={{ category: category.name }}>
-                      {category.display}
-                    </Link>
+                    <Link to="/search">{category.display}</Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
               );
@@ -188,21 +173,4 @@ function SiteHeader({ className }: Props) {
   );
 }
 
-function App() {
-  return (
-    <>
-      {/* Navbar */}
-      <SiteHeader />
-      {/* Content */}
-      <main className="flex flex-wrap pb-2 lg:px-2">
-        <div className="grow p-6 lg:rounded-lg lg:bg-white lg:p-10 lg:shadow-sm lg:ring-1 lg:ring-zinc-950/5 dark:lg:bg-zinc-900 dark:lg:ring-white/10">
-          <div className="mx-auto max-w-7xl">
-            <Outlet />
-          </div>
-        </div>
-      </main>
-      <ReactQueryDevtools buttonPosition="bottom-left" />
-      <TanStackRouterDevtools position="bottom-right" />
-    </>
-  );
-}
+export { SiteHeader };

@@ -36,15 +36,6 @@ const QuantitySelect = ({ auction }: { auction: CompleteAuction }) => {
   );
 };
 
-export const Route = createFileRoute("/auctions/$auctionId/")({
-  loader: (opts) => {
-    opts.context.queryClient.ensureQueryData(
-      auctionQueryOptions(opts.params.auctionId)
-    );
-  },
-  component: RouteComponent,
-});
-
 const images = [
   {
     id: 1,
@@ -58,8 +49,7 @@ const images = [
     alt: "test",
   },
 ];
-function RouteComponent() {
-  const params = Route.useParams();
+function AuctionDetail() {
   const auctionQuery = useSuspenseQuery(auctionQueryOptions(params.auctionId));
   const auction = auctionQuery.data.auctions[0];
 
@@ -107,3 +97,4 @@ function RouteComponent() {
     </div>
   );
 }
+export { AuctionDetail };

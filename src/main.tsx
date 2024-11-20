@@ -1,10 +1,8 @@
 import { createRoot } from "react-dom/client";
 import { StrictMode } from "react";
-import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-// Import the generated route tree
-import { routeTree } from "./routeTree.gen";
 import { ThemeProvider } from "./components/theme-provider";
+import { App } from "./app";
 import "./index.css";
 export const queryClient = new QueryClient();
 
@@ -21,23 +19,6 @@ Amplify.configure({
     REST: outputs.custom.API,
   },
 });
-// Create a new router instance
-const router = createRouter({
-  routeTree,
-  defaultErrorComponent: ({ error }) => {
-    <div>{error.message}</div>;
-  },
-  context: {
-    queryClient,
-  },
-});
-
-// Register the router instance for type safety
-declare module "@tanstack/react-router" {
-  interface Register {
-    router: typeof router;
-  }
-}
 
 // Render the app
 const rootElement = document.getElementById("root")!;
@@ -47,7 +28,7 @@ if (!rootElement.innerHTML) {
     <StrictMode>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-          <RouterProvider router={router} />
+          <App />
         </ThemeProvider>
       </QueryClientProvider>
     </StrictMode>

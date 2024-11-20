@@ -1,4 +1,4 @@
-import { Outlet, createFileRoute } from "@tanstack/react-router";
+import { Outlet, Link } from "react-router-dom";
 import {
   NavigationMenu,
   NavigationMenuList,
@@ -6,13 +6,9 @@ import {
   NavigationMenuLink,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { Link } from "@tanstack/react-router";
 import { Authenticator } from "@aws-amplify/ui-react";
-export const Route = createFileRoute("/dashboard")({
-  component: RouteComponent,
-});
 
-function RouteComponent() {
+function DashboardLayout() {
   return (
     <Authenticator>
       <div className="flex flex-row flex-wrap mx-auto h-full min-h-72">
@@ -55,3 +51,4 @@ function RouteComponent() {
     </Authenticator>
   );
 }
+export { DashboardLayout };
