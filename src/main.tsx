@@ -8,7 +8,6 @@ import { ThemeProvider } from "./components/theme-provider";
 import "./index.css";
 export const queryClient = new QueryClient();
 
-import { Authenticator } from "@aws-amplify/ui-react";
 import { Amplify } from "aws-amplify";
 import outputs from "../amplify_outputs.json";
 import "@aws-amplify/ui-react/styles.css";
@@ -48,9 +47,7 @@ if (!rootElement.innerHTML) {
     <StrictMode>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-          <Authenticator>
-            <RouterProvider router={router} />
-          </Authenticator>
+          <RouterProvider router={router} />
         </ThemeProvider>
       </QueryClientProvider>
     </StrictMode>

@@ -1,4 +1,4 @@
-import { Outlet, useNavigate, createFileRoute } from "@tanstack/react-router";
+import { Outlet, createFileRoute } from "@tanstack/react-router";
 import { watchlistsQueryOptions } from "../../utils/queryOptions";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
