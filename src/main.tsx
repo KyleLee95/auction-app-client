@@ -27,13 +27,13 @@ if (!rootElement.innerHTML) {
   const root = createRoot(rootElement);
   root.render(
     <StrictMode>
-      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-        <Authenticator>
-          <QueryClientProvider client={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+          <Authenticator>
             <App />
-          </QueryClientProvider>
-        </Authenticator>
-      </ThemeProvider>
+          </Authenticator>
+        </ThemeProvider>
+      </QueryClientProvider>
     </StrictMode>
   );
 }

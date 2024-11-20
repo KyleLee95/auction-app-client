@@ -29,7 +29,7 @@ function DashboardLayout() {
                   className={navigationMenuTriggerStyle()}
                   asChild
                 >
-                  <Link to="/dashboard">Sell</Link>
+                  <Link to="/dashboard/sell">Sell</Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
 

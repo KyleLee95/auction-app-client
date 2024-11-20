@@ -15,6 +15,7 @@ import { CommandMenu } from "@/components/ui/command-menu";
 import { MobileNav } from "@/components/mobile-menu";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
+import { Authenticator } from "@aws-amplify/ui-react";
 const ListItem = React.forwardRef<
   React.ElementRef<"a">,
   React.ComponentPropsWithoutRef<"a">
