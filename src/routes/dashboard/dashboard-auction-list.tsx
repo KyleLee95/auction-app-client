@@ -9,10 +9,6 @@ function DashboardAuctionList() {
     queryFn: () => fetchUserAuctions(user.userId),
   });
 
-  console.log("isLoading", isLoading);
-  console.log("error", error);
-  console.log("data", data);
-
   if (isLoading) {
     return "Loading...";
   }

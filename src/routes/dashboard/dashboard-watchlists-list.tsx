@@ -6,7 +6,7 @@ function DashboardWatchlistList() {
   const { user } = useAuthenticator();
 
   const { isLoading, error, data } = useQuery({
-    queryKey: ["auctions", user.userId],
+    queryKey: ["auctions", user, user.userId],
     queryFn: () => fetchUserWatchlists(user.userId),
   });
 
@@ -23,7 +23,7 @@ function DashboardWatchlistList() {
   }
 
   return watchlists?.map((list) => {
-    return <div key={list.id}>{list.title}</div>;
+    return <div key={list.id}>{list.name}</div>;
   });
 }
 export { DashboardWatchlistList };
