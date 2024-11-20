@@ -11,9 +11,11 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as SearchImport } from './routes/search'
 import { Route as DashboardImport } from './routes/dashboard'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
+import { Route as SearchIndexImport } from './routes/search/index'
 import { Route as DashboardIndexImport } from './routes/dashboard/index'
 import { Route as WatchlistsWatchlistIdImport } from './routes/watchlists/$watchlistId'
 import { Route as DashboardWatchlistsImport } from './routes/dashboard/watchlists'
@@ -27,6 +29,12 @@ import { Route as AuctionsAuctionIdIndexImport } from './routes/auctions/$auctio
 import { Route as AuctionsAuctionIdEditImport } from './routes/auctions/$auctionId.edit'
 
 // Create/Update Routes
+
+const SearchRoute = SearchImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const DashboardRoute = DashboardImport.update({
   id: '/dashboard',
@@ -44,6 +52,12 @@ const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRoute,
+} as any)
+
+const SearchIndexRoute = SearchIndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => SearchRoute,
 } as any)
 
 const DashboardIndexRoute = DashboardIndexImport.update({
@@ -137,6 +151,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardImport
       parentRoute: typeof rootRoute
     }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchImport
+      parentRoute: typeof rootRoute
+    }
     '/auctions/$auctionId': {
       id: '/auctions/$auctionId'
       path: '/auctions/$auctionId'
@@ -185,6 +206,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard/'
       preLoaderRoute: typeof DashboardIndexImport
       parentRoute: typeof DashboardImport
+    }
+    '/search/': {
+      id: '/search/'
+      path: '/'
+      fullPath: '/search/'
+      preLoaderRoute: typeof SearchIndexImport
+      parentRoute: typeof SearchImport
     }
     '/auctions/$auctionId/edit': {
       id: '/auctions/$auctionId/edit'
@@ -261,6 +289,17 @@ const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
   DashboardRouteChildren,
 )
 
+interface SearchRouteChildren {
+  SearchIndexRoute: typeof SearchIndexRoute
+}
+
+const SearchRouteChildren: SearchRouteChildren = {
+  SearchIndexRoute: SearchIndexRoute,
+}
+
+const SearchRouteWithChildren =
+  SearchRoute._addFileChildren(SearchRouteChildren)
+
 interface AuctionsAuctionIdRouteChildren {
   AuctionsAuctionIdEditRoute: typeof AuctionsAuctionIdEditRoute
   AuctionsAuctionIdIndexRoute: typeof AuctionsAuctionIdIndexRoute
@@ -278,6 +317,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/dashboard': typeof DashboardRouteWithChildren
+  '/search': typeof SearchRouteWithChildren
   '/auctions/$auctionId': typeof AuctionsAuctionIdRouteWithChildren
   '/dashboard/auctions': typeof DashboardAuctionsRouteWithChildren
   '/dashboard/sell': typeof DashboardSellRoute
@@ -285,6 +325,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/watchlists': typeof DashboardWatchlistsRouteWithChildren
   '/watchlists/$watchlistId': typeof WatchlistsWatchlistIdRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/search/': typeof SearchIndexRoute
   '/auctions/$auctionId/edit': typeof AuctionsAuctionIdEditRoute
   '/auctions/$auctionId/': typeof AuctionsAuctionIdIndexRoute
   '/dashboard/auctions/': typeof DashboardAuctionsIndexRoute
@@ -298,6 +339,7 @@ export interface FileRoutesByTo {
   '/dashboard/summary': typeof DashboardSummaryRoute
   '/watchlists/$watchlistId': typeof WatchlistsWatchlistIdRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/search': typeof SearchIndexRoute
   '/auctions/$auctionId/edit': typeof AuctionsAuctionIdEditRoute
   '/auctions/$auctionId': typeof AuctionsAuctionIdIndexRoute
   '/dashboard/auctions': typeof DashboardAuctionsIndexRoute
@@ -309,6 +351,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/dashboard': typeof DashboardRouteWithChildren
+  '/search': typeof SearchRouteWithChildren
   '/auctions/$auctionId': typeof AuctionsAuctionIdRouteWithChildren
   '/dashboard/auctions': typeof DashboardAuctionsRouteWithChildren
   '/dashboard/sell': typeof DashboardSellRoute
@@ -316,6 +359,7 @@ export interface FileRoutesById {
   '/dashboard/watchlists': typeof DashboardWatchlistsRouteWithChildren
   '/watchlists/$watchlistId': typeof WatchlistsWatchlistIdRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/search/': typeof SearchIndexRoute
   '/auctions/$auctionId/edit': typeof AuctionsAuctionIdEditRoute
   '/auctions/$auctionId/': typeof AuctionsAuctionIdIndexRoute
   '/dashboard/auctions/': typeof DashboardAuctionsIndexRoute
@@ -328,6 +372,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/dashboard'
+    | '/search'
     | '/auctions/$auctionId'
     | '/dashboard/auctions'
     | '/dashboard/sell'
@@ -335,6 +380,7 @@ export interface FileRouteTypes {
     | '/dashboard/watchlists'
     | '/watchlists/$watchlistId'
     | '/dashboard/'
+    | '/search/'
     | '/auctions/$auctionId/edit'
     | '/auctions/$auctionId/'
     | '/dashboard/auctions/'
@@ -347,6 +393,7 @@ export interface FileRouteTypes {
     | '/dashboard/summary'
     | '/watchlists/$watchlistId'
     | '/dashboard'
+    | '/search'
     | '/auctions/$auctionId/edit'
     | '/auctions/$auctionId'
     | '/dashboard/auctions'
@@ -356,6 +403,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/dashboard'
+    | '/search'
     | '/auctions/$auctionId'
     | '/dashboard/auctions'
     | '/dashboard/sell'
@@ -363,6 +411,7 @@ export interface FileRouteTypes {
     | '/dashboard/watchlists'
     | '/watchlists/$watchlistId'
     | '/dashboard/'
+    | '/search/'
     | '/auctions/$auctionId/edit'
     | '/auctions/$auctionId/'
     | '/dashboard/auctions/'
@@ -374,6 +423,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   DashboardRoute: typeof DashboardRouteWithChildren
+  SearchRoute: typeof SearchRouteWithChildren
   AuctionsAuctionIdRoute: typeof AuctionsAuctionIdRouteWithChildren
   WatchlistsWatchlistIdRoute: typeof WatchlistsWatchlistIdRoute
 }
@@ -382,6 +432,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   DashboardRoute: DashboardRouteWithChildren,
+  SearchRoute: SearchRouteWithChildren,
   AuctionsAuctionIdRoute: AuctionsAuctionIdRouteWithChildren,
   WatchlistsWatchlistIdRoute: WatchlistsWatchlistIdRoute,
 }
@@ -399,6 +450,7 @@ export const routeTree = rootRoute
         "/",
         "/about",
         "/dashboard",
+        "/search",
         "/auctions/$auctionId",
         "/watchlists/$watchlistId"
       ]
@@ -417,6 +469,12 @@ export const routeTree = rootRoute
         "/dashboard/summary",
         "/dashboard/watchlists",
         "/dashboard/"
+      ]
+    },
+    "/search": {
+      "filePath": "search.tsx",
+      "children": [
+        "/search/"
       ]
     },
     "/auctions/$auctionId": {
@@ -454,6 +512,10 @@ export const routeTree = rootRoute
     "/dashboard/": {
       "filePath": "dashboard/index.tsx",
       "parent": "/dashboard"
+    },
+    "/search/": {
+      "filePath": "search/index.tsx",
+      "parent": "/search"
     },
     "/auctions/$auctionId/edit": {
       "filePath": "auctions/$auctionId.edit.tsx",

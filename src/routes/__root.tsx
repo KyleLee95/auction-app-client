@@ -94,7 +94,24 @@ function HeaderMenuList() {
 }
 
 type Props = { className?: string };
+
 function SiteHeader({ className }: Props) {
+  const categories = [
+    { display: "Autos", name: "autos" },
+    {
+      display: "Clothing, Shoes & Accessories",
+      name: "clothing-shoes-accessories",
+    },
+    { display: "Electronics", name: "electronics" },
+    { display: "Sporting Goods", name: "sporting-goods" },
+    { display: "Jewely & Watches", name: "jewelry-watches" },
+    { display: "Collectibles", name: "Collectibles" },
+  ];
+
+  interface Category {
+    display: string;
+    name: string;
+  }
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 dark:border-border">
       <div className="flex h-14 items-center px-4 justify-center">
@@ -145,11 +162,25 @@ function SiteHeader({ className }: Props) {
                 <Link to="/dashboard/sell">Sell</Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
+            {categories.map((category: Category) => {
+              return (
+                <NavigationMenuItem key={category.name}>
+                  <NavigationMenuLink
+                    className={navigationMenuTriggerStyle()}
+                    asChild
+                  >
+                    <Link to="/search" search={{ category: category.name }}>
+                      {category.display}
+                    </Link>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              );
+            })}
 
+            {/*<HeaderMenuList />
             <HeaderMenuList />
             <HeaderMenuList />
-            <HeaderMenuList />
-            <HeaderMenuList />
+            <HeaderMenuList />*/}
           </NavigationMenuList>
         </NavigationMenu>
       </div>
