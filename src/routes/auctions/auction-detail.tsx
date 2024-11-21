@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CompleteAuction } from "@/types/auction";
-import { Countdown } from "@/components/count-down-timer";
+import { Countdown } from "@/components/countdown-timer";
 
 const QuantitySelect = ({ auction }: { auction: CompleteAuction }) => {
   return (

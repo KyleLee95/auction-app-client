@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { CompleteAuction } from "@/types/auction";
-import { Countdown } from "@/components/count-down-timer";
+import { Countdown } from "@/components/countdown-timer";
 export function AuctionCard({ auction }: { auction: CompleteAuction }) {
   return (
     <div className="flex flex-col md:flex-row items-start p-4 border rounded-md shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 w-full">
