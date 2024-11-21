@@ -15,20 +15,21 @@ import {
 export const AuctionModelInput = z.object({
   title: z.string(),
   description: z.string(),
-  startPrice: z.number(), // Accepts number from client
+  startPrice: z.coerce.number(), // Accepts number from client
   startTime: z.coerce.date(),
-  endTime: z.string(),
+  endTime: z.coerce.date(),
   buyerId: z.string().nullish(),
   sellerId: z.string(),
   shippingPrice: z.number(),
-  isActive: z.boolean(),
-  quantity: z.number().int(),
-  buyItNowEnabled: z.boolean(),
-  deleted: z.boolean(),
-  flagged: z.boolean(),
-  closedAt: z.string().optional().nullish(),
-  createdAt: z.string(),
-  updatedAt: z.string(),
+  isActive: z.coerce.boolean(),
+  quantity: z.coerce.number().int(),
+  buyItNowEnabled: z.coerce.boolean(),
+  deleted: z.coerce.boolean(),
+  flagged: z.coerce.boolean(),
+  closedAt: z.coerce.string().optional().nullish(),
+  createdAt: z.coerce.string(),
+  updatedAt: z.coerce.string(),
+  categories: z.array(z.any().optional()),
 });
 
 // Input schema for client input (expects `startPrice` as `number`)

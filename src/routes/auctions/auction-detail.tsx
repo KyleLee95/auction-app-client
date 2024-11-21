@@ -1,5 +1,4 @@
-import { useAuthenticator } from "@aws-amplify/ui-react";
-import { useParams } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { fetchAuctionById } from "@/utils/auctions";
 import { Button } from "@/components/ui/button";
@@ -50,32 +49,13 @@ const images = [
   },
 ];
 function AuctionDetail() {
-  const { auctionId } = useParams();
-  const { user } = useAuthenticator();
-  const { isLoading, error, data } = useQuery({
-    queryKey: ["auctions", auctionId],
-    queryFn: async () => fetchAuctionById(auctionId),
-  });
-  if (isLoading) {
-    return "Loading...";
-  }
-  if (error) {
-    return error.message;
-  }
-  console.log("data", data);
-  const { auctions } = data;
-  const auction = auctions[0];
-
-  console.log("user", user);
-  if (!auction) {
-    return "Loading...";
-  }
+  const context = useOutletContext();
+  const { user, auction } = context;
   const hasBids = auction?.bids?.length;
 
   return (
     <div className="flex flex-wrap mt-10">
       <ImageCarousel images={images} />
-
       <div
         id="auction-info-container"
         className="mt-4 lg:ml-20 w-full lg:w-1/2"
@@ -98,7 +78,9 @@ function AuctionDetail() {
             <BidModal />
 
             {user?.userId === auction.sellerId ? (
-              <Button className="my-4 w-11/12"> Edit </Button>
+              <Link to={`/auctions/${auction.id}/edit`}>
+                <Button className="my-4 w-11/12">Edit </Button>
+              </Link>
             ) : null}
             {user?.userId === auction.sellerId ? (
               <Button className="w-11/12"> Delete </Button>

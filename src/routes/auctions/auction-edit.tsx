@@ -1,6 +1,5 @@
 import React from "react";
-import { useAuthenticator } from "@aws-amplify/ui-react";
-import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   Form,
   FormField,
@@ -10,84 +9,70 @@ import {
   FormDescription,
   FormItem,
 } from "@/components/ui/form";
-import { useParams } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 import { DateTimePicker } from "@/components/date-time-picker";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { auctionQueryOptions } from "@/utils/queryOptions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 const formSchema = z.object({
-  title: z.string().min(15, {
-    message: "Title must be at least 15 characters.",
-  }),
-  description: z
-    .string()
-    .min(1, { message: "Description cannot be empty" })
-    .max(250, { message: "Description cannot be longer than 250 characters" }),
-
-  startTime: z.coerce.date(),
-  endTime: z.coerce.date(),
-  startPrice: z.coerce.number(),
-  categories: z.string(),
-  shippingPrice: z.number(),
-  isActive: z.boolean(),
-  quantity: z.number().int(),
-  buyItNowEnabled: z.boolean(),
+  title: z.string().default("title"),
+  description: z.string().default("description"),
+  startPrice: z.number().default(0.0), // Accepts number from client
+  startTime: z.date().default(new Date(Date.now())),
+  endTime: z.date().default(new Date(Date.now())),
+  shippingPrice: z.number().default(15.99),
+  isActive: z.boolean().default(false),
+  quantity: z.coerce.number().int().default(1),
+  buyItNowEnabled: z.coerce.boolean().default(true),
+  // categories: z.array(z.any().optional()).default({ name: "test category" }),
 });
 
 function AuctionEdit() {
-  const { user } = useAuthenticator();
-  const { auctionId } = useParams();
+  const { user, auction }: { user: any; auction: any } = useOutletContext();
 
-  console.log("user", user);
   const mutation = useMutation({
-    mutationFn: async (formData: FormData) => {
-      console.log("data?", formData);
+    mutationFn: async (formData: any) => {
       const res = await fetch(`/api/auctions/${auction.id}`, {
         method: "PUT",
-        body: JSON.stringify(Object.fromEntries(formData)),
+        body: JSON.stringify({ ...auction, ...formData }),
         headers: {
           "Content-Type": "application/json",
         },
       });
       const data = await res.json();
-      console.log("res", data);
-      return res;
+      return data;
     },
   });
 
-  const startTimeDate = new Date(auction.startTime);
+  const onSubmit = (data: any) => {
+    mutation.mutate(data);
+  };
+
+  const startTime = new Date(auction.startTime);
   const endTime = new Date(auction.endTime);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: auction.title,
-      description: auction.description,
-      categories: "",
-      startPrice: auction.startPrice,
-      startTime: startTimeDate,
-      endTime: endTime,
-      shippingPrice: auction.shippingPrice,
-      isActive: auction.isActive,
-      quantity: auction.quantity,
+      isActive: Boolean(auction.isActive),
       buyItNowEnabled: auction.buyItNowEnabled,
+      description: auction.description,
+      shippingPrice: auction.shippingPrice,
+      startPrice: auction.startPrice,
+      quantity: auction.quantity,
+      startTime: startTime,
+      endTime: endTime,
+      title: auction.title,
     },
   });
 
-  // React.DOMAttributes<HTMLFormElement>.onSubmit?: React.FormEventHandler<HTMLFormElement> | undefined
-  const onSubmit = (event: React.SyntheticEvent) => {
-    event.preventDefault();
-    mutation.mutate(new FormData(event.target));
-  };
-
   return (
     <Form {...form}>
-      <form onSubmit={onSubmit} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
           <div className="col-span-4">
             <FormField
@@ -97,7 +82,10 @@ function AuctionEdit() {
                 <FormItem>
                   <FormLabel>Title</FormLabel>
                   <FormControl>
-                    <Input placeholder="shadcn" {...field} />
+                    <Input
+                      placeholder="An accurate and helpful title"
+                      {...field}
+                    />
                   </FormControl>
                   <FormDescription>
                     This is what potential buyers will see your auction listed
@@ -136,7 +124,14 @@ function AuctionEdit() {
                 <FormItem>
                   <FormLabel>Starting Price</FormLabel>
                   <FormControl>
-                    <Input placeholder="shadcn" type="number" {...field} />
+                    <Input
+                      placeholder="shadcn"
+                      type="number"
+                      {...field}
+                      onChange={(e) => {
+                        field.onChange(Number(e.target.value));
+                      }}
+                    />
                   </FormControl>
                   <FormDescription>
                     The initial price of the item. This price will be used as
@@ -154,6 +149,7 @@ function AuctionEdit() {
                 <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                   <FormControl>
                     <Checkbox
+                      onChange={field.onChange}
                       checked={field.value}
                       onCheckedChange={field.onChange}
                     />
@@ -219,7 +215,14 @@ function AuctionEdit() {
                 <FormItem>
                   <FormLabel>Shipping Price</FormLabel>
                   <FormControl>
-                    <Input placeholder="shadcn" type="number" {...field} />
+                    <Input
+                      placeholder="shadcn"
+                      type="number"
+                      {...field}
+                      onChange={(e) => {
+                        field.onChange(Number(e.target.value));
+                      }}
+                    />
                   </FormControl>
                   <FormDescription>
                     The amount the buyer will be charged for shipping.
@@ -236,12 +239,43 @@ function AuctionEdit() {
                 <FormItem>
                   <FormLabel>Quantity</FormLabel>
                   <FormControl>
-                    <Input placeholder="shadcn" type="number" {...field} />
+                    <Input
+                      placeholder="shadcn"
+                      type="number"
+                      {...field}
+                      onChange={(e) => {
+                        field.onChange(Number(e.target.value));
+                      }}
+                    />
                   </FormControl>
                   <FormDescription>
                     The number of the item that is available, e.g. if you have
                     10 identitcal T-shirts for sale then the quantity is 10.
                   </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="isActive"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>List Auction</FormLabel>
+                    <FormDescription>
+                      If the auction should be publicly listed. A publicly
+                      listed auction will be available for purchase and shown in
+                      searches.
+                    </FormDescription>
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}

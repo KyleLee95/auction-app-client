@@ -1,6 +1,23 @@
 import { Outlet } from "react-router-dom";
+import { useAuthenticator } from "@aws-amplify/ui-react";
+import { useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { fetchAuctionById } from "@/utils/auctions";
+
 function AuctionPage() {
-  return <Outlet />;
+  const { auctionId } = useParams();
+  const { user } = useAuthenticator();
+  const { isLoading, error, data } = useQuery({
+    queryKey: ["auctions", auctionId],
+    queryFn: async () => fetchAuctionById(auctionId),
+  });
+  if (isLoading) {
+    return "Loading...";
+  }
+  if (error) {
+    return error.message;
+  }
+  return <Outlet context={{ auction: data?.auctions[0], user }} />;
 }
 
 export { AuctionPage };

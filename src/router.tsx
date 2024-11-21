@@ -30,9 +30,10 @@ const router = createBrowserRouter(
           <Route path="watchlists/" element={<DashboardWatchlistList />} />
         </Route>
 
-        <Route path="auctions" element={<AuctionPage />} />
-        <Route path="/auctions/:auctionId" element={<AuctionDetail />} />
-        <Route path="/auctions/:auctionId/edit" element={<AuctionEdit />} />
+        <Route path="auctions/" element={<AuctionPage />}>
+          <Route path="/auctions/:auctionId" element={<AuctionDetail />} />
+          <Route path="/auctions/:auctionId/edit" element={<AuctionEdit />} />
+        </Route>
 
         <Route path="search" element={<SearchPage />} />
       </Route>
