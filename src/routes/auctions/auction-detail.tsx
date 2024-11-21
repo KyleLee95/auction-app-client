@@ -1,5 +1,4 @@
 import { useAuthenticator } from "@aws-amplify/ui-react";
-import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { auctionQueryOptions } from "../../utils/queryOptions";
 import { Button } from "@/components/ui/button";

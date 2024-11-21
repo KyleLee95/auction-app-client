@@ -10,6 +10,9 @@ import { DashboardAuctionList } from "@/routes/dashboard/dashboard-auction-list"
 import { DashboardSellList } from "@/routes/dashboard/dashboard-sell-list";
 import { DashboardWatchlistList } from "@/routes/dashboard/dashboard-watchlists-list";
 
+import { AuctionPage } from "@/routes/auctions/auction-page";
+import { AuctionDetail } from "./routes/auctions/auction-detail";
+import { AuctionEdit } from "./routes/auctions/auction-edit";
 import { SearchPage } from "@/routes/search/search-page";
 import { SearchPageResultsFeed } from "@/routes/search/search-feed";
 
@@ -27,12 +30,9 @@ const router = createBrowserRouter(
           <Route path="watchlists/" element={<DashboardWatchlistList />} />
         </Route>
 
-        <Route
-          path="auctions"
-          element={<div className="bg-slate-500">auctionId layout</div>}
-        />
-        <Route path="/auctions/:auctionId" element={<>auctionId</>} />
-        <Route path="/auctions/:auctionId/edit" element={<>auctionId/edit</>} />
+        <Route path="auctions" element={<AuctionPage />} />
+        <Route path="/auctions/:auctionId" element={<AuctionDetail />} />
+        <Route path="/auctions/:auctionId/edit" element={<AuctionEdit />} />
 
         <Route path="search" element={<SearchPage />} />
       </Route>

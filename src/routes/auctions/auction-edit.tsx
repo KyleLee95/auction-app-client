@@ -10,6 +10,7 @@ import {
   FormDescription,
   FormItem,
 } from "@/components/ui/form";
+import { useParams } from "react-router-dom";
 import { DateTimePicker } from "@/components/date-time-picker";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -40,10 +41,8 @@ const formSchema = z.object({
 });
 
 function AuctionEdit() {
-  const auctionQuery = useSuspenseQuery(auctionQueryOptions(params.auctionId));
-  const auction = auctionQuery.data.auctions[0];
-
   const { user } = useAuthenticator();
+  const { auctionId } = useParams();
 
   console.log("user", user);
   const mutation = useMutation({

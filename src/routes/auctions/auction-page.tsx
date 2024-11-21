@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
-function AuctionPageLayout() {
+function AuctionPage() {
   return <Outlet />;
 }
 
-export { AuctionPageLayout };
+export { AuctionPage };
