@@ -1,6 +1,7 @@
 import { useAuthenticator } from "@aws-amplify/ui-react";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { auctionQueryOptions } from "../../utils/queryOptions";
+import { useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { fetchAuctionById } from "@/utils/auctions";
 import { Button } from "@/components/ui/button";
 import { ImageCarousel } from "@/components/image-carousel";
 import { BidModal } from "@/components/bid-modal";
@@ -49,15 +50,27 @@ const images = [
   },
 ];
 function AuctionDetail() {
-  const auctionQuery = useSuspenseQuery(auctionQueryOptions(params.auctionId));
-  const auction = auctionQuery.data.auctions[0];
-
+  const { auctionId } = useParams();
   const { user } = useAuthenticator();
+  const { isLoading, error, data } = useQuery({
+    queryKey: ["auctions", auctionId],
+    queryFn: async () => fetchAuctionById(auctionId),
+  });
+  if (isLoading) {
+    return "Loading...";
+  }
+  if (error) {
+    return error.message;
+  }
+  console.log("data", data);
+  const { auctions } = data;
+  const auction = auctions[0];
 
   console.log("user", user);
   if (!auction) {
     return "Loading...";
   }
+  const hasBids = auction?.bids?.length;
 
   return (
     <div className="flex flex-wrap mt-10">
@@ -70,27 +83,27 @@ function AuctionDetail() {
         <h1 className="text-xl">{auction.title}</h1>
         <h2>
           $
-          {auction?.bids?.length
+          {hasBids
             ? auction.bids[auction.bids.length - 1].amount
             : auction.startPrice}
         </h2>
-
+        <span>{hasBids ? hasBids : 0} bids</span>
         <Countdown endTime={auction.endTime} />
-
-        <p className="mt-4">{auction.description}</p>
-        <div id="btn-group" className="mt-4">
+        <p className="my-4">{auction.description}</p>
+        <div id="user-action-group" className="my-4">
           <QuantitySelect auction={auction} />
-          {auction.buyItNowEnabled ? (
-            <Button className="my-4 w-11/12">Add to Cart</Button>
-          ) : null}
-          <BidModal />
+          <div id="btn-group" className="my-4">
+            {auction.buyItNowEnabled ? <Button>Add to Cart</Button> : null}
 
-          {user?.userId === auction.sellerId ? (
-            <Button className="my-4 w-11/12"> Edit </Button>
-          ) : null}
-          {user?.userId === auction.sellerId ? (
-            <Button className="w-11/12"> Delete </Button>
-          ) : null}
+            <BidModal />
+
+            {user?.userId === auction.sellerId ? (
+              <Button className="my-4 w-11/12"> Edit </Button>
+            ) : null}
+            {user?.userId === auction.sellerId ? (
+              <Button className="w-11/12"> Delete </Button>
+            ) : null}
+          </div>
         </div>
       </div>
     </div>
