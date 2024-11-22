@@ -11,8 +11,9 @@ import { DashboardBidOnList } from "@/routes/dashboard/dashboard-bidon-list";
 import { DashboardWatchlistList } from "@/routes/dashboard/dashboard-watchlists-list";
 
 import { AuctionPage } from "@/routes/auctions/auction-page";
-import { AuctionDetail } from "./routes/auctions/auction-detail";
-import { AuctionEdit } from "./routes/auctions/auction-edit";
+import { AuctionDetail } from "@/routes/auctions/auction-detail";
+import { AuctionEdit } from "@/routes/auctions/auction-edit";
+import { AuctionCreate } from "@/routes/auctions/auction-create";
 import { SearchPage } from "@/routes/search/search-page";
 import { SearchPageResultsFeed } from "@/routes/search/search-feed";
 
@@ -35,7 +36,11 @@ const router = createBrowserRouter(
           <Route path="/auctions/:auctionId/edit" element={<AuctionEdit />} />
         </Route>
 
-        <Route path="search" element={<SearchPage />} />
+        <Route path="/create" element={<AuctionCreate />} />
+
+        <Route path="/search" element={<SearchPage />}>
+          <Route path="" element={<SearchPageResultsFeed />} />
+        </Route>
       </Route>
     </Route>
   ),

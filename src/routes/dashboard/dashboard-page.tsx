@@ -1,5 +1,5 @@
 import { Authenticator, useAuthenticator } from "@aws-amplify/ui-react";
-import { useQuery, useQueries } from "@tanstack/react-query";
+import { useQueries } from "@tanstack/react-query";
 import { fetchUserAuctions } from "@/utils/auctions";
 import { Outlet, Link, OutletProps } from "react-router-dom";
 import {
@@ -68,7 +68,7 @@ function DashboardPage() {
                   className={navigationMenuTriggerStyle()}
                   asChild
                 >
-                  <Link to="/dashboard/my-auctions">Auctions</Link>
+                  <Link to="/dashboard/my-auctions">My Auctions</Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
 

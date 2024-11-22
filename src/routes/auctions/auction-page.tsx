@@ -17,7 +17,8 @@ function AuctionPage() {
   if (error) {
     return error.message;
   }
-  return <Outlet context={{ auction: data?.auctions[0], user }} />;
+  const auction = data?.auctions[0] || {};
+  return <Outlet context={{ auction, user }} />;
 }
 
 export { AuctionPage };

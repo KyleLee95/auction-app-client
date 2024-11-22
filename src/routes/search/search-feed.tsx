@@ -1,9 +1,16 @@
-import * as React from "react";
-import { retainSearchParams, createFileRoute } from "@tanstack/react-router";
-import { z } from "zod";
-
+import { useOutletContext } from "react-router-dom";
+import { useState } from "react";
 function SearchPageResultsFeed() {
-  return <div>data rendering here for seach results</div>;
+  const { auctions } = useOutletContext();
+  const [page, setPage] = useState(0);
+
+  return (
+    <div>
+      {auctions.map((auction, idx) => {
+        return <div>{auction.title}</div>;
+      })}
+    </div>
+  );
 }
 
 export { SearchPageResultsFeed };

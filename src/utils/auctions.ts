@@ -2,6 +2,24 @@ import { IBidModelWithAuction, type CompleteAuction } from "../types";
 
 export type AuctionsSortBy = "" | "" | "";
 
+export async function searchAuctions(
+  category: string
+): Promise<{ auctions: CompleteAuction[] }> {
+  const res = await fetch(`/api/auctions/search?category=${category}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!res.ok) {
+    console.error("fetch auctions error", res.statusText);
+  }
+  const { auctions } = await res.json();
+  console.log("auctions from search?", auctions);
+  return { auctions: auctions };
+}
+
 export async function fetchUserAuctions(
   userId: string,
   includeBidOn: boolean
