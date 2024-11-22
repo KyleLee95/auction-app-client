@@ -7,10 +7,10 @@ import { fetchUserWatchlists, fetchWatchlistById } from "./watchlists";
 
 // import { queryClient } from "../main";
 
-export const auctionsQueryOptions = (userId: string) =>
+export const auctionsQueryOptions = (userId: string, includeBidOn: boolean) =>
   queryOptions({
     queryKey: ["auctions", userId],
-    queryFn: () => fetchUserAuctions(userId),
+    queryFn: () => fetchUserAuctions(userId, includeBidOn),
   });
 
 export const auctionQueryOptions = (auctionId: string) =>

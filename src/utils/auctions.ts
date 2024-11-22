@@ -2,7 +2,10 @@ import { IBidModelWithAuction, type CompleteAuction } from "../types";
 
 export type AuctionsSortBy = "" | "" | "";
 
-export async function fetchUserAuctions(userId: string): Promise<{
+export async function fetchUserAuctions(
+  userId: string,
+  includeBidOn: boolean
+): Promise<{
   auctions: CompleteAuction[];
   bidOnAuctions: IBidModelWithAuction[];
 }> {
@@ -10,12 +13,15 @@ export async function fetchUserAuctions(userId: string): Promise<{
   //   filterBy,
   //   sortBy,
   // }: { filterBy?: string; sortBy: AuctionsSortBy } = {}
-  const res = await fetch(`/api/auctions?userId=${userId}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  const res = await fetch(
+    `/api/auctions?userId=${userId}&includeBidOn=${includeBidOn}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
   if (!res.ok) {
     console.error("fetch auctions error", res.statusText);
   }

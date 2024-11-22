@@ -23,7 +23,7 @@ function DashboardPage() {
   const { user } = useAuthenticator();
   const { isLoading, error, data } = useQuery({
     queryKey: ["auctions", user.userId],
-    queryFn: () => fetchUserAuctions(user.userId),
+    queryFn: () => fetchUserAuctions(user.userId, true),
   });
 
   if (isLoading) {
@@ -33,7 +33,7 @@ function DashboardPage() {
     return "Error";
   }
 
-  const { auctions, bidOnAuctions } = data; //data is valid here since it pass all of the other checks
+  const { auctions, bidOnAuctions } = data; //data is valid here since it passes all of the other checks
   return (
     <Authenticator>
       <div className="flex flex-row flex-wrap mx-auto h-full min-h-72">
@@ -45,7 +45,7 @@ function DashboardPage() {
                   className={navigationMenuTriggerStyle()}
                   asChild
                 >
-                  <Link to="/dashboard/auctions">Auctions</Link>
+                  <Link to="/dashboard/my-auctions">Auctions</Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
 
@@ -54,7 +54,7 @@ function DashboardPage() {
                   className={navigationMenuTriggerStyle()}
                   asChild
                 >
-                  <Link to="/dashboard/sell">Sell</Link>
+                  <Link to="/dashboard/bid-on">My Bids</Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
 
@@ -63,7 +63,7 @@ function DashboardPage() {
                   className={navigationMenuTriggerStyle()}
                   asChild
                 >
-                  <Link to="/dashboard/watchlists">Watchlist</Link>
+                  <Link to="/dashboard/watchlists">Watchlists</Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
             </NavigationMenuList>

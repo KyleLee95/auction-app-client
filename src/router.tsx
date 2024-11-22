@@ -7,7 +7,7 @@ import { RootLayout } from "./routes/root-layout";
 
 import { DashboardPage } from "@/routes/dashboard/dashboard-page";
 import { DashboardAuctionList } from "@/routes/dashboard/dashboard-auction-list";
-import { DashboardSellList } from "@/routes/dashboard/dashboard-sell-list";
+import { DashboardBidOnList } from "@/routes/dashboard/dashboard-bidon-list";
 import { DashboardWatchlistList } from "@/routes/dashboard/dashboard-watchlists-list";
 
 import { AuctionPage } from "@/routes/auctions/auction-page";
@@ -25,8 +25,8 @@ const router = createBrowserRouter(
       <Route index element={<Index />} />
       <Route errorElement={<ErrorPage />}>
         <Route path="dashboard" element={<DashboardPage />}>
-          <Route path="auctions/" element={<DashboardAuctionList />} />
-          <Route path="sell/" element={<DashboardSellList />} />
+          <Route path="my-auctions/" element={<DashboardAuctionList />} />
+          <Route path="bid-on/" element={<DashboardBidOnList />} />
           <Route path="watchlists/" element={<DashboardWatchlistList />} />
         </Route>
 
