@@ -1,5 +1,5 @@
 import { Authenticator, useAuthenticator } from "@aws-amplify/ui-react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueries } from "@tanstack/react-query";
 import { fetchUserAuctions } from "@/utils/auctions";
 import { Outlet, Link, OutletProps } from "react-router-dom";
 import {
@@ -12,6 +12,7 @@ import {
 import { type CompleteAuction } from "@/types";
 import { type CompleteBid } from "@/types";
 import { AuthUser } from "aws-amplify/auth";
+import { fetchUserWatchlists } from "@/utils/watchlists";
 
 export interface DashboardOutletProps extends OutletProps {
   auctions: CompleteAuction[];
@@ -21,19 +22,41 @@ export interface DashboardOutletProps extends OutletProps {
 
 function DashboardPage() {
   const { user } = useAuthenticator();
-  const { isLoading, error, data } = useQuery({
-    queryKey: ["auctions", user.userId],
-    queryFn: () => fetchUserAuctions(user.userId, true),
+
+  const queryResults = useQueries({
+    queries: [
+      {
+        queryKey: ["auctions", user.userId],
+        queryFn: () => fetchUserAuctions(user.userId, true),
+      },
+      {
+        queryKey: ["watchlists", user.userId],
+        queryFn: () => fetchUserWatchlists(user.userId),
+      },
+    ],
+    combine: (results) => {
+      return {
+        data: results.map((result) => result.data),
+        loading: results.map((result) => result.isLoading),
+        error: results.map((result) => result.isError),
+      };
+    },
   });
 
+  const isError = queryResults.error.some((result) => result === true);
+  const isLoading = queryResults.loading.some((result) => result === true);
+
+  console.log(queryResults);
   if (isLoading) {
     return "Loading...";
   }
-  if (error) {
+  if (isError) {
     return "Error";
   }
+  const auctions = queryResults.data[0].auctions;
+  const bidOnAuctions = queryResults.data[0].bidOnAuctions;
+  const watchlists = queryResults.data[1].watchlists;
 
-  const { auctions, bidOnAuctions } = data; //data is valid here since it passes all of the other checks
   return (
     <Authenticator>
       <div className="flex flex-row flex-wrap mx-auto h-full min-h-72">
@@ -70,10 +93,19 @@ function DashboardPage() {
           </NavigationMenu>
         </div>
         <div className="flex-1 bg-sky-200">
-          <Outlet context={{ auctions, bidOnAuctions, user }} />
+          <Outlet context={{ auctions, bidOnAuctions, user, watchlists }} />
         </div>
       </div>
     </Authenticator>
   );
 }
 export { DashboardPage };
+
+// const isError = queryResults.some((result) => result.isError);
+// if (isLoading) {
+//   return "Loading...";
+// }
+// if (isError) {
+//   return "Error";
+// }
+//
