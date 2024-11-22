@@ -11,8 +11,7 @@ Clone the repo and then `cd` into the `root` directory. Once there run:
 ```
 
 If you don't have `npm` installed I recommend installing `nvm`. [You can find
-it](https://github.com/nvm-sh/nvm) here. Follow instructions for your OS and for
-setup. I've been using `node v22.8.0` which you can install via `nvm`.
+it here.](https://github.com/nvm-sh/nvm) Follow instructions for your OS. I've been using `node v22.8.0` which you can install via `nvm`.
 
 ## Setup AWS Amplify
 
@@ -22,7 +21,7 @@ dev environment for `aws`. You can find documentation for doing so here:
 [Configure for local development](https://docs.amplify.aws/react/start/account-setup/)
 
 Alternatively, if you're just trying to get the app to run, you can comment out
-the `<Authenticator/>` component in the `dashboard-layout.tsx` file. This could
+the `<Authenticator/>` component in the `dashboard-layout.tsx` file. This should
 let you access the pages that require a user to be signed in.
 
 Documentation for `<Authenticator/>` [can be found here](https://ui.docs.amplify.aws/react/connected-components/authenticator)
@@ -50,7 +49,7 @@ You should see `vite` start and upon successful completion provide a link to
 
 [Shadcn](https://ui.shadcn.com/) - A flexible component library that allows styling via `tailwindcss`
 
-[tailwindcss](https://tailwindcss.com/) - Apply CSS styles with pre-built classnames.
+[Tailwindcss](https://tailwindcss.com/) - Apply CSS styles with pre-built classnames.
 
 [TanStack Query](https://tanstack.com/query/latest) - A library that abstracts
 data fetching from API's. This basically automagically manages the data on the
