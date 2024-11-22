@@ -1,7 +1,4 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { CompleteCategory } from "@/types/category";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -31,7 +28,7 @@ export type OptionTypes = CompleteCategory[] | undefined;
 export interface ComboboxProps<T> {
   value: string[];
   form: any;
-  options: T[];
+  options: T;
   label: string;
 }
 
@@ -65,7 +62,7 @@ export function Combobox({
                     )}
                   >
                     {field.value
-                      ? options.find(
+                      ? options?.find(
                           (option) => option.displayName === field.value
                         )?.displayName
                       : "Select option"}

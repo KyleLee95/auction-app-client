@@ -24,6 +24,9 @@ export interface IncludeCategory {
 }
 
 export interface CompleteCategory extends z.infer<typeof CategoryModel> {
+  id: number;
+  displayName: string;
+  paramName: string;
   auctions: CompleteAuction[];
   watchlists: CompleteCategoriesOnWatchLists[];
 }

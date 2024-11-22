@@ -33,8 +33,9 @@ const formSchema = z.object({
   buyItNowEnabled: z.coerce.boolean().default(true),
   categories: z.array(z.string()).default([]),
 });
+import { type OptionTypes } from "@/components/ui/combobox";
 
-function AuctionCreateForm({ categories }: { categories: CompleteCategory }) {
+function AuctionCreateForm({ categories }: { categories: OptionTypes }) {
   const mutation = useMutation({
     mutationFn: async (formData: any) => {
       // const res = await fetch(`/api/auctions/${auction.id}`, {
