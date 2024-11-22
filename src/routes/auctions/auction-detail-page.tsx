@@ -9,7 +9,7 @@ function AuctionPage() {
   const { user } = useAuthenticator();
   const { isLoading, error, data } = useQuery({
     queryKey: ["auctions", auctionId],
-    queryFn: async () => fetchAuctionById(auctionId),
+    queryFn: async () => fetchAuctionById(auctionId || ""),
   });
   if (isLoading) {
     return "Loading...";

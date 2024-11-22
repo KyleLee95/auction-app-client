@@ -146,7 +146,7 @@ function SiteHeader({ className }: Props) {
                 className={navigationMenuTriggerStyle()}
                 asChild
               >
-                <Link to="/create">Create an Auction</Link>
+                <Link to="/auctions/create">Create an Auction</Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
             {categories.map((category: Category) => {

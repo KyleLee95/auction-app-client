@@ -1,5 +1,5 @@
-import React from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { toast } from "@/hooks/use-toast";
+import { useMutation } from "@tanstack/react-query";
 import {
   Form,
   FormField,
@@ -8,8 +8,8 @@ import {
   FormMessage,
   FormDescription,
   FormItem,
-} from "@/components/ui";
-import { useOutletContext } from "react-router-dom";
+} from "@/components/ui/form";
+import { Authenticator, useAuthenticator } from "@aws-amplify/ui-react";
 import { DateTimePicker } from "@/components/date-time-picker";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -19,6 +19,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Combobox } from "@/components/ui/combobox";
+import { AuthUser } from "@aws-amplify/auth";
+import { CompleteCategory } from "@/types";
 const formSchema = z.object({
   title: z.string().default("title"),
   description: z.string().default("description"),
@@ -32,41 +34,46 @@ const formSchema = z.object({
   categories: z.array(z.string()).default([]),
 });
 
-function AuctionEdit() {
-  const { user, auction }: { user: any; auction: any } = useOutletContext();
-
+function AuctionCreateForm({ categories }: { categories: CompleteCategory }) {
   const mutation = useMutation({
     mutationFn: async (formData: any) => {
-      const res = await fetch(`/api/auctions/${auction.id}`, {
-        method: "PUT",
-        body: JSON.stringify({ ...auction, ...formData }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await res.json();
-      return data;
+      // const res = await fetch(`/api/auctions/${auction.id}`, {
+      //   method: "PUT",
+      //   body: JSON.stringify({ ...auction, ...formData }),
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      // });
+      // const data = await res.json();
+      // return data;
     },
   });
 
   const onSubmit = (data: any) => {
     mutation.mutate(data);
+
+    toast({
+      title: "You submitted the following values:",
+      description: (
+        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+        </pre>
+      ),
+    });
   };
 
-  const startTime = new Date(auction.startTime);
-  const endTime = new Date(auction.endTime);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      isActive: Boolean(auction.isActive),
-      buyItNowEnabled: auction.buyItNowEnabled,
-      description: auction.description,
-      shippingPrice: auction.shippingPrice,
-      startPrice: auction.startPrice,
-      quantity: auction.quantity,
-      startTime: startTime,
-      endTime: endTime,
-      title: auction.title,
+      isActive: true,
+      buyItNowEnabled: true,
+      description: "A helpful description",
+      shippingPrice: 10.99,
+      startPrice: 10.99,
+      quantity: 1,
+      startTime: new Date(Date.now()),
+      endTime: new Date(Date.now()),
+      title: "An accurate title",
     },
   });
 
@@ -149,7 +156,6 @@ function AuctionEdit() {
                 <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                   <FormControl>
                     <Checkbox
-                      onChange={field.onChange}
                       checked={field.value}
                       onCheckedChange={field.onChange}
                     />
@@ -280,6 +286,19 @@ function AuctionEdit() {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="categories"
+              render={({ field }) => (
+                <Combobox
+                  value={field.value}
+                  form={form}
+                  options={categories}
+                  label="categories"
+                  // description="Select a language for the dashboard."
+                />
+              )}
+            />
 
             <div className="mt-6 flex items-center justify-end gap-x-6">
               <Button type="submit">Submit</Button>
@@ -291,4 +310,5 @@ function AuctionEdit() {
     </Form>
   );
 }
-export { AuctionEdit };
+
+export { AuctionCreateForm };

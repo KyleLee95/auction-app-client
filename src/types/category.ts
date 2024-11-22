@@ -7,17 +7,20 @@ import {
 } from "./index";
 
 export const CategoryModelInput = z.object({
-  name: z.string(),
+  displayName: z.string(),
+  paramName: z.string(),
 });
 
 export const CategoryModel = z.object({
   id: z.number().int(),
-  name: z.string(),
+  displayName: z.string(),
+  paramName: z.string(),
 });
 
 export interface IncludeCategory {
   id: number;
-  name: string;
+  displayName: string;
+  paramName: string;
 }
 
 export interface CompleteCategory extends z.infer<typeof CategoryModel> {
