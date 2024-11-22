@@ -4,7 +4,7 @@ import { Countdown } from "@/components/countdown-timer";
 import { Link } from "react-router-dom";
 export function AuctionCard({ auction }: { auction: CompleteAuction }) {
   return (
-    <div className="flex flex-col md:flex-row items-start p-4 border rounded-md shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 w-full">
+    <div className="flex flex-col md:flex-row items-start p-4 border rounded-md shadow-sm bg-white dark:bg-zinc-950 text-gray-900 dark:text-gray-100 w-full my-4">
       {/* Left Column: Image */}
       <Link className="w-full md:w-1/4" to={`/auctions/${auction.id}`}>
         <div>

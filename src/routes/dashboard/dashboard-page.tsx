@@ -33,8 +33,7 @@ function DashboardPage() {
     return "Error";
   }
 
-  const { auctions, bidOnAuctions } = data;
-  //data is valid here since it pass all of the other checks
+  const { auctions, bidOnAuctions } = data; //data is valid here since it pass all of the other checks
   return (
     <Authenticator>
       <div className="flex flex-row flex-wrap mx-auto h-full min-h-72">
