@@ -1,8 +1,16 @@
-import { useQuery } from "@tanstack/react-query";
-import { fetchUserAuctions } from "@/utils/auctions";
-import { useAuthenticator } from "@aws-amplify/ui-react";
+import { useOutletContext } from "react-router-dom";
+import { type DashboardOutletProps } from "./dashboard-page";
+import { AuctionCard } from "@/components";
 function DashboardAuctionList() {
-  const { user } = useAuthenticator();
+  const { auctions } = useOutletContext<DashboardOutletProps>();
+
+  return (
+    <div className="flex-col text-black">
+      {auctions.map((auction) => {
+        return <AuctionCard key={auction.id} auction={auction} />;
+      })}
+    </div>
+  );
 }
 
 export { DashboardAuctionList };

@@ -1,8 +1,7 @@
 import { Authenticator, useAuthenticator } from "@aws-amplify/ui-react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUserAuctions } from "@/utils/auctions";
-
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, OutletProps } from "react-router-dom";
 import {
   NavigationMenu,
   NavigationMenuList,
@@ -10,6 +9,15 @@ import {
   NavigationMenuLink,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import { type CompleteAuction } from "@/types";
+import { type CompleteBid } from "@/types";
+import { AuthUser } from "aws-amplify/auth";
+
+export interface DashboardOutletProps extends OutletProps {
+  auctions: CompleteAuction[];
+  bidOnAuctions: CompleteBid[];
+  user: AuthUser;
+}
 
 function DashboardPage() {
   const { user } = useAuthenticator();
@@ -63,7 +71,7 @@ function DashboardPage() {
           </NavigationMenu>
         </div>
         <div className="flex-1 bg-sky-200">
-          <Outlet context={{ auctions, bidOnAuctions }} />
+          <Outlet context={{ auctions, bidOnAuctions, user }} />
         </div>
       </div>
     </Authenticator>

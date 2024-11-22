@@ -1,17 +1,20 @@
 import { Button } from "@/components/ui/button";
 import { CompleteAuction } from "@/types/auction";
 import { Countdown } from "@/components/countdown-timer";
+import { Link } from "react-router-dom";
 export function AuctionCard({ auction }: { auction: CompleteAuction }) {
   return (
     <div className="flex flex-col md:flex-row items-start p-4 border rounded-md shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 w-full">
       {/* Left Column: Image */}
-      <div className="w-full md:w-1/4">
-        <img
-          src="https://via.placeholder.com/150" // Replace with actual image URL
-          alt="Auction item"
-          className="w-full h-auto rounded-md object-cover"
-        />
-      </div>
+      <Link className="w-full md:w-1/4" to={`/auctions/${auction.id}`}>
+        <div>
+          <img
+            src="https://via.placeholder.com/150" // Replace with actual image URL
+            alt="Auction item"
+            className="w-full h-auto rounded-md object-cover"
+          />
+        </div>
+      </Link>
 
       {/* Middle Column: Auction Details */}
       <div className="flex-1 px-4 py-2">
