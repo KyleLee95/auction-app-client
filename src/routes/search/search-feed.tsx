@@ -4,7 +4,6 @@ import { CompleteAuction } from "@/types/auction";
 import { AuctionCard } from "@/components";
 function SearchPageResultsFeed() {
   const { auctions } = useOutletContext();
-  const [page, setPage] = useState(0);
 
   return (
     <div className="flex-col">

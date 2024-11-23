@@ -60,10 +60,10 @@ function DashboardPage() {
   return (
     <Authenticator>
       <div className="flex flex-row flex-wrap mx-auto h-full min-h-72">
-        <div className="flex-none w-22 bg-red-200">
+        <div className="flex-none w-22 border rounded border-gray-800">
           <NavigationMenu orientation="vertical">
             <NavigationMenuList className="flex-col items-start justify-center space-x-0">
-              <NavigationMenuItem className="my-0.5">
+              <NavigationMenuItem className="my-1">
                 <NavigationMenuLink
                   className={navigationMenuTriggerStyle()}
                   asChild
@@ -72,7 +72,7 @@ function DashboardPage() {
                 </NavigationMenuLink>
               </NavigationMenuItem>
 
-              <NavigationMenuItem className="my-0.5">
+              <NavigationMenuItem className="my-1">
                 <NavigationMenuLink
                   className={navigationMenuTriggerStyle()}
                   asChild
@@ -81,7 +81,7 @@ function DashboardPage() {
                 </NavigationMenuLink>
               </NavigationMenuItem>
 
-              <NavigationMenuItem className="my-0.5">
+              <NavigationMenuItem className="my-1">
                 <NavigationMenuLink
                   className={navigationMenuTriggerStyle()}
                   asChild
@@ -92,7 +92,7 @@ function DashboardPage() {
             </NavigationMenuList>
           </NavigationMenu>
         </div>
-        <div className="flex-1 bg-sky-200">
+        <div className="flex-1 border rounded border-gray-800 h-screen">
           <Outlet context={{ auctions, bidOnAuctions, user, watchlists }} />
         </div>
       </div>
@@ -100,12 +100,3 @@ function DashboardPage() {
   );
 }
 export { DashboardPage };
-
-// const isError = queryResults.some((result) => result.isError);
-// if (isLoading) {
-//   return "Loading...";
-// }
-// if (isError) {
-//   return "Error";
-// }
-//
