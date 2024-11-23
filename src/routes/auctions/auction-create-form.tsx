@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Form,
   FormField,
@@ -21,9 +20,6 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
-// import { AuthUser } from "@aws-amplify/auth";
-// import { CompleteCategory } from "@/types";
-
 const formSchema = z.object({
   title: z.string().default("title"),
   description: z.string().default("description"),
@@ -40,15 +36,15 @@ const formSchema = z.object({
 function AuctionCreateForm({ categories }: { categories: any }) {
   const submitForm = useMutation({
     mutationFn: async (formData: any) => {
-      // const res = await fetch(`/api/auctions/${auction.id}`, {
-      //   method: "PUT",
-      //   body: JSON.stringify({ ...auction, ...formData }),
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      // });
-      // const data = await res.json();
-      // return data;
+      const res = await fetch(`/api/auctions`, {
+        method: "POST",
+        body: JSON.stringify({ ...formData }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
+      return data;
     },
   });
 
