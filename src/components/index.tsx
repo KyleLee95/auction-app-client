@@ -12,3 +12,4 @@ export { MobileNav } from "./mobile-menu";
 export { ModeToggle } from "./mode-toggle";
 export { SiteHeader } from "./site-header";
 export { ThemeProvider } from "./theme-provider";
+export { FormCombobox } from "./form-combobox";

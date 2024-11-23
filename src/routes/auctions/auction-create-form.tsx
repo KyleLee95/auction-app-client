@@ -1,5 +1,4 @@
-import { toast } from "@/hooks/use-toast";
-import { useMutation } from "@tanstack/react-query";
+import { useState } from "react";
 import {
   Form,
   FormField,
@@ -8,19 +7,23 @@ import {
   FormMessage,
   FormDescription,
   FormItem,
-} from "@/components/ui/form";
-import { Authenticator, useAuthenticator } from "@aws-amplify/ui-react";
-import { DateTimePicker } from "@/components/date-time-picker";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
+  Textarea,
+  Button,
+  Checkbox,
+  Input,
+} from "@/components/ui";
+import { DateTimePicker, FormCombobox } from "@/components";
+import { toast } from "@/hooks/use-toast";
+
+import { useMutation } from "@tanstack/react-query";
+
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Combobox } from "@/components/ui/combobox";
-import { AuthUser } from "@aws-amplify/auth";
-import { CompleteCategory } from "@/types";
+
+// import { AuthUser } from "@aws-amplify/auth";
+// import { CompleteCategory } from "@/types";
+
 const formSchema = z.object({
   title: z.string().default("title"),
   description: z.string().default("description"),
@@ -33,10 +36,9 @@ const formSchema = z.object({
   buyItNowEnabled: z.coerce.boolean().default(true),
   categories: z.array(z.string()).default([]),
 });
-import { type OptionTypes } from "@/components/ui/combobox";
 
-function AuctionCreateForm({ categories }: { categories: OptionTypes }) {
-  const mutation = useMutation({
+function AuctionCreateForm({ categories }: { categories: any }) {
+  const submitForm = useMutation({
     mutationFn: async (formData: any) => {
       // const res = await fetch(`/api/auctions/${auction.id}`, {
       //   method: "PUT",
@@ -51,8 +53,7 @@ function AuctionCreateForm({ categories }: { categories: OptionTypes }) {
   });
 
   const onSubmit = (data: any) => {
-    mutation.mutate(data);
-
+    submitForm.mutate(data);
     toast({
       title: "You submitted the following values:",
       description: (
@@ -75,6 +76,7 @@ function AuctionCreateForm({ categories }: { categories: OptionTypes }) {
       startTime: new Date(Date.now()),
       endTime: new Date(Date.now()),
       title: "An accurate title",
+      categories: categories,
     },
   });
 
@@ -287,18 +289,14 @@ function AuctionCreateForm({ categories }: { categories: OptionTypes }) {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="categories"
-              render={({ field }) => (
-                <Combobox
-                  value={field.value}
-                  form={form}
-                  options={categories}
-                  label="categories"
-                  // description="Select a language for the dashboard."
-                />
-              )}
+            <FormCombobox
+              items={categories}
+              path={"categories"}
+              label={"categories"}
+              resourceName={"categories"}
+              description={
+                "Add tags to categorize your auction and help users find it."
+              }
             />
 
             <div className="mt-6 flex items-center justify-end gap-x-6">
