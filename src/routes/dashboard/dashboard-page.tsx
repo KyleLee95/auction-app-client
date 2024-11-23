@@ -22,6 +22,7 @@ export interface DashboardOutletProps extends OutletProps {
 
 function DashboardPage() {
   const { user } = useAuthenticator();
+  console.log("user", user);
 
   const queryResults = useQueries({
     queries: [
