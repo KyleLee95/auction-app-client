@@ -1,14 +1,15 @@
 import { useOutletContext } from "react-router-dom";
 import { useState } from "react";
 import { CompleteAuction } from "@/types/auction";
+import { AuctionCard } from "@/components";
 function SearchPageResultsFeed() {
   const { auctions } = useOutletContext();
   const [page, setPage] = useState(0);
 
   return (
-    <div>
+    <div className="flex-col">
       {auctions.map((auction: CompleteAuction) => {
-        return <div key={auction.id}>{auction.title}</div>;
+        return <AuctionCard key={auction.id} auction={auction} />;
       })}
     </div>
   );

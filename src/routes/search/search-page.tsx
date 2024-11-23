@@ -10,12 +10,6 @@ const SearchPage = () => {
     queryKey: ["searchResults", category],
     queryFn: () => searchAuctions(category),
   });
-  console.log("re-render");
-
-  // useEffect(() => {
-  // console/l
-  //   queryClient.invalidateQueries({ queryKey: ["searchResults"] });
-  // }, [searchParams]);
 
   if (isLoading) {
     return "Loading...";
