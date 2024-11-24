@@ -36,7 +36,7 @@ library.**
 To start the client application run:
 
 ```bash
-npm run start dev
+npm run dev
 ```
 
 You should see `vite` start and upon successful completion provide a link to
