@@ -1,5 +1,3 @@
-import React from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   Form,
   FormField,
@@ -8,17 +6,20 @@ import {
   FormMessage,
   FormDescription,
   FormItem,
+  Textarea,
+  Button,
+  Checkbox,
+  Input,
 } from "@/components/ui";
-import { useOutletContext } from "react-router-dom";
-import { DateTimePicker } from "@/components/date-time-picker";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
+import { DateTimePicker, FormCombobox } from "@/components";
+import { toast } from "@/hooks/use-toast";
+
+import { useMutation } from "@tanstack/react-query";
+
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Combobox } from "@/components/ui/combobox";
+
 const formSchema = z.object({
   title: z.string().default("title"),
   description: z.string().default("description"),
@@ -32,14 +33,12 @@ const formSchema = z.object({
   categories: z.array(z.string()).default([]),
 });
 
-function AuctionEdit() {
-  const { user, auction }: { user: any; auction: any } = useOutletContext();
-
-  const mutation = useMutation({
+function AuctionCreateForm({ categories }: { categories: any }) {
+  const submitForm = useMutation({
     mutationFn: async (formData: any) => {
-      const res = await fetch(`/api/auctions/${auction.id}`, {
-        method: "PUT",
-        body: JSON.stringify({ ...auction, ...formData }),
+      const res = await fetch(`/api/auctions`, {
+        method: "POST",
+        body: JSON.stringify({ ...formData }),
         headers: {
           "Content-Type": "application/json",
         },
@@ -50,23 +49,30 @@ function AuctionEdit() {
   });
 
   const onSubmit = (data: any) => {
-    mutation.mutate(data);
+    submitForm.mutate(data);
+    toast({
+      title: "You submitted the following values:",
+      description: (
+        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+        </pre>
+      ),
+    });
   };
 
-  const startTime = new Date(auction.startTime);
-  const endTime = new Date(auction.endTime);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      isActive: Boolean(auction.isActive),
-      buyItNowEnabled: auction.buyItNowEnabled,
-      description: auction.description,
-      shippingPrice: auction.shippingPrice,
-      startPrice: auction.startPrice,
-      quantity: auction.quantity,
-      startTime: startTime,
-      endTime: endTime,
-      title: auction.title,
+      isActive: true,
+      buyItNowEnabled: true,
+      description: "A helpful description",
+      shippingPrice: 10.99,
+      startPrice: 10.99,
+      quantity: 1,
+      startTime: new Date(Date.now()),
+      endTime: new Date(Date.now()),
+      title: "An accurate title",
+      categories: categories,
     },
   });
 
@@ -149,7 +155,6 @@ function AuctionEdit() {
                 <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                   <FormControl>
                     <Checkbox
-                      onChange={field.onChange}
                       checked={field.value}
                       onCheckedChange={field.onChange}
                     />
@@ -280,6 +285,15 @@ function AuctionEdit() {
                 </FormItem>
               )}
             />
+            <FormCombobox
+              items={categories}
+              path={"categories"}
+              label={"categories"}
+              resourceName={"categories"}
+              description={
+                "Add tags to categorize your auction and help users find it."
+              }
+            />
 
             <div className="mt-6 flex items-center justify-end gap-x-6">
               <Button type="submit">Submit</Button>
@@ -291,4 +305,5 @@ function AuctionEdit() {
     </Form>
   );
 }
-export { AuctionEdit };
+
+export { AuctionCreateForm };

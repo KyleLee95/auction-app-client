@@ -1,9 +1,17 @@
-import * as React from "react";
-import { retainSearchParams, createFileRoute } from "@tanstack/react-router";
-import { z } from "zod";
-
+import { useOutletContext } from "react-router-dom";
+import { useState } from "react";
+import { CompleteAuction } from "@/types/auction";
+import { AuctionCard } from "@/components";
 function SearchPageResultsFeed() {
-  return <div>data rendering here for seach results</div>;
+  const { auctions } = useOutletContext();
+
+  return (
+    <div className="flex-col">
+      {auctions.map((auction: CompleteAuction) => {
+        return <AuctionCard key={auction.id} auction={auction} />;
+      })}
+    </div>
+  );
 }
 
 export { SearchPageResultsFeed };

@@ -1,31 +1,16 @@
-import { useQuery } from "@tanstack/react-query";
-import { fetchUserAuctions } from "@/utils/auctions";
-import { useAuthenticator } from "@aws-amplify/ui-react";
+import { useOutletContext } from "react-router-dom";
+import { type DashboardOutletProps } from "./dashboard-page";
+import { AuctionCard } from "@/components";
 function DashboardAuctionList() {
-  const { user } = useAuthenticator();
+  const { auctions } = useOutletContext<DashboardOutletProps>();
 
-  const { isLoading, error, data } = useQuery({
-    queryKey: ["auctions", user.userId],
-    queryFn: () => fetchUserAuctions(user.userId),
-  });
-
-  if (isLoading) {
-    return "Loading...";
-  }
-  if (error) {
-    return "Error";
-  }
-
-  //data is valid here since it pass all of the other checks
-
-  const { auctions, bidOnAuctions } = data;
-  if (!auctions?.length) {
-    return "No Auctions";
-  }
-
-  return auctions?.map((auction) => {
-    return <div key={auction.id}>{auction.title}</div>;
-  });
+  return (
+    <div className="flex-col text-black">
+      {auctions.map((auction) => {
+        return <AuctionCard key={auction.id} auction={auction} />;
+      })}
+    </div>
+  );
 }
 
 export { DashboardAuctionList };

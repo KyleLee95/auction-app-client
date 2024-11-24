@@ -7,12 +7,13 @@ import { RootLayout } from "./routes/root-layout";
 
 import { DashboardPage } from "@/routes/dashboard/dashboard-page";
 import { DashboardAuctionList } from "@/routes/dashboard/dashboard-auction-list";
-import { DashboardSellList } from "@/routes/dashboard/dashboard-sell-list";
+import { DashboardBidOnList } from "@/routes/dashboard/dashboard-bidon-list";
 import { DashboardWatchlistList } from "@/routes/dashboard/dashboard-watchlists-list";
 
-import { AuctionPage } from "@/routes/auctions/auction-page";
-import { AuctionDetail } from "./routes/auctions/auction-detail";
-import { AuctionEdit } from "./routes/auctions/auction-edit";
+import { AuctionPage } from "@/routes/auctions/auction-detail-page";
+import { AuctionDetail } from "@/routes/auctions/auction-detail";
+import { AuctionEdit } from "@/routes/auctions/auction-edit";
+import { AuctionCreatePage } from "@/routes/auctions/auction-create-page";
 import { SearchPage } from "@/routes/search/search-page";
 import { SearchPageResultsFeed } from "@/routes/search/search-feed";
 
@@ -25,22 +26,30 @@ const router = createBrowserRouter(
       <Route index element={<Index />} />
       <Route errorElement={<ErrorPage />}>
         <Route path="dashboard" element={<DashboardPage />}>
-          <Route path="auctions/" element={<DashboardAuctionList />} />
-          <Route path="sell/" element={<DashboardSellList />} />
+          <Route path="my-auctions/" element={<DashboardAuctionList />} />
+          <Route path="bid-on/" element={<DashboardBidOnList />} />
           <Route path="watchlists/" element={<DashboardWatchlistList />} />
         </Route>
 
-        <Route path="auctions" element={<AuctionPage />} />
-        <Route path="/auctions/:auctionId" element={<AuctionDetail />} />
-        <Route path="/auctions/:auctionId/edit" element={<AuctionEdit />} />
+        <Route path="auctions" element={<AuctionPage />}>
+          <Route path="/auctions/:auctionId" element={<AuctionDetail />} />
+          <Route path="/auctions/:auctionId/edit" element={<AuctionEdit />} />
+        </Route>
+        <Route path="/create" element={<AuctionCreatePage />} />
 
-        <Route path="search" element={<SearchPage />} />
+        <Route path="/search" element={<SearchPage />}>
+          <Route path="" element={<SearchPageResultsFeed />} />
+        </Route>
       </Route>
     </Route>
   ),
   {
     future: {
+      v7_skipActionErrorRevalidation: true,
+      v7_relativeSplatPath: true,
+      v7_normalizeFormMethod: true,
       v7_fetcherPersist: true,
+      v7_partialHydration: true,
     },
   }
 );

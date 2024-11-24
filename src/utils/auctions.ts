@@ -1,54 +1,29 @@
-// import { produce } from "immer";
-
-// type PickAsRequired<TValue, TKey extends keyof TValue> = Omit<TValue, TKey> &
-//   Required<Pick<TValue, TKey>>;
-
-/* Types */
 import { IBidModelWithAuction, type CompleteAuction } from "../types";
-// export interface Auction {
-//   _id: string;
-//   title: string;
-//   user_id: string;
-//   start_time: Date;
-//   end_time: Date;
-//   description: string;
-//   category: Category[];
-//   starting_price: number;
-// }
-//
-// export interface Bid {
-//   auction_id: string;
-//   user_id: string;
-//   amount: number;
-//   id: string;
-//   timestamp: Date;
-// }
-//
-// export interface Category {
-//   id: number;
-//   name: string;
-//   description: string;
-//   created_at: Date;
-//   updated_at: Date;
-// }
-//
-// export interface User {
-//   id: string;
-//   name: string;
-//   username: string;
-//   email: string;
-//   phone: string;
-//   website: string;
-// }
-
-// let users: Array<User> = null!;
-//
-// let auctionsPromise: Promise<void> | undefined = undefined;
-// let usersPromise: Promise<void> | undefined = undefined;
 
 export type AuctionsSortBy = "" | "" | "";
 
-export async function fetchUserAuctions(userId: string): Promise<{
+export async function searchAuctions(
+  category: string
+): Promise<{ auctions: CompleteAuction[] }> {
+  const res = await fetch(`/api/auctions/search?category=${category}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!res.ok) {
+    console.error("fetch auctions error", res.statusText);
+  }
+  const { auctions } = await res.json();
+  console.log("auctions from search?", auctions);
+  return { auctions: auctions };
+}
+
+export async function fetchUserAuctions(
+  userId: string,
+  includeBidOn: boolean
+): Promise<{
   auctions: CompleteAuction[];
   bidOnAuctions: IBidModelWithAuction[];
 }> {
@@ -56,12 +31,15 @@ export async function fetchUserAuctions(userId: string): Promise<{
   //   filterBy,
   //   sortBy,
   // }: { filterBy?: string; sortBy: AuctionsSortBy } = {}
-  const res = await fetch(`/api/auctions?userId=${userId}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  const res = await fetch(
+    `/api/auctions?userId=${userId}&includeBidOn=${includeBidOn}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
   if (!res.ok) {
     console.error("fetch auctions error", res.statusText);
   }

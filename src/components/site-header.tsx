@@ -15,7 +15,6 @@ import { CommandMenu } from "@/components/ui/command-menu";
 import { MobileNav } from "@/components/mobile-menu";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
-import { Authenticator } from "@aws-amplify/ui-react";
 const ListItem = React.forwardRef<
   React.ElementRef<"a">,
   React.ComponentPropsWithoutRef<"a">
@@ -138,7 +137,7 @@ function SiteHeader({ className }: Props) {
                 className={navigationMenuTriggerStyle()}
                 asChild
               >
-                <Link to="/dashboard/auctions">Dashboard</Link>
+                <Link to="/dashboard/my-auctions">Dashboard</Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
 
@@ -147,7 +146,7 @@ function SiteHeader({ className }: Props) {
                 className={navigationMenuTriggerStyle()}
                 asChild
               >
-                <Link to="/dashboard/sell">Sell</Link>
+                <Link to="/create">Create an Auction</Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
             {categories.map((category: Category) => {

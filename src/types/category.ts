@@ -7,20 +7,26 @@ import {
 } from "./index";
 
 export const CategoryModelInput = z.object({
-  name: z.string(),
+  label: z.string(),
+  value: z.string(),
 });
 
 export const CategoryModel = z.object({
   id: z.number().int(),
-  name: z.string(),
+  label: z.string(),
+  value: z.string(),
 });
 
 export interface IncludeCategory {
   id: number;
-  name: string;
+  label: string;
+  value: string;
 }
 
 export interface CompleteCategory extends z.infer<typeof CategoryModel> {
+  id: number;
+  label: string;
+  value: string;
   auctions: CompleteAuction[];
   watchlists: CompleteCategoriesOnWatchLists[];
 }

@@ -1,29 +1,52 @@
 import React from "react";
-import { useAuthenticator } from "@aws-amplify/ui-react";
-import { fetchUserWatchlists } from "@/utils/watchlists";
-import { useQuery } from "@tanstack/react-query";
+import { useOutletContext } from "react-router-dom";
+import { AuctionCard } from "@/components/dashboard-auction-card";
+import { Button } from "@/components/ui";
+import {
+  CompleteAuctionsOnWatchLists,
+  CompleteWatchList,
+  CompleteCategoriesOnWatchLists,
+} from "@/types";
 function DashboardWatchlistList() {
-  const { user } = useAuthenticator();
+  const { watchlists }: { watchlists: CompleteWatchList[] } =
+    useOutletContext();
+  console.log("dashboard watchlists?", watchlists);
+  const userWatchlist = watchlists[0];
+  const {
+    auctions,
+    categories,
+  }: {
+    auctions: CompleteAuctionsOnWatchLists[];
+    categories: CompleteCategoriesOnWatchLists[];
+  } = userWatchlist;
+  return (
+    <div className="mx-4">
+      <h2 className="font-bold text-xl"> {userWatchlist.name} </h2>
+      <div className="flex-row justify-around w-full">
+        <h3 className="font-bold text-lg">Categories:</h3>
+        {categories.map((categoryObj) => {
+          const { category } = categoryObj;
+          return (
+            <Button
+              className="mx-2"
+              key={category.id}
+              onClick={() => {
+                //TODO: filter by category
+              }}
+            >
+              {category.label}
+            </Button>
+          );
+        })}
+      </div>
 
-  const { isLoading, error, data } = useQuery({
-    queryKey: ["auctions", user, user.userId],
-    queryFn: () => fetchUserWatchlists(user.userId),
-  });
-
-  if (isLoading) {
-    return "Loading...";
-  }
-  if (error) {
-    return "Error";
-  }
-
-  const { watchlists } = data;
-  if (!watchlists?.length) {
-    return "No Watchlists";
-  }
-
-  return watchlists?.map((list) => {
-    return <div key={list.id}>{list.name}</div>;
-  });
+      <div className="flex-col">
+        {auctions.map((auctionObj: CompleteAuctionsOnWatchLists) => {
+          const { auction } = auctionObj;
+          return <AuctionCard key={auction.id} auction={auction} />;
+        })}
+      </div>
+    </div>
+  );
 }
 export { DashboardWatchlistList };
