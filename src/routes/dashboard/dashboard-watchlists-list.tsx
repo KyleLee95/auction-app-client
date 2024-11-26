@@ -10,7 +10,6 @@ import {
 function DashboardWatchlistList() {
   const { watchlists }: { watchlists: CompleteWatchList[] } =
     useOutletContext();
-  console.log("dashboard watchlists?", watchlists);
   const userWatchlist = watchlists[0];
   const {
     auctions,
