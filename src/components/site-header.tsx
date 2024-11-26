@@ -40,7 +40,7 @@ const ListItem = React.forwardRef<
     </li>
   );
 });
-ListItem.displayName = "ListItem";
+ListItem.labelvalue = "ListItem";
 
 function HeaderMenuList() {
   return (
@@ -84,20 +84,20 @@ type Props = { className?: string };
 
 function SiteHeader({ className }: Props) {
   const categories = [
-    { display: "Autos", name: "autos" },
+    { label: "Autos", value: "autos" },
     {
-      display: "Clothing, Shoes & Accessories",
-      name: "clothing-shoes-accessories",
+      label: "Clothing, Shoes & Accessories",
+      value: "clothing-shoes-accessories",
     },
-    { display: "Electronics", name: "electronics" },
-    { display: "Sporting Goods", name: "sporting-goods" },
-    { display: "Jewely & Watches", name: "jewelry-watches" },
-    { display: "Collectibles", name: "collectibles" },
+    { label: "Electronics", value: "electronics" },
+    { label: "Sporting Goods", value: "sporting-goods" },
+    { label: "Jewely & Watches", value: "jewelry-watches" },
+    { label: "Collectibles", value: "collectibles" },
   ];
 
   interface Category {
-    display: string;
-    name: string;
+    label: string;
+    value: string;
   }
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 dark:border-border">
@@ -151,13 +151,15 @@ function SiteHeader({ className }: Props) {
             </NavigationMenuItem>
             {categories.map((category: Category) => {
               return (
-                <NavigationMenuItem key={category.name}>
+                <NavigationMenuItem key={category.value}>
                   <NavigationMenuLink
                     className={navigationMenuTriggerStyle()}
                     asChild
                   >
-                    <Link to={`/search?category=${category.name}`}>
-                      {category.display}
+                    <Link
+                      to={`/search?category=${category.value}&order=asc&minPrice=0&maxPrice=10000`}
+                    >
+                      {category.label}
                     </Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>

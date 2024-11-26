@@ -3,9 +3,9 @@ import { IBidModelWithAuction, type CompleteAuction } from "../types";
 export type AuctionsSortBy = "" | "" | "";
 
 export async function searchAuctions(
-  category: string
+  params: string
 ): Promise<{ auctions: CompleteAuction[] }> {
-  const res = await fetch(`/api/auctions/search?category=${category}`, {
+  const res = await fetch(`/api/auctions/search?${params}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -27,10 +27,6 @@ export async function fetchUserAuctions(
   auctions: CompleteAuction[];
   bidOnAuctions: IBidModelWithAuction[];
 }> {
-  // {
-  //   filterBy,
-  //   sortBy,
-  // }: { filterBy?: string; sortBy: AuctionsSortBy } = {}
   const res = await fetch(
     `/api/auctions?userId=${userId}&includeBidOn=${includeBidOn}`,
     {
