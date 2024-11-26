@@ -47,7 +47,6 @@ function DashboardPage() {
   const isError = queryResults.error.some((result) => result === true);
   const isLoading = queryResults.loading.some((result) => result === true);
 
-  console.log(queryResults);
   if (isLoading) {
     return "Loading...";
   }

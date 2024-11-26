@@ -1,7 +1,5 @@
 import { IBidModelWithAuction, type CompleteAuction } from "../types";
 
-export type AuctionsSortBy = "" | "" | "";
-
 export async function searchAuctions(
   params: string
 ): Promise<{ auctions: CompleteAuction[] }> {
@@ -16,7 +14,6 @@ export async function searchAuctions(
     console.error("fetch auctions error", res.statusText);
   }
   const { auctions } = await res.json();
-  console.log("auctions from search?", auctions);
   return { auctions: auctions };
 }
 
