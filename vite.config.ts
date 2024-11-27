@@ -15,19 +15,19 @@ export default defineConfig({
   server: {
     proxy: {
       "/api/auctions": {
-        target: "http://localhost:3000",
+        target: "http://localhost:4000",
         changeOrigin: true,
       },
       "/api/bids": {
-        target: "http://localhost:3000",
+        target: "http://localhost:4000",
         changeOrigin: true,
       },
       "/api/watchlist": {
-        target: "http://localhost:3000",
+        target: "http://localhost:4000",
         changeOrigin: true,
       },
       "/api/categories": {
-        target: "http://localhost:3000",
+        target: "http://localhost:4000",
         changeOrigin: true,
       },
     },

@@ -14,9 +14,8 @@ import {
 
 import { CompleteCategory } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ControllerRenderProps, useForm } from "react-hook-form";
+import { ControllerRenderProps, FieldValues, useForm } from "react-hook-form";
 import { z } from "zod";
-import { toast } from "@/hooks/use-toast";
 import { CheckedState } from "@radix-ui/react-checkbox";
 
 const FormSchema = z.object({
@@ -27,7 +26,57 @@ const FormSchema = z.object({
     }),
 });
 
-export function CheckboxReactHookFormMultiple({
+// const priceRanges = [
+//   { label: "<$100", value: { minPrice: 0, maxPrice: 100 } },
+//   { label: "$100-$500", value: { minPrice: 100, maxPrice: 500 } },
+//   { label: "$500-$1000", value: { minPrice: 500, maxPrice: 1000 } },
+//   { label: "$1000-$5000", value: { minPrice: 1000, maxPrice: 5000 } },
+//   { label: "$5000-$10000", value: { minPrice: 5000, maxPrice: 10000 } },
+//   { label: "$10000+", value: { minPrice: 10000, maxPrice: 99999 } },
+// ];
+//
+//         <FormField
+//           control={form.control}
+//           name="price"
+//           render={() => (
+//             <FormItem>
+//               <div className="mb-4">
+//                 <FormLabel className="text-base">Categories</FormLabel>
+//                 <FormDescription>
+//                   Select the categories you'd like to filter by
+//                 </FormDescription>
+//               </div>
+//               {priceRanges.map((range) => {
+//                 return (
+//                   <FormField
+//                     key={range.label}
+//                     name="price"
+//                     control={form.control}
+//                     render={({ field }) => {
+//                       return (
+//                         <FormItem className="flex flex-row categories-start space-x-3 space-y-0">
+//                           <FormControl>
+//                             <Checkbox
+//                               checked={field.value?.includes(range)}
+//                               onCheckedChange={(checked) => {
+//                                 return handlePriceChange(checked, field, range);
+//                               }}
+//                             />
+//                           </FormControl>
+//                           <FormLabel className="font-normal">
+//                             {range.label}
+//                           </FormLabel>
+//                         </FormItem>
+//                       );
+//                     }}
+//                   />
+//                 );
+//               })}
+//             </FormItem>
+//           )}
+//         />
+//
+export function CheckboxList({
   categories,
 }: {
   categories: CompleteCategory[];
@@ -41,33 +90,50 @@ export function CheckboxReactHookFormMultiple({
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+  function handlePriceChange(
+    checked: CheckedState,
+    field: ControllerRenderProps,
+    range: { label: string; value: { minPrice: number; maxPrice: number } }
+  ) {
+    const currentMinPrice = searchParams.get("minPrice") as string;
+    const currentMaxPrice = searchParams.get("maxPrice") as string;
+    const { value } = range;
+    if (value.minPrice < parseFloat(currentMinPrice)) {
+      setSearchParams(
+        (prev) => {
+          prev.delete("minPrice", currentMinPrice);
+          prev.set("minPrice", value.minPrice.toString());
+          return prev;
+        },
+        { preventScrollReset: true }
+      );
+    }
+
+    if (value.maxPrice > parseFloat(currentMaxPrice)) {
+      setSearchParams(
+        (prev) => {
+          prev.delete("maxPrice", currentMinPrice);
+          prev.set("maxPrice", value.minPrice.toString());
+          return prev;
+        },
+        { preventScrollReset: true }
+      );
+    }
+    console.log(field);
+    return field.onChange([...field.value.label, range.label]);
   }
 
   function handleOnCheck(
     category: CompleteCategory,
     checked: CheckedState,
-    field: ControllerRenderProps<
-      {
-        categories: string[];
-      },
-      "categories"
-    >
+    field: ControllerRenderProps<FieldValues, "categories">
   ) {
     //checked refers to the *change* in state of the checkbox
     //i.e. when a user clicks on a checkbox, the value of checked will be true.
     if (checked) {
       setSearchParams(
         (prev) => {
-          prev.append("category", category.value);
+          prev.append("categories", category.value);
           return prev;
         },
         { preventScrollReset: true }
@@ -78,8 +144,7 @@ export function CheckboxReactHookFormMultiple({
 
     setSearchParams(
       (prev) => {
-        console.log(prev);
-        prev.delete("category", category.value);
+        prev.delete("categories", category.value);
         return prev;
       },
       { preventScrollReset: true }
@@ -92,7 +157,12 @@ export function CheckboxReactHookFormMultiple({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+        }}
+        className="space-y-8"
+      >
         <FormField
           control={form.control}
           name="categories"
@@ -119,11 +189,9 @@ export function CheckboxReactHookFormMultiple({
                           <Checkbox
                             disabled={
                               //if it's the last parameter selected, then don't the user uncheck it
-                              Array.from(searchParams.getAll("category"))
+                              Array.from(searchParams.getAll("categories"))
                                 .length === 1 &&
-                              searchParams.has("category", category.value)
-                                ? true
-                                : false
+                              searchParams.has("categories", category.value)
                             }
                             checked={field.value?.includes(category.value)}
                             onCheckedChange={(checked) => {
@@ -206,7 +274,7 @@ const SearchPage = () => {
   return (
     <div className="flex flex-row flex-wrap mx-auto h-full min-h-72">
       <div>
-        <CheckboxReactHookFormMultiple categories={categories} />
+        <CheckboxList categories={categories} />
       </div>
       <Outlet context={{ auctions, categories }} />
     </div>

@@ -157,7 +157,7 @@ function SiteHeader({ className }: Props) {
                     asChild
                   >
                     <Link
-                      to={`/search?category=${category.value}&order=asc&minPrice=0&maxPrice=10000`}
+                      to={`/search?categories=${category.value}&order=asc&minPrice=0&maxPrice=10000`}
                     >
                       {category.label}
                     </Link>
