@@ -20,6 +20,8 @@ import { SearchPageResultsFeed } from "@/routes/search/search-feed";
 import { ErrorPage } from "@/routes/error-page";
 import { Index } from "@/routes/index";
 
+import { UserProfile } from "@/routes/users/user-info"
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<RootLayout />} errorElement={<ErrorPage />}>
@@ -40,6 +42,9 @@ const router = createBrowserRouter(
         <Route path="/search" element={<SearchPage />}>
           <Route path="" element={<SearchPageResultsFeed />} />
         </Route>
+
+        <Route path="/user" element={<UserProfile />} />
+
       </Route>
     </Route>
   ),
