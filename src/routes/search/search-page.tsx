@@ -24,58 +24,19 @@ const FormSchema = z.object({
     .refine((value) => value.some((item) => item), {
       message: "You have to select at least one item.",
     }),
+  priceRange: z.object({
+    minPrice: z.number().optional(),
+    maxPrice: z.number().optional(),
+  }),
 });
 
-// const priceRanges = [
-//   { label: "<$100", value: { minPrice: 0, maxPrice: 100 } },
-//   { label: "$100-$500", value: { minPrice: 100, maxPrice: 500 } },
-//   { label: "$500-$1000", value: { minPrice: 500, maxPrice: 1000 } },
-//   { label: "$1000-$5000", value: { minPrice: 1000, maxPrice: 5000 } },
-//   { label: "$5000-$10000", value: { minPrice: 5000, maxPrice: 10000 } },
-//   { label: "$10000+", value: { minPrice: 10000, maxPrice: 99999 } },
-// ];
-//
-//         <FormField
-//           control={form.control}
-//           name="price"
-//           render={() => (
-//             <FormItem>
-//               <div className="mb-4">
-//                 <FormLabel className="text-base">Categories</FormLabel>
-//                 <FormDescription>
-//                   Select the categories you'd like to filter by
-//                 </FormDescription>
-//               </div>
-//               {priceRanges.map((range) => {
-//                 return (
-//                   <FormField
-//                     key={range.label}
-//                     name="price"
-//                     control={form.control}
-//                     render={({ field }) => {
-//                       return (
-//                         <FormItem className="flex flex-row categories-start space-x-3 space-y-0">
-//                           <FormControl>
-//                             <Checkbox
-//                               checked={field.value?.includes(range)}
-//                               onCheckedChange={(checked) => {
-//                                 return handlePriceChange(checked, field, range);
-//                               }}
-//                             />
-//                           </FormControl>
-//                           <FormLabel className="font-normal">
-//                             {range.label}
-//                           </FormLabel>
-//                         </FormItem>
-//                       );
-//                     }}
-//                   />
-//                 );
-//               })}
-//             </FormItem>
-//           )}
-//         />
-//
+const priceRanges = [
+  { label: "$0 - $50", value: { minPrice: 0, maxPrice: 50 } },
+  { label: "$50 - $100", value: { minPrice: 50, maxPrice: 100 } },
+  { label: "$100 - $500", value: { minPrice: 100, maxPrice: 500 } },
+  { label: "$500+", value: { minPrice: 500, maxPrice: 10000 } },
+];
+
 export function CheckboxList({
   categories,
 }: {
@@ -87,40 +48,39 @@ export function CheckboxList({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       categories: Array.from(searchParams.values()),
+      priceRange: {
+        minPrice: parseFloat(searchParams.get("minPrice") || "0"),
+        maxPrice: parseFloat(searchParams.get("maxPrice") || "10000"), // Default max price
+      },
     },
   });
 
   function handlePriceChange(
     checked: CheckedState,
-    field: ControllerRenderProps,
-    range: { label: string; value: { minPrice: number; maxPrice: number } }
+    field: ControllerRenderProps<z.infer<typeof FormSchema>, "priceRange">,
+    range: { minPrice: number; maxPrice: number }
   ) {
-    const currentMinPrice = searchParams.get("minPrice") as string;
-    const currentMaxPrice = searchParams.get("maxPrice") as string;
-    const { value } = range;
-    if (value.minPrice < parseFloat(currentMinPrice)) {
-      setSearchParams(
-        (prev) => {
-          prev.delete("minPrice", currentMinPrice);
-          prev.set("minPrice", value.minPrice.toString());
-          return prev;
-        },
-        { preventScrollReset: true }
-      );
-    }
+    const { minPrice, maxPrice } = range;
 
-    if (value.maxPrice > parseFloat(currentMaxPrice)) {
-      setSearchParams(
-        (prev) => {
-          prev.delete("maxPrice", currentMinPrice);
-          prev.set("maxPrice", value.minPrice.toString());
-          return prev;
-        },
-        { preventScrollReset: true }
-      );
+    if (checked) {
+      // Update the search params and form value for price range
+      setSearchParams((prev) => {
+        prev.set("minPrice", String(minPrice));
+        prev.set("maxPrice", String(maxPrice));
+        return prev;
+      });
+
+      return field.onChange({ minPrice, maxPrice });
+    } else {
+      // Reset price range in URL and form
+      setSearchParams((prev) => {
+        prev.delete("minPrice");
+        prev.delete("maxPrice");
+        return prev;
+      });
+
+      return field.onChange({});
     }
-    console.log(field);
-    return field.onChange([...field.value.label, range.label]);
   }
 
   function handleOnCheck(
@@ -206,6 +166,44 @@ export function CheckboxList({
                     );
                   }}
                 />
+              ))}
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Price Range Selection */}
+        <FormField
+          control={form.control}
+          name="priceRange"
+          render={({ field }) => (
+            <FormItem>
+              <div className="mb-4">
+                <FormLabel className="text-base">Price Range</FormLabel>
+                <FormDescription>
+                  Select a price range to filter by
+                </FormDescription>
+              </div>
+              {priceRanges.map((range) => (
+                <FormItem
+                  key={range.label}
+                  className="flex flex-row items-start space-x-3 space-y-0"
+                >
+                  <FormControl>
+                    <Checkbox
+                      checked={
+                        parseFloat(searchParams.get("minPrice") || "0") ===
+                          range.value.minPrice &&
+                        parseFloat(searchParams.get("maxPrice") || "10000") ===
+                          range.value.maxPrice
+                      }
+                      onCheckedChange={(checked) =>
+                        handlePriceChange(checked, field, range.value)
+                      }
+                    />
+                  </FormControl>
+                  <FormLabel className="font-normal">{range.label}</FormLabel>
+                </FormItem>
               ))}
               <FormMessage />
             </FormItem>
