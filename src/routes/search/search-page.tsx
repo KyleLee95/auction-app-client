@@ -31,10 +31,12 @@ const FormSchema = z.object({
 });
 
 const priceRanges = [
-  { label: "$0 - $50", value: { minPrice: 0, maxPrice: 50 } },
-  { label: "$50 - $100", value: { minPrice: 50, maxPrice: 100 } },
-  { label: "$100 - $500", value: { minPrice: 100, maxPrice: 500 } },
-  { label: "$500+", value: { minPrice: 500, maxPrice: 10000 } },
+  { label: "$50", value: { minPrice: 0, maxPrice: 50 } },
+  { label: "$100", value: { minPrice: 0, maxPrice: 100 } },
+  { label: "$250", value: { minPrice: 0, maxPrice: 250 } },
+  { label: "$500", value: { minPrice: 0, maxPrice: 500 } },
+  { label: "$1000", value: { minPrice: 0, maxPrice: 1000 } },
+  { label: "$10,000", value: { minPrice: 0, maxPrice: 10000 } },
 ];
 
 export function CheckboxList({
@@ -179,9 +181,9 @@ export function CheckboxList({
           render={({ field }) => (
             <FormItem>
               <div className="mb-4">
-                <FormLabel className="text-base">Price Range</FormLabel>
+                <FormLabel className="text-base">Maximum Price</FormLabel>
                 <FormDescription>
-                  Select a price range to filter by
+                  Only show auctions up to the maximum price.
                 </FormDescription>
               </div>
               {priceRanges.map((range) => (
