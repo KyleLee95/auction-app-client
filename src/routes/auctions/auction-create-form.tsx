@@ -36,9 +36,21 @@ const formSchema = z.object({
 function AuctionCreateForm({ categories }: { categories: any }) {
   const submitForm = useMutation({
     mutationFn: async (formData: any) => {
+      const categoriesData = categories.filter((category) => {
+        if (formData.categories.includes(category.value)) {
+          return category;
+        }
+      });
+
+      const payload = {
+        ...formData,
+        categoriesData,
+      };
+      console.log(payload);
+
       const res = await fetch(`/api/auctions`, {
         method: "POST",
-        body: JSON.stringify({ ...formData }),
+        body: JSON.stringify(payload),
         headers: {
           "Content-Type": "application/json",
         },
@@ -46,6 +58,7 @@ function AuctionCreateForm({ categories }: { categories: any }) {
       const data = await res.json();
       return data;
     },
+    mutationKey: ["auctions"],
   });
 
   const onSubmit = (data: any) => {
@@ -72,7 +85,7 @@ function AuctionCreateForm({ categories }: { categories: any }) {
       startTime: new Date(Date.now()),
       endTime: new Date(Date.now()),
       title: "An accurate title",
-      categories: categories,
+      categories: [],
     },
   });
 

@@ -1,6 +1,4 @@
 import { Link, useOutletContext } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { fetchAuctionById } from "@/utils/auctions";
 import { Button } from "@/components/ui/button";
 import { ImageCarousel } from "@/components/image-carousel";
 import { BidModal } from "@/components/bid-modal";
