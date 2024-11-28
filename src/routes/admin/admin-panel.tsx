@@ -7,6 +7,7 @@ interface User {
     name: string;
     address: string;
     telephoneNumber: string;
+    admin: boolean
 }
 
 interface Email {
@@ -26,19 +27,20 @@ function AdminFunctionalities() {
     const userId = user?.userId || ''; // Ensure userId is handled gracefully
 
     // Fetch all active users
-    useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-                const response = await fetch('/api/user/admin/userInfo');
-                if (!response.ok) {
-                    throw new Error(`Error fetching users: ${response.status}`);
-                }
-                const data: User[] = await response.json();
-                setUsers(data);
-            } catch (error) {
-                console.error(error);
+    const fetchUsers = async () => {
+        try {
+            const response = await fetch('/api/user/admin/userInfo');
+            if (!response.ok) {
+                throw new Error(`Error fetching users: ${response.status}`);
             }
-        };
+            const data: User[] = await response.json();
+            setUsers(data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    useEffect(() => {
         fetchUsers();
     }, []);
 
@@ -86,6 +88,7 @@ function AdminFunctionalities() {
         } catch (error) {
             console.error(error);
         }
+        await fetchUsers();
     };
 
     // Reply to an email
@@ -132,6 +135,7 @@ function AdminFunctionalities() {
                             <tr className="bg-gray-200 sticky top-0">
                                 <th className="px-4 py-2 text-left">Name</th>
                                 <th className="px-4 py-2 text-left">Email</th>
+                                <th className="px-4 py-2 text-left">Is Admin?</th>
                                 <th className="px-4 py-2 text-left">Actions</th>
                             </tr>
                         </thead>
@@ -140,6 +144,7 @@ function AdminFunctionalities() {
                                 <tr key={user.cognitoUserId} className="border-t">
                                     <td className="px-4 py-2">{user.name}</td>
                                     <td className="px-4 py-2">{user.email}</td>
+                                    <td className="px-4 py-2">{user.admin ? 'Yes' : 'No'}</td>
                                     <td className="px-4 py-2 space-x-2">
                                         <button
                                             onClick={() => handleSuspendUser(user.cognitoUserId)}
@@ -147,12 +152,15 @@ function AdminFunctionalities() {
                                         >
                                             Suspend
                                         </button>
-                                        <button
-                                            onClick={() => handleGrantAdmin(user.cognitoUserId)}
-                                            className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
-                                        >
-                                            Grant Admin
-                                        </button>
+                                        {/* Only show Grant Admin button if the user is not an admin */}
+                                        {!user.admin && (
+                                            <button
+                                                onClick={() => handleGrantAdmin(user.cognitoUserId)}
+                                                className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                                            >
+                                                Grant Admin
+                                            </button>
+                                        )}
                                     </td>
                                 </tr>
                             ))}
