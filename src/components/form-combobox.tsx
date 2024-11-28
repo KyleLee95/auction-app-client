@@ -31,6 +31,7 @@ export type LabelValuePair = {
 export type FormComboboxProps<T> = {
   path: Path<T>;
   items: LabelValuePair[];
+  defaultItems?: LabelValuePair[];
   resourceName: string;
   label?: string;
   description?: string;
@@ -40,6 +41,7 @@ function FormCombobox<T extends FieldValues>({
   path,
   label,
   items,
+  defaultItems,
   description,
   resourceName,
 }: FormComboboxProps<T>) {
@@ -73,97 +75,100 @@ function FormCombobox<T extends FieldValues>({
       control={control}
       name={path}
       render={({ field }) => (
-        <FormItem className="flex flex-col">
-          <FormLabel>{label}</FormLabel>
-          <Popover>
-            <PopoverTrigger asChild>
-              <FormControl>
-                <Button
-                  variant="outline"
-                  role="combobox"
-                  aria-haspopup="listbox"
-                  className={cn(
-                    "justify-between",
-                    !field.value && "text-muted-foreground"
-                  )}
-                >
-                  {field.value && field.value.length > 0
-                    ? (() => {
-                        const joinedItems = items
-                          .filter((item) => field.value.includes(item.value))
-                          .map((item) => item.label)
-                          .join(", ");
-
-                        return joinedItems.length > 50
-                          ? joinedItems.slice(0, 50) + "..."
-                          : joinedItems;
-                      })()
-                    : `Select ${resourceName}...`}
-                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </Button>
-              </FormControl>
-            </PopoverTrigger>
-            <PopoverContent className="w-full md:w-[300px] p-0">
-              <Command
-                filter={(value, search) => {
-                  const item = items.find((item) => item.value === value);
-                  if (!item) return 0;
-                  if (item.label.toLowerCase().includes(search.toLowerCase()))
-                    return 1;
-
-                  return 0;
-                }}
-              >
-                <CommandInput
-                  onInput={(event) => setQueryText(event.target.value)}
-                  placeholder={`Search ${resourceName}...`}
-                />
-                <CommandEmpty>No {resourceName} found.</CommandEmpty>
-                <CommandEmpty>
+        console.log(field),
+        (
+          <FormItem className="flex flex-col">
+            <FormLabel>{label}</FormLabel>
+            <Popover>
+              <PopoverTrigger asChild>
+                <FormControl>
                   <Button
-                    onClick={() => {
-                      handleCreateNewCategory();
-                    }}
+                    variant="outline"
+                    role="combobox"
+                    aria-haspopup="listbox"
+                    className={cn(
+                      "justify-between",
+                      !field.value && "text-muted-foreground"
+                    )}
                   >
-                    Create tag: {queryText}?
+                    {field.value && field.value.length > 0
+                      ? (() => {
+                          const joinedItems = items
+                            .filter((item) => field.value.includes(item.value))
+                            .map((item) => item.label)
+                            .join(", ");
+
+                          return joinedItems.length > 50
+                            ? joinedItems.slice(0, 50) + "..."
+                            : joinedItems;
+                        })()
+                      : `Select ${resourceName}...`}
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
-                </CommandEmpty>
-                <CommandGroup>
-                  <CommandList>
-                    {items.map(({ value, label }) => (
-                      <CommandItem
-                        key={value}
-                        value={value}
-                        onSelect={(value) => {
-                          const currentValues: string[] = field.value || [];
-                          if (currentValues.includes(value)) {
-                            field.onChange(
-                              currentValues.filter((item) => item !== value)
-                            );
-                          } else {
-                            field.onChange([...currentValues, value]);
-                          }
-                        }}
-                      >
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            field.value && field.value.includes(value)
-                              ? "opacity-100"
-                              : "opacity-0"
-                          )}
-                        />
-                        {label}
-                      </CommandItem>
-                    ))}
-                  </CommandList>
-                </CommandGroup>
-              </Command>
-            </PopoverContent>
-          </Popover>
-          <FormDescription>{description}</FormDescription>
-          <FormMessage />
-        </FormItem>
+                </FormControl>
+              </PopoverTrigger>
+              <PopoverContent className="w-full md:w-[300px] p-0">
+                <Command
+                  filter={(value, search) => {
+                    const item = items.find((item) => item.value === value);
+                    if (!item) return 0;
+                    if (item.label.toLowerCase().includes(search.toLowerCase()))
+                      return 1;
+
+                    return 0;
+                  }}
+                >
+                  <CommandInput
+                    onInput={(event) => setQueryText(event.target.value)}
+                    placeholder={`Search ${resourceName}...`}
+                  />
+                  <CommandEmpty>No {resourceName} found.</CommandEmpty>
+                  <CommandEmpty>
+                    <Button
+                      onClick={() => {
+                        handleCreateNewCategory();
+                      }}
+                    >
+                      Create tag: {queryText}?
+                    </Button>
+                  </CommandEmpty>
+                  <CommandGroup>
+                    <CommandList>
+                      {items.map(({ id, value, label }) => (
+                        <CommandItem
+                          key={id}
+                          value={value}
+                          onSelect={(value) => {
+                            const currentValues: string[] = field.value || [];
+                            if (currentValues.includes(value)) {
+                              field.onChange(
+                                currentValues.filter((item) => item !== value)
+                              );
+                            } else {
+                              field.onChange([...currentValues, value]);
+                            }
+                          }}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              field.value && field.value.includes(value)
+                                ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          />
+                          {label}
+                        </CommandItem>
+                      ))}
+                    </CommandList>
+                  </CommandGroup>
+                </Command>
+              </PopoverContent>
+            </Popover>
+            <FormDescription>{description}</FormDescription>
+            <FormMessage />
+          </FormItem>
+        )
       )}
     />
   );

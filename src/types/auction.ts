@@ -21,6 +21,7 @@ export const AuctionModelInput = z.object({
   buyerId: z.string().nullish(),
   sellerId: z.string(),
   shippingPrice: z.number(),
+  butItNowPrice: z.number(),
   isActive: z.coerce.boolean(),
   quantity: z.coerce.number().int(),
   buyItNowEnabled: z.coerce.boolean(),
@@ -64,6 +65,7 @@ export interface CompleteAuction {
   endTime: string;
   isActive: boolean;
   buyItNowEnabled: boolean;
+  buyItNowPrice: number;
   deleted: boolean;
   flagged: boolean;
   sellerId: string;
@@ -88,6 +90,7 @@ export interface IncludeAuction {
   quantity: number;
   isActive: boolean;
   buyItNowEnabled: boolean;
+  buyItNowPrice: number;
   deleted: boolean;
   flagged: boolean;
   sellerId: string;
