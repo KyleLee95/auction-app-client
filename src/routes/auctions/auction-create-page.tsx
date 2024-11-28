@@ -1,4 +1,4 @@
-import { Authenticator } from "@aws-amplify/ui-react";
+import { Authenticator, useAuthenticator } from "@aws-amplify/ui-react";
 import { useQuery } from "@tanstack/react-query";
 import { AuctionCreateForm } from "@/routes/auctions/auction-create-form";
 async function fetchAllCategories() {
@@ -11,6 +11,7 @@ async function fetchAllCategories() {
 }
 
 function AuctionCreatePage() {
+  const { user } = useAuthenticator();
   const { isLoading, error, data } = useQuery({
     queryKey: ["categories"],
     queryFn: async () => await fetchAllCategories(),
@@ -27,7 +28,7 @@ function AuctionCreatePage() {
 
   return (
     <Authenticator>
-      <AuctionCreateForm categories={categories} />
+      <AuctionCreateForm user={user} categories={categories} />
     </Authenticator>
   );
 }

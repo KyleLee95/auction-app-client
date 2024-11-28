@@ -11,6 +11,7 @@ import {
   Checkbox,
   Input,
 } from "@/components/ui";
+import { CompleteCategory } from "@/types";
 import { DateTimePicker, FormCombobox } from "@/components";
 import { toast } from "@/hooks/use-toast";
 
@@ -19,11 +20,13 @@ import { useMutation } from "@tanstack/react-query";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { AuthUser } from "aws-amplify/auth";
 
 const formSchema = z.object({
   title: z.string().default("title"),
   description: z.string().default("description"),
-  startPrice: z.number().default(0.0), // Accepts number from client
+  startPrice: z.number().default(0.0),
+  buyItNowPrice: z.number().default(0.0),
   startTime: z.date().default(new Date(Date.now())),
   endTime: z.date().default(new Date(Date.now())),
   shippingPrice: z.number().default(15.99),
@@ -33,10 +36,16 @@ const formSchema = z.object({
   categories: z.array(z.string()).default([]),
 });
 
-function AuctionCreateForm({ categories }: { categories: any }) {
+function AuctionCreateForm({
+  categories,
+  user,
+}: {
+  categories: CompleteCategory[];
+  user: AuthUser;
+}) {
   const submitForm = useMutation({
     mutationFn: async (formData: any) => {
-      const categoriesData = categories.filter((category) => {
+      const categoriesData = categories.filter((category: any) => {
         if (formData.categories.includes(category.value)) {
           return category;
         }
@@ -44,9 +53,9 @@ function AuctionCreateForm({ categories }: { categories: any }) {
 
       const payload = {
         ...formData,
-        categoriesData,
+        sellerId: user.userId,
+        categories: categoriesData,
       };
-      console.log(payload);
 
       const res = await fetch(`/api/auctions`, {
         method: "POST",
@@ -81,6 +90,7 @@ function AuctionCreateForm({ categories }: { categories: any }) {
       description: "A helpful description",
       shippingPrice: 10.99,
       startPrice: 10.99,
+      buyItNowPrice: 10.99,
       quantity: 1,
       startTime: new Date(Date.now()),
       endTime: new Date(Date.now()),
@@ -183,6 +193,33 @@ function AuctionCreateForm({ categories }: { categories: any }) {
                 </FormItem>
               )}
             />
+
+            {form.getValues("buyItNowEnabled") ? (
+              <FormField
+                control={form.control}
+                name="buyItNowPrice"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Buy It Now Price</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="shadcn"
+                        type="number"
+                        {...field}
+                        onChange={(e) => {
+                          field.onChange(Number(e.target.value));
+                        }}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      The initial price of the item. This price will be used as
+                      the Buy It Now price, if the option is enabled
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ) : null}
 
             <FormField
               control={form.control}
