@@ -159,6 +159,17 @@ function SiteHeader({ className }: Props) {
               </NavigationMenuLink>
             </NavigationMenuItem>
 
+            {/* TODO */}
+            {/* ONLY DO IF THE USER IS AN ADMIN */}
+            <NavigationMenuItem>
+              <NavigationMenuLink
+                className={navigationMenuTriggerStyle()}
+                asChild
+              >
+                <Link to="/adminPanel">ADMIN panel</Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+
             {categories.map((category: Category) => {
               return (
                 <NavigationMenuItem key={category.name}>
