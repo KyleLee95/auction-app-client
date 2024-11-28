@@ -46,7 +46,7 @@ function UserProfile() {
             }
         };
 
-        if (userId) fetchUserData();
+        if (userId) fetchUserData(); //It looks like this one is being called twice
     }, [userId]);
 
     // Handle input changes for editable fields
