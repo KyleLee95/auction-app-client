@@ -41,9 +41,14 @@ function DashboardWatchlistList() {
 
       <div className="flex-col">
         {auctions.map((auctionObj: CompleteAuctionsOnWatchLists) => {
-          const { auction } = auctionObj;
+          const { auction, watchlistId } = auctionObj;
           return (
-            <AuctionCard showRemoveButton key={auction.id} auction={auction} />
+            <AuctionCard
+              showRemoveButton
+              key={auction.id}
+              auction={auction}
+              watchlistId={watchlistId}
+            />
           );
         })}
       </div>

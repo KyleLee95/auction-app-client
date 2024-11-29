@@ -58,7 +58,7 @@ function DashboardPage() {
 
   return (
     <Authenticator>
-      <div className="flex flex-row flex-wrap mx-auto h-full min-h-72">
+      <div className="flex flex-row flex-wrap mx-auto h-full min-h-72 w-full max-w-screen-lg">
         <div className="flex-none w-22 border rounded border-gray-800">
           <NavigationMenu orientation="vertical">
             <NavigationMenuList className="flex-col items-start justify-center space-x-0">

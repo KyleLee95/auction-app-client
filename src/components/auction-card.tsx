@@ -2,28 +2,68 @@ import { Button } from "@/components/ui/button";
 import { CompleteAuction } from "@/types/auction";
 import { Countdown } from "@/components/countdown-timer";
 import { Link } from "react-router-dom";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+
+const removeAuctionFromUserWatchlist = async (
+  watchlistId: number,
+  auctionId: number
+) => {
+  const res = await fetch(
+    `/api/watchlists/${watchlistId}/auction/${auctionId}`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  if (!res.ok) {
+    console.error(res.statusText);
+    return;
+  }
+  const data = await res.json();
+  return data;
+};
+
 export function AuctionCard({
   auction,
   showRemoveButton,
+  watchlistId,
 }: {
   auction: CompleteAuction;
-  showRemoveButton: boolean;
+  showRemoveButton?: boolean;
+  watchlistId?: number;
 }) {
+  const queryClient = useQueryClient();
+
+  const removeAuctionMutation = useMutation({
+    mutationFn: async () =>
+      removeAuctionFromUserWatchlist(watchlistId as number, auction.id),
+    mutationKey: ["watchlists"],
+    onSuccess() {
+      queryClient.invalidateQueries({ queryKey: ["watchlists"] });
+    },
+  });
+
+  function handleRemoveAuctionFromWatchlist() {
+    removeAuctionMutation.mutate();
+  }
+
   return (
-    <div className="flex flex-col items-stretch p-4 border rounded-md shadow-sm bg-white dark:bg-zinc-950 text-gray-900 dark:text-gray-100 w-full my-4">
+    <div className="flex flex-col items-stretch p-4 border rounded-md shadow-sm bg-white dark:bg-zinc-950 text-gray-900 dark:text-gray-100 w-full my-4 gap-4">
       {/* Top Section: Image and Details */}
       <div className="flex flex-col md:flex-row w-full">
         {/* Left Column: Image */}
-        <Link className="w-full md:w-1/4" to={`/auctions/${auction.id}`}>
-          <div>
-            <img
-              src="./150.png"
-              alt="Auction item image"
-              className="w-full h-auto rounded-md object-cover"
-            />
-          </div>
+        <Link
+          className="flex-shrink-0 w-full md:w-1/4"
+          to={`/auctions/${auction.id}`}
+        >
+          <img
+            src="./150.png"
+            alt="Auction item image"
+            className="w-full h-auto rounded-md object-cover"
+          />
         </Link>
-
         {/* Middle Column: Auction Details */}
         <div className="flex-1 px-4 py-2">
           <Link to={`/auctions/${auction.id}`}>
@@ -62,7 +102,11 @@ export function AuctionCard({
             </Button>
           ) : null}
           {showRemoveButton ? (
-            <Button variant="destructive" className="w-full md:w-auto">
+            <Button
+              variant="destructive"
+              className="w-full md:w-auto"
+              onClick={handleRemoveAuctionFromWatchlist}
+            >
               Remove from Watchlist
             </Button>
           ) : null}
