@@ -1,7 +1,7 @@
 import { useOutletContext } from "react-router-dom";
 import { CompleteAuction } from "@/types/auction";
 
-import { AuctionCard } from "@/components/dashboard-auction-card";
+import { AuctionCard } from "@/components/auction-card";
 
 function SearchPageResultsFeed() {
   const { auctions } = useOutletContext();
@@ -12,7 +12,13 @@ function SearchPageResultsFeed() {
   return (
     <div className="flex-col">
       {auctions.map((auction: CompleteAuction) => {
-        return <AuctionCard key={auction.id} auction={auction} />;
+        return (
+          <AuctionCard
+            showRemoveButton={false}
+            key={auction.id}
+            auction={auction}
+          />
+        );
       })}
     </div>
   );

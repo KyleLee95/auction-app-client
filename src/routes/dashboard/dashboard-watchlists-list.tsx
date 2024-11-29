@@ -1,5 +1,5 @@
 import { useOutletContext } from "react-router-dom";
-import { AuctionCard } from "@/components/dashboard-auction-card";
+import { AuctionCard } from "@/components/auction-card";
 import { Button } from "@/components/ui/button";
 import { CompleteAuctionsOnWatchLists } from "@/types/auctionsonwatchlists";
 import { CompleteWatchList } from "@/types/watchlist";
@@ -42,7 +42,9 @@ function DashboardWatchlistList() {
       <div className="flex-col">
         {auctions.map((auctionObj: CompleteAuctionsOnWatchLists) => {
           const { auction } = auctionObj;
-          return <AuctionCard key={auction.id} auction={auction} />;
+          return (
+            <AuctionCard showRemoveButton key={auction.id} auction={auction} />
+          );
         })}
       </div>
     </div>

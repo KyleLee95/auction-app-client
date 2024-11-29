@@ -9,6 +9,7 @@ import {
 } from "./index";
 
 export const BidModelInput = z.object({
+  id: z.number().optional(),
   amount: z.number(),
   userId: z.string(),
   auctionId: z.number().int(),

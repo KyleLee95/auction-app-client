@@ -2,7 +2,13 @@ import { Button } from "@/components/ui/button";
 import { CompleteAuction } from "@/types/auction";
 import { Countdown } from "@/components/countdown-timer";
 import { Link } from "react-router-dom";
-export function AuctionCard({ auction }: { auction: CompleteAuction }) {
+export function AuctionCard({
+  auction,
+  showRemoveButton,
+}: {
+  auction: CompleteAuction;
+  showRemoveButton: boolean;
+}) {
   return (
     <div className="flex flex-col items-stretch p-4 border rounded-md shadow-sm bg-white dark:bg-zinc-950 text-gray-900 dark:text-gray-100 w-full my-4">
       {/* Top Section: Image and Details */}
@@ -55,15 +61,11 @@ export function AuctionCard({ auction }: { auction: CompleteAuction }) {
               <Link to={`/auctions/${auction.id}`}> Buy It Now </Link>
             </Button>
           ) : null}
-
-          {/*
-          <Button variant="secondary" className="w-full md:w-auto">
-            View Seller's Items
-          </Button>
-          <Button variant="secondary" className="w-full md:w-auto">
-            More Actions
-          </Button>
-		  */}
+          {showRemoveButton ? (
+            <Button variant="destructive" className="w-full md:w-auto">
+              Remove from Watchlist
+            </Button>
+          ) : null}
         </div>
       </div>
       {/* Footer Section */}
