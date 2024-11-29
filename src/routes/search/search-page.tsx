@@ -9,10 +9,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  Checkbox,
-} from "@/components/ui";
-
-import { CompleteCategory } from "@/types";
+} from "@/components/ui/form";
+import { Checkbox } from "@/components/ui/checkbox";
+import { CompleteCategory } from "@/types/category";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ControllerRenderProps, FieldValues, useForm } from "react-hook-form";
 import { z } from "zod";

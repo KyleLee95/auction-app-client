@@ -1,6 +1,6 @@
 import { useOutletContext } from "react-router-dom";
 import { type DashboardOutletProps } from "./dashboard-page";
-import { AuctionCard } from "@/components";
+import { AuctionCard } from "@/components/dashboard-auction-card";
 function DashboardAuctionList() {
   const { auctions } = useOutletContext<DashboardOutletProps>();
 

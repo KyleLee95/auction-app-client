@@ -1,7 +1,6 @@
-import React from "react";
 import { useOutletContext } from "react-router-dom";
-import { AuctionCard } from "@/components";
-import { type IBidModelWithAuction } from "@/types";
+import { AuctionCard } from "@/components/dashboard-auction-card";
+import { IBidModelWithAuction } from "@/types/bid";
 function DashboardBidOnList() {
   const { bidOnAuctions } = useOutletContext();
 

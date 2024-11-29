@@ -8,12 +8,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Form,
-  FormField,
-  FormItem,
-  FormControl,
-  FormMessage,
-} from "@/components/ui";
+} from "@/components/ui/select";
+
 import { CompleteAuction } from "@/types/auction";
 import { Countdown } from "@/components/countdown-timer";
 

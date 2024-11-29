@@ -1,7 +1,7 @@
 import { useOutletContext } from "react-router-dom";
 import { CompleteAuction } from "@/types/auction";
 
-import { AuctionCard } from "@/components";
+import { AuctionCard } from "@/components/dashboard-auction-card";
 
 function SearchPageResultsFeed() {
   const { auctions } = useOutletContext();

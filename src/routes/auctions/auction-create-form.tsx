@@ -6,13 +6,14 @@ import {
   FormMessage,
   FormDescription,
   FormItem,
-  Textarea,
-  Button,
-  Checkbox,
-  Input,
-} from "@/components/ui";
-import { CompleteCategory } from "@/types";
-import { DateTimePicker, FormCombobox } from "@/components";
+} from "@/components/ui/form";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { CompleteCategory } from "@/types/category";
+import { DateTimePicker } from "@/components/date-time-picker";
+import { FormCombobox } from "@/components/form-combobox";
 import { toast } from "@/hooks/use-toast";
 
 import { useMutation } from "@tanstack/react-query";

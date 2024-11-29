@@ -6,22 +6,25 @@ import {
   FormMessage,
   FormDescription,
   FormItem,
-  Textarea,
-  Button,
-  Checkbox,
-  Input,
-} from "@/components/ui";
-import { CompleteAuction, CompleteCategory } from "@/types";
-import { DateTimePicker, FormCombobox } from "@/components";
+} from "@/components/ui/form";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { DateTimePicker } from "@/components/date-time-picker";
+import { FormCombobox } from "@/components/form-combobox";
+import { CompleteAuction } from "@/types/auction";
+import { CompleteCategory } from "@/types/category";
 import { toast } from "@/hooks/use-toast";
 
 import { useMutation } from "@tanstack/react-query";
+import { useOutletContext } from "react-router-dom";
 
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+
 import { AuthUser } from "aws-amplify/auth";
-import { useOutletContext } from "react-router-dom";
 
 function AuctionEdit() {
   const {

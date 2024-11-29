@@ -9,8 +9,8 @@ import {
   NavigationMenuLink,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { type CompleteAuction } from "@/types";
-import { type CompleteBid } from "@/types";
+import { type CompleteAuction } from "@/types/auction";
+import { type CompleteBid } from "@/types/bid";
 import { AuthUser } from "aws-amplify/auth";
 import { fetchUserWatchlists } from "@/utils/watchlists";
 

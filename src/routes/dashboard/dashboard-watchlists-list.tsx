@@ -1,12 +1,9 @@
-import React from "react";
 import { useOutletContext } from "react-router-dom";
 import { AuctionCard } from "@/components/dashboard-auction-card";
-import { Button } from "@/components/ui";
-import {
-  CompleteAuctionsOnWatchLists,
-  CompleteWatchList,
-  CompleteCategoriesOnWatchLists,
-} from "@/types";
+import { Button } from "@/components/ui/button";
+import { CompleteAuctionsOnWatchLists } from "@/types/auctionsonwatchlists";
+import { CompleteWatchList } from "@/types/watchlist";
+import { CompleteCategoriesOnWatchLists } from "@/types/categoriesonwatchlists";
 function DashboardWatchlistList() {
   const { watchlists }: { watchlists: CompleteWatchList[] } =
     useOutletContext();
