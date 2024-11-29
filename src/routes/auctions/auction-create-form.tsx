@@ -14,7 +14,6 @@ import { Input } from "@/components/ui/input";
 import { CompleteCategory } from "@/types/category";
 import { DateTimePicker } from "@/components/date-time-picker";
 import { FormCombobox } from "@/components/form-combobox";
-import { toast } from "@/hooks/use-toast";
 
 import { useMutation } from "@tanstack/react-query";
 
@@ -22,6 +21,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { AuthUser } from "aws-amplify/auth";
+import { useNavigate } from "react-router-dom";
 
 const formSchema = z.object({
   title: z.string().default("title"),
@@ -44,6 +44,7 @@ function AuctionCreateForm({
   categories: CompleteCategory[];
   user: AuthUser;
 }) {
+  const navigate = useNavigate();
   const submitForm = useMutation({
     mutationFn: async (formData: any) => {
       const categoriesData = categories.filter((category: any) => {
@@ -69,18 +70,13 @@ function AuctionCreateForm({
       return data;
     },
     mutationKey: ["auctions"],
+    onSuccess: (data, variables, context) => {
+      navigate(`/auctions/${data.auctions[0].id}`);
+    },
   });
 
   const onSubmit = (data: any) => {
     submitForm.mutate(data);
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
   };
 
   const form = useForm<z.infer<typeof formSchema>>({

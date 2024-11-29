@@ -12,7 +12,7 @@ export function AuctionCard({ auction }: { auction: CompleteAuction }) {
           <div>
             <img
               src="./150.png"
-              alt="Auction item"
+              alt="Auction item image"
               className="w-full h-auto rounded-md object-cover"
             />
           </div>
