@@ -58,13 +58,7 @@ function AuctionPage() {
     return "Loading...";
   }
   const categories = queryResults?.data[0]?.categories;
-
-  console.log(queryResults);
-
   const auction = queryResults?.data[1]?.auctions[0];
-  if (!auction || !categories) {
-    return null;
-  }
   return <Outlet context={{ categories, auction, user }} />;
 }
 

@@ -6,6 +6,9 @@ import { AuctionCard } from "@/components";
 function SearchPageResultsFeed() {
   const { auctions } = useOutletContext();
 
+  if (auctions?.length === 0) {
+    return <div className="flex-col">No Auctions Found!</div>;
+  }
   return (
     <div className="flex-col">
       {auctions.map((auction: CompleteAuction) => {

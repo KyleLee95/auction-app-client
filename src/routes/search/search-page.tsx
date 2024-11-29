@@ -24,10 +24,13 @@ const FormSchema = z.object({
     .refine((value) => value.some((item) => item), {
       message: "You have to select at least one item.",
     }),
-  priceRange: z.object({
-    minPrice: z.number().optional(),
-    maxPrice: z.number().optional(),
-  }),
+
+  priceRange: z
+    .object({
+      minPrice: z.number().optional(),
+      maxPrice: z.number().optional(),
+    })
+    .default({ minPrice: 0, maxPrice: 10000 }),
 });
 
 const priceRanges = [
@@ -149,12 +152,12 @@ export function CheckboxList({
                       >
                         <FormControl>
                           <Checkbox
-                            disabled={
-                              //if it's the last parameter selected, then don't the user uncheck it
-                              Array.from(searchParams.getAll("categories"))
-                                .length === 1 &&
-                              searchParams.has("categories", category.value)
-                            }
+                            // disabled={
+                            //   //if it's the last parameter selected, then don't the user uncheck it
+                            //   Array.from(searchParams.getAll("categories"))
+                            //     .length === 1 &&
+                            //   searchParams.has("categories", category.value)
+                            // }
                             checked={field.value?.includes(category.value)}
                             onCheckedChange={(checked) => {
                               return handleOnCheck(category, checked, field);

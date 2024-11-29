@@ -46,10 +46,14 @@ const images = [
     alt: "test",
   },
 ];
+
 function AuctionDetail() {
   const context = useOutletContext();
   const { user, auction } = context;
-  const hasBids = auction?.bids?.length;
+  console.log(user);
+  const numBids = auction.bids.length;
+  const minBidAmount =
+    numBids > 0 ? auction.bids[0].amount : auction.startPrice;
 
   return (
     <div className="flex flex-wrap mt-10">
@@ -59,21 +63,22 @@ function AuctionDetail() {
         className="mt-4 lg:ml-20 w-full lg:w-1/2"
       >
         <h1 className="text-xl">{auction.title}</h1>
-        <h2>
-          $
-          {hasBids
-            ? auction.bids[auction.bids.length - 1].amount
-            : auction.startPrice}
-        </h2>
-        <span>{hasBids ? hasBids : 0} bids</span>
+        <h2>${numBids > 0 ? auction?.bids[0]?.amount : auction.startPrice}</h2>
+        <span>{numBids} bids</span>
         <Countdown endTime={auction.endTime} />
         <p className="my-4">{auction.description}</p>
         <div id="user-action-group" className="my-4">
           <QuantitySelect auction={auction} />
           <div id="btn-group" className="my-4">
-            {auction.buyItNowEnabled ? <Button>Add to Cart</Button> : null}
+            {auction.buyItNowEnabled ? (
+              <Button className="my-4 w-11/12">Add to Cart</Button>
+            ) : null}
 
-            <BidModal />
+            <BidModal
+              user={user}
+              auctionId={auction.id}
+              minBidAmount={minBidAmount}
+            />
 
             {user?.userId === auction.sellerId ? (
               <Link to={`/auctions/${auction.id}/edit`}>
