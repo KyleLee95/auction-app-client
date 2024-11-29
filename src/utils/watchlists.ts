@@ -4,11 +4,7 @@ import { type CompleteWatchList } from "../types";
 export async function fetchUserWatchlists(userId: string): Promise<{
   watchlists: CompleteWatchList[];
 }> {
-  // {
-  //   filterBy,
-  //   sortBy,
-  // }: { filterBy?: string; sortBy: AuctionsSortBy } = {}
-  const res = await fetch(`/api/watchlist?userId=${userId}`, {
+  const res = await fetch(`/api/watchlists?userId=${userId}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -24,7 +20,7 @@ export async function fetchUserWatchlists(userId: string): Promise<{
 export async function fetchWatchlistById(watchlistId: string): Promise<{
   watchlists: CompleteWatchList[];
 }> {
-  const res = await fetch(`/api/watchlist/${watchlistId}`, {
+  const res = await fetch(`/api/watchlists/${watchlistId}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

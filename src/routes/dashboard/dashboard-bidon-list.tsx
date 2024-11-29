@@ -7,7 +7,6 @@ function DashboardBidOnList() {
   return (
     <div className="flex-col text-black">
       {bidOnAuctions.map((bid: IBidModelWithAuction) => {
-        console.log(bid.auction);
         return <AuctionCard key={bid.id} auction={bid.auction} />;
       })}
     </div>
