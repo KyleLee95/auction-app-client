@@ -16,9 +16,10 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
-
+import { useNavigate } from "react-router-dom";
 function WatchlistEdit() {
   const { watchlist, categories } = useOutletContext();
+  const navigate = useNavigate();
   const formSchema = z.object({
     name: z.string(),
     maxPrice: z.coerce.number(),
@@ -117,7 +118,13 @@ function WatchlistEdit() {
             />
             <div className="mt-6 flex items-center justify-end gap-x-6">
               <Button type="submit">Submit</Button>
-              <Button>Cancel</Button>
+              <Button
+                onClick={() => {
+                  navigate("/dashboard/watchlists");
+                }}
+              >
+                Cancel
+              </Button>
             </div>
           </div>
         </div>
