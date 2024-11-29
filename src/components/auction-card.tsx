@@ -3,52 +3,16 @@ import { CompleteAuction } from "@/types/auction";
 import { Countdown } from "@/components/countdown-timer";
 import { Link } from "react-router-dom";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
-
-const removeAuctionFromUserWatchlist = async (
-  watchlistId: number,
-  auctionId: number
-) => {
-  const res = await fetch(
-    `/api/watchlists/${watchlistId}/auction/${auctionId}`,
-    {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
-  if (!res.ok) {
-    console.error(res.statusText);
-    return;
-  }
-  const data = await res.json();
-  return data;
-};
+import { AuthUser } from "aws-amplify/auth";
 
 export function AuctionCard({
   auction,
-  showRemoveButton,
-  watchlistId,
 }: {
   auction: CompleteAuction;
   showRemoveButton?: boolean;
   watchlistId?: number;
+  user: AuthUser;
 }) {
-  const queryClient = useQueryClient();
-
-  const removeAuctionMutation = useMutation({
-    mutationFn: async () =>
-      removeAuctionFromUserWatchlist(watchlistId as number, auction.id),
-    mutationKey: ["watchlists"],
-    onSuccess() {
-      queryClient.invalidateQueries({ queryKey: ["watchlists"] });
-    },
-  });
-
-  function handleRemoveAuctionFromWatchlist() {
-    removeAuctionMutation.mutate();
-  }
-
   return (
     <div className="flex flex-col items-stretch p-4 border rounded-md shadow-sm bg-white dark:bg-zinc-950 text-gray-900 dark:text-gray-100 w-full my-4 gap-4">
       {/* Top Section: Image and Details */}
@@ -99,15 +63,6 @@ export function AuctionCard({
           {auction.buyItNowEnabled ? (
             <Button variant="default" asChild className="w-full">
               <Link to={`/auctions/${auction.id}`}> Buy It Now </Link>
-            </Button>
-          ) : null}
-          {showRemoveButton ? (
-            <Button
-              variant="destructive"
-              className="w-full md:w-auto"
-              onClick={handleRemoveAuctionFromWatchlist}
-            >
-              Remove from Watchlist
             </Button>
           ) : null}
         </div>

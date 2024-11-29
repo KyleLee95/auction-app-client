@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
+import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { CompleteAuction } from "@/types/auction";
 import { Countdown } from "@/components/countdown-timer";
 
@@ -48,12 +48,79 @@ const images = [
   },
 ];
 
+const removeAuctionFromUserWatchlist = async (
+  watchlistId: number,
+  auctionId: number
+) => {
+  const res = await fetch(
+    `/api/watchlists/${watchlistId}/auction/${auctionId}`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  if (!res.ok) {
+    console.error(res.statusText);
+    return;
+  }
+  const data = await res.json();
+  return data;
+};
+
+const addAuctionToUserWatchlist = async (userId: string, auctionId: number) => {
+  const res = await fetch(
+    `/api/watchlists/addAuction?userId=${userId}&auctionId=${auctionId}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  if (!res.ok) {
+    console.error(res.statusText);
+    return;
+  }
+  const data = await res.json();
+  return data;
+};
+
 function AuctionDetail() {
-  const context = useOutletContext();
-  const { user, auction } = context;
+  const { user, auction } = useOutletContext();
   const numBids = auction.bids.length;
   const minBidAmount =
     numBids > 0 ? auction.bids[0].amount : auction.startPrice;
+
+  const queryClient = useQueryClient();
+
+  const removeAuctionFromUserMutation = useMutation({
+    mutationFn: async () =>
+      await removeAuctionFromUserWatchlist(auction.id as number),
+    mutationKey: ["auctionsOnWatchlists"],
+    onSuccess() {
+      queryClient.invalidateQueries({ queryKey: ["auctionsOnWatchlists"] });
+    },
+  });
+
+  function handleRemoveAuctionFromWatchlist() {
+    removeAuctionFromUserMutation.mutate();
+  }
+
+  const addAuctionToUserWatchlistMutation = useMutation({
+    mutationFn: async () =>
+      await addAuctionToUserWatchlist(user.userId, auction.id as number),
+    mutationKey: ["auctionsONWatchlists"],
+    onSuccess() {
+      queryClient.invalidateQueries({ queryKey: ["auctionsOnWatchlists"] });
+    },
+  });
+
+  function handleAddAuctionToUserWatchlist() {
+    console.log("?");
+    addAuctionToUserWatchlistMutation.mutate();
+  }
 
   return (
     <div className="flex flex-wrap mt-10">
@@ -94,6 +161,26 @@ function AuctionDetail() {
                 </Button>
               </>
             ) : null}
+
+            <Button
+              type="button"
+              onClick={() => {
+                console.log("click?");
+              }}
+            >
+              Add To Watchlist
+            </Button>
+
+            <Button
+              type="button"
+              variant="destructive"
+              className="w-full md:w-auto"
+              onClick={() => {
+                console.log("click?");
+              }}
+            >
+              Remove from Watchlist
+            </Button>
           </div>
         </div>
       </div>

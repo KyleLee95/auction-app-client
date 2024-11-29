@@ -16,6 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ControllerRenderProps, FieldValues, useForm } from "react-hook-form";
 import { z } from "zod";
 import { CheckedState } from "@radix-ui/react-checkbox";
+import { useAuthenticator } from "@aws-amplify/ui-react";
 
 const FormSchema = z.object({
   categories: z
@@ -233,6 +234,8 @@ const fetchCategories = async () => {
 const SearchPage = () => {
   const [searchParams] = useSearchParams();
 
+  const { user } = useAuthenticator();
+
   const queryResults = useQueries({
     queries: [
       {
@@ -278,7 +281,7 @@ const SearchPage = () => {
       <div>
         <CheckboxList categories={categories} />
       </div>
-      <Outlet context={{ auctions, categories }} />
+      <Outlet context={{ user, auctions, categories }} />
     </div>
   );
 };
