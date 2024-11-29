@@ -1,16 +1,13 @@
 import * as z from "zod";
+import { type CompleteUser, RelatedUserModel } from "./user";
+import { RelatedCategoryModel, type CompleteCategory } from "./category";
+import { RelatedBidModel, type CompleteBid } from "./bid";
 import {
-  type CompleteUser,
-  type CompleteBid,
-  type CompleteCategory,
-  type CompleteWatchList,
   type CompleteAuctionsOnWatchLists,
   RelatedAuctionsOnWatchListsModel,
-  RelatedBidModel,
-  RelatedUserModel,
-  RelatedCategoryModel,
-  RelatedWatchListModel,
-} from "./index";
+} from "./auctionsonwatchlists";
+
+import { type CompleteWatchList, RelatedWatchListModel } from "./watchlist";
 
 export const AuctionModelInput = z.object({
   title: z.string(),

@@ -1,13 +1,11 @@
 import * as z from "zod";
+import { type CompleteUser, RelatedUserModel } from "./user";
 import {
-  type CompleteUser,
   type CompleteAuction,
-  RelatedUserModel,
   RelatedAuctionModel,
   AuctionModel,
   type IncludeAuction,
-} from "./index";
-
+} from "./auction";
 export const BidModelInput = z.object({
   id: z.number().optional(),
   amount: z.number(),

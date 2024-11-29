@@ -1,13 +1,8 @@
 import * as z from "zod";
-import {
-  type CompleteAuction,
-  type CompleteBid,
-  type CompleteWatchList,
-  RelatedAuctionModel,
-  RelatedWatchListModel,
-  RelatedBidModel,
-} from "./index";
+import { type CompleteBid, RelatedBidModel } from "./bid";
 
+import { type CompleteWatchList, RelatedWatchListModel } from "./watchlist";
+import { type CompleteAuction, RelatedAuctionModel } from "./auction";
 export const UserModelInput = z.object({
   name: z.string(),
   isAdmin: z.boolean(),

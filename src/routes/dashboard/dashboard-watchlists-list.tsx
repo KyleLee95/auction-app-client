@@ -31,7 +31,7 @@ function DashboardWatchlistList() {
         })}
         <ToggleGroupItem value="maxPrice">
           {" "}
-          Max Price: ${userWatchlist.maxPrice}
+          Max Price: ${userWatchlist?.maxPrice}
         </ToggleGroupItem>
       </ToggleGroup>
 

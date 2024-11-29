@@ -1,26 +1,33 @@
 import * as z from "zod";
+import { type CompleteUser, RelatedUserModel } from "./user";
+
 import {
-  type CompleteUser,
-  type CompleteAuctionsOnWatchLists,
-  type CompleteCategoriesOnWatchLists,
-  type IncludeAuction,
-  type IncludeCategory,
-  RelatedUserModel,
   RelatedCategoriesOnWatchListsModel,
-  AuctionModel,
-  CategoryModel,
+  type CompleteCategoriesOnWatchLists,
+} from "./categoriesonwatchlists";
+import { AuctionModel, type IncludeAuction } from "./auction";
+
+import {
   RelatedAuctionsOnWatchListsModel,
-} from "./index";
+  type CompleteAuctionsOnWatchLists,
+} from "./auctionsonwatchlists";
+
+import { CategoryModel, type IncludeCategory } from "./category";
 
 export const WatchListModelInput = z.object({
+  id: z.number().int().optional(),
   userId: z.string(),
   name: z.string(),
+  maxPrice: z.number(),
+  keyword: z.string(),
 });
 
 export const WatchListModel = z.object({
   id: z.number().int(),
   name: z.string(),
   userId: z.string(),
+  maxPrice: z.number(),
+  keyword: z.string(),
 });
 
 export const WatchListModelWithAuctionAndCategory = z.object({
