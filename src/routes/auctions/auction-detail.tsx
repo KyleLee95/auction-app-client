@@ -88,7 +88,10 @@ function AuctionDetail() {
                 <Link to={`/auctions/${auction.id}/edit`}>
                   <Button className="my-4 w-11/12">Edit </Button>
                 </Link>
-                <Button className="w-11/12"> Delete </Button>
+                <Button className="w-11/12" disabled={numBids > 0}>
+                  {" "}
+                  Delete{" "}
+                </Button>
               </>
             ) : null}
           </div>
