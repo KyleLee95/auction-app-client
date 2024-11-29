@@ -23,20 +23,6 @@ import { useForm } from "react-hook-form";
 import { AuthUser } from "aws-amplify/auth";
 import { useNavigate } from "react-router-dom";
 
-const formSchema = z.object({
-  title: z.string().default("title"),
-  description: z.string().default("description"),
-  startPrice: z.number().default(0.0),
-  buyItNowPrice: z.number().default(0.0),
-  startTime: z.date().default(new Date(Date.now())),
-  endTime: z.date().default(new Date(Date.now())),
-  shippingPrice: z.number().default(15.99),
-  isActive: z.boolean().default(false),
-  quantity: z.coerce.number().int().default(1),
-  buyItNowEnabled: z.coerce.boolean().default(true),
-  categories: z.array(z.string()).default([]),
-});
-
 function AuctionCreateForm({
   categories,
   user,
@@ -75,10 +61,19 @@ function AuctionCreateForm({
     },
   });
 
-  const onSubmit = (data: any) => {
-    submitForm.mutate(data);
-  };
-
+  const formSchema = z.object({
+    title: z.string().default("title"),
+    description: z.string().default("description"),
+    startPrice: z.number().default(0.0),
+    buyItNowPrice: z.number().default(0.0),
+    startTime: z.date().default(new Date(Date.now())),
+    endTime: z.date().default(new Date(Date.now())),
+    shippingPrice: z.number().default(15.99),
+    isActive: z.boolean().default(false),
+    quantity: z.coerce.number().int().default(1),
+    buyItNowEnabled: z.coerce.boolean().default(true),
+    categories: z.array(z.string()).default([]),
+  });
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -95,6 +90,10 @@ function AuctionCreateForm({
       categories: [],
     },
   });
+
+  const onSubmit = (data: any) => {
+    submitForm.mutate(data);
+  };
 
   return (
     <Form {...form}>

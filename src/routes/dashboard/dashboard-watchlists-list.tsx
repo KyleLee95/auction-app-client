@@ -24,7 +24,7 @@ function DashboardWatchlistList() {
       <ToggleGroup variant="outline" type="multiple">
         {categories.map(({ category }) => {
           return (
-            <ToggleGroupItem value={category.value}>
+            <ToggleGroupItem key={category.id} value={category.value}>
               {category.label}
             </ToggleGroupItem>
           );
