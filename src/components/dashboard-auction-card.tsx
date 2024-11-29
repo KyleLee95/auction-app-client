@@ -43,13 +43,16 @@ export function AuctionCard({ auction }: { auction: CompleteAuction }) {
 
       {/* Right Column: Vertical Button Menu */}
       <div className="flex flex-col items-end space-y-2">
-        <Button variant="default" className="w-full md:w-auto">
-          Buy It Now
+        <Button variant="default" asChild className="w-full md:w-auto">
+          <Link to={`/auctions/${auction.id}`}>
+            {auction.buyItNowEnabled ? "Buy It Now" : "Place Bid"}
+          </Link>
         </Button>
-        <Button variant="outline" className="w-full md:w-auto">
+
+        <Button variant="secondary" className="w-full md:w-auto">
           View Seller's Items
         </Button>
-        <Button variant="ghost" className="w-full md:w-auto">
+        <Button variant="secondary" className="w-full md:w-auto">
           More Actions
         </Button>
       </div>
