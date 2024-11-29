@@ -6,9 +6,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogFooter,
   Form,
   FormField,
-  FormLabel,
   FormControl,
   FormMessage,
   FormDescription,
@@ -16,7 +16,7 @@ import {
 } from "@/components/ui";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -31,10 +31,13 @@ export const BidModal = ({
   auctionId: number;
   minBidAmount: number;
 }) => {
+  const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
+
   const formSchema = z.object({
-    amount: z.number().gt(minBidAmount),
+    amount: z.coerce.number().gt(minBidAmount),
   });
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -57,59 +60,66 @@ export const BidModal = ({
           body: JSON.stringify(payload),
         }
       );
-
-      const data = await res.json();
-      return data;
+      if (res.ok) {
+        return true;
+      }
+      return false;
     },
     mutationKey: ["auctions"],
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["auctions"] });
+      setOpen(!open);
+    },
   });
 
   function onSubmit(data: any) {
     mutation.mutate(data);
   }
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild className="w-11/12">
         <Button>Bid</Button>
       </DialogTrigger>
-      <DialogContent className="pointer-events-auto">
+      <DialogContent>
         <DialogHeader>
-          <DialogTitle>Enter Bid</DialogTitle>
-          <DialogDescription></DialogDescription>
-          <Form {...form}>
-            <form
-              className="flex flex-col max-w-sm my-2"
-              onSubmit={form.handleSubmit(onSubmit)}
-            >
-              <FormField
-                control={form.control}
-                name="amount"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        placeholder="Enter your bid here."
-                        {...field}
-                        value={field.value > 0 ? field.value : ""}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Your bid must be greater than ${minBidAmount}
-                    </FormDescription>
-                  </FormItem>
-                )}
-              />
+          <DialogTitle>Bid</DialogTitle>
+          <DialogDescription>
+            Enter the dollar amount you wish to offer.
+          </DialogDescription>
+        </DialogHeader>
 
+        <Form {...form}>
+          <form
+            className="flex flex-col max-w-sm my-2"
+            onSubmit={form.handleSubmit(onSubmit)}
+          >
+            <FormField
+              control={form.control}
+              name="amount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter your bid here."
+                      {...field}
+                      value={field.value > 0 ? field.value : ""}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Your bid must be greater than ${minBidAmount}
+                  </FormDescription>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <DialogFooter>
               <Button type="submit" className="mt-4 md:w-20">
                 Submit
               </Button>
-            </form>
-
-            <FormMessage />
-          </Form>
-        </DialogHeader>
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

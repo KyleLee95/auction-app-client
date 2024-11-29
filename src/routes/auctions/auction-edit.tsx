@@ -11,7 +11,7 @@ import {
   Checkbox,
   Input,
 } from "@/components/ui";
-import { CategoryModel, CompleteAuction, CompleteCategory } from "@/types";
+import { CompleteAuction, CompleteCategory } from "@/types";
 import { DateTimePicker, FormCombobox } from "@/components";
 import { toast } from "@/hooks/use-toast";
 

@@ -8,7 +8,12 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+  Form,
+  FormField,
+  FormItem,
+  FormControl,
+  FormMessage,
+} from "@/components/ui";
 import { CompleteAuction } from "@/types/auction";
 import { Countdown } from "@/components/countdown-timer";
 
@@ -50,7 +55,6 @@ const images = [
 function AuctionDetail() {
   const context = useOutletContext();
   const { user, auction } = context;
-  console.log(user);
   const numBids = auction.bids.length;
   const minBidAmount =
     numBids > 0 ? auction.bids[0].amount : auction.startPrice;
@@ -63,7 +67,10 @@ function AuctionDetail() {
         className="mt-4 lg:ml-20 w-full lg:w-1/2"
       >
         <h1 className="text-xl">{auction.title}</h1>
-        <h2>${numBids > 0 ? auction?.bids[0]?.amount : auction.startPrice}</h2>
+        <h2>
+          ${numBids > 0 ? auction?.bids[0]?.amount : auction.startPrice} + $
+          {auction.shippingPrice} shipping
+        </h2>
         <span>{numBids} bids</span>
         <Countdown endTime={auction.endTime} />
         <p className="my-4">{auction.description}</p>
@@ -81,12 +88,12 @@ function AuctionDetail() {
             />
 
             {user?.userId === auction.sellerId ? (
-              <Link to={`/auctions/${auction.id}/edit`}>
-                <Button className="my-4 w-11/12">Edit </Button>
-              </Link>
-            ) : null}
-            {user?.userId === auction.sellerId ? (
-              <Button className="w-11/12"> Delete </Button>
+              <>
+                <Link to={`/auctions/${auction.id}/edit`}>
+                  <Button className="my-4 w-11/12">Edit </Button>
+                </Link>
+                <Button className="w-11/12"> Delete </Button>
+              </>
             ) : null}
           </div>
         </div>

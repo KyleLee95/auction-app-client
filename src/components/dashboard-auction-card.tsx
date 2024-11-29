@@ -9,7 +9,7 @@ export function AuctionCard({ auction }: { auction: CompleteAuction }) {
       <Link className="w-full md:w-1/4" to={`/auctions/${auction.id}`}>
         <div>
           <img
-            src="https://via.placeholder.com/150" // Replace with actual image URL
+            src="./150.png"
             alt="Auction item"
             className="w-full h-auto rounded-md object-cover"
           />
@@ -28,7 +28,6 @@ export function AuctionCard({ auction }: { auction: CompleteAuction }) {
             ? auction.bids[auction.bids.length - 1].amount
             : auction.startPrice}
           <span className="text-sm font-normal text-gray-600 dark:text-gray-400">
-            {" "}
             + ${auction.shippingPrice} shipping
           </span>
         </p>
