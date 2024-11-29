@@ -70,7 +70,7 @@ function AuctionCreateForm({
       return data;
     },
     mutationKey: ["auctions"],
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data) => {
       navigate(`/auctions/${data.auctions[0].id}`);
     },
   });
