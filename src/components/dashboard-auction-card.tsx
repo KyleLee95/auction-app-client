@@ -75,8 +75,12 @@ export function AuctionCard({ auction }: { auction: CompleteAuction }) {
         {auction.categories.map((categoryObj) => {
           const { category } = categoryObj;
           return (
-            <Button key={category.id} variant="default" size="sm">
-              {category.label}
+            <Button key={category.id} variant="default" size="sm" asChild>
+              <Link
+                to={`/search?categories=${category.value}&minPrice=0&maxPrice=10000`}
+              >
+                {category.label}
+              </Link>
             </Button>
           );
         })}
