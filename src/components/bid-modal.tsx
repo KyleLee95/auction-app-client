@@ -1,5 +1,13 @@
 import { useState } from "react";
 import {
+  Form,
+  FormField,
+  FormControl,
+  FormMessage,
+  FormDescription,
+  FormItem,
+} from "@/components/ui/form";
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -7,13 +15,7 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter,
-  Form,
-  FormField,
-  FormControl,
-  FormMessage,
-  FormDescription,
-  FormItem,
-} from "@/components/ui";
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
