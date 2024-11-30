@@ -67,29 +67,31 @@ function AuctionDetail() {
   const queryClient = useQueryClient();
 
   const removeAuctionFromWatchlistMutation = useMutation({
-    mutationFn: async () => {},
-    // await removeAuctionFromUserWatchlist("watchlistId", auction.id as number)
-    mutationKey: ["auctionsOnWatchlists"],
+    mutationFn: () => removeAuctionFromUserWatchlist(user.userId, auction.id),
+    mutationKey: ["isOnWatchlist", auction?.id?.toString()],
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: ["auctionsOnWatchlists"] });
+      queryClient.invalidateQueries({
+        queryKey: ["isOnWatchlist", auction.id?.toString()],
+      });
     },
   });
 
   function handleRemoveAuctionFromWatchlist() {
-    // removeAuctionFromUserMutation.mutate();
+    removeAuctionFromWatchlistMutation.mutate();
   }
 
   const addAuctionToWatchlistMutation = useMutation({
-    mutationFn: async () =>
-      await addAuctionToUserWatchlist(user.userId, auction.id as number),
-    mutationKey: ["auctionsONWatchlists"],
+    mutationFn: () => addAuctionToUserWatchlist(user.userId, auction.id),
+    mutationKey: ["isOnWatchlist", auction?.id?.toString()],
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: ["auctionsOnWatchlists"] });
+      queryClient.invalidateQueries({
+        queryKey: ["isOnWatchlist", auction?.id?.toString()],
+      });
     },
   });
 
   function handleAddAuctionToUserWatchlist() {
-    // addAuctionToUserWatchlistMutation.mutate();
+    addAuctionToWatchlistMutation.mutate();
   }
 
   return (
@@ -137,19 +139,12 @@ function AuctionDetail() {
                 type="button"
                 variant="destructive"
                 className="w-full md:w-auto"
-                onClick={() => {
-                  console.log("click?");
-                }}
+                onClick={handleRemoveAuctionFromWatchlist}
               >
                 Remove from Watchlist
               </Button>
             ) : (
-              <Button
-                type="button"
-                onClick={() => {
-                  console.log("click?");
-                }}
-              >
+              <Button type="button" onClick={handleAddAuctionToUserWatchlist}>
                 Add To Watchlist
               </Button>
             )}

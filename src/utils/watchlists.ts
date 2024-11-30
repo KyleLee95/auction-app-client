@@ -1,5 +1,5 @@
 /* Types */
-import { type CompleteWatchList } from "@/types";
+import { type CompleteWatchList } from "@/types/watchlist";
 
 export async function fetchUserWatchlists(userId: string): Promise<{
   watchlists: CompleteWatchList[];
@@ -34,18 +34,16 @@ export async function fetchWatchlistById(watchlistId: string): Promise<{
 }
 
 export const removeAuctionFromUserWatchlist = async (
-  watchlistId: number,
-  auctionId: number
+  userId: string,
+  auctionId: number | undefined
 ) => {
-  const res = await fetch(
-    `/api/watchlists/${watchlistId}/auction/${auctionId}`,
-    {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  const res = await fetch(`/api/watchlists/removeAuction`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ userId, auctionId }),
+  });
   if (!res.ok) {
     console.error(res.statusText);
   }
@@ -55,17 +53,18 @@ export const removeAuctionFromUserWatchlist = async (
 
 export const addAuctionToUserWatchlist = async (
   userId: string,
-  auctionId: number
+  auctionId: number | undefined
 ) => {
-  const res = await fetch(
-    `/api/watchlists/addAuction?userId=${userId}&auctionId=${auctionId}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  const res = await fetch(`/api/watchlists/addAuction`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      userId: userId,
+      auctionId: auctionId,
+    }),
+  });
   if (!res.ok) {
     console.error(res.statusText);
   }
