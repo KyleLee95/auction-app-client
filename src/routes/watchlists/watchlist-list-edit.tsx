@@ -17,6 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { queryClient } from "@/main";
 function WatchlistEdit() {
   const { watchlist, categories } = useOutletContext();
   const navigate = useNavigate();
@@ -40,37 +41,41 @@ function WatchlistEdit() {
     },
   });
 
-  const submitForm = useMutation({
-    mutationFn: async (formData: any) => {
-      const categoriesData = categories.filter((category: any) => {
-        if (formData.categories.includes(category.value)) {
-          return category;
-        }
-      });
+  const updateUserWatchlist = async (formData: any) => {
+    const categoriesData = categories.filter((category: any) => {
+      if (formData.categories.includes(category.value)) {
+        return category;
+      }
+    });
 
-      const payload = {
-        ...formData,
-        categories: categoriesData,
-      };
+    const payload = {
+      ...formData,
+      categories: categoriesData,
+    };
 
-      const res = await fetch(`/api/watchlists/${watchlist.id}`, {
-        method: "PUT",
-        body: JSON.stringify(payload),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await res.json();
-      return data;
-    },
+    const res = await fetch(`/api/watchlists/${watchlist.id}`, {
+      method: "PUT",
+      body: JSON.stringify(payload),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await res.json();
+    return data;
+  };
+
+  const submitFormMutation = useMutation({
+    mutationFn: (formData: any) => updateUserWatchlist(formData),
     mutationKey: ["watchlists"],
-    onSuccess: (data) => {},
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["watchlists"] });
+
+      navigate("/dashboard/watchlists");
+    },
   });
 
   function onSubmit(data: any) {
-    console.log("data", data);
-    submitForm.mutate(data);
-    return;
+    submitFormMutation.mutate(data);
   }
 
   return (
@@ -103,6 +108,24 @@ function WatchlistEdit() {
                     <Input placeholder="Max Price" type="number" {...field} />
                   </FormControl>
                   <FormDescription>The title of your watchlist</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="keyword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="keyword to use to match auctions"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>The name of your watchlist</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

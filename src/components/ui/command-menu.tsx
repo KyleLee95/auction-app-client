@@ -85,6 +85,7 @@ export function CommandMenu({ ...props }: DialogProps) {
             {categories.map((category) => {
               return (
                 <Link
+                  key={category.value}
                   to={`/search?category=${category.value}&minPrice=0&maxPrice=10000`}
                   onClick={() => setOpen(!open)}
                 >
