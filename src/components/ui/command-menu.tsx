@@ -8,11 +8,15 @@ import {
   CommandInput,
   CommandGroup,
 } from "@/components/ui/command";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { type DialogProps } from "@radix-ui/react-dialog";
 
 export function CommandMenu({ ...props }: DialogProps) {
   const [open, setOpen] = React.useState(false);
+  const [term, setTerm] = React.useState("");
+  const termRef = React.useRef(""); // Ref to store the latest term
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -20,10 +24,23 @@ export function CommandMenu({ ...props }: DialogProps) {
         e.preventDefault();
         setOpen((open) => !open);
       }
+      if (e.key === "Enter" && termRef.current.trim() !== "") {
+        // Use the latest term from the ref
+        console.log("term?", termRef.current);
+        navigate(`/search?term=${termRef.current}`);
+        setOpen(false);
+      }
     };
+
     document.addEventListener("keydown", down);
     return () => document.removeEventListener("keydown", down);
   }, []);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newTerm = e.target.value;
+    setTerm(newTerm);
+    termRef.current = newTerm; // Update the ref whenever the input changes
+  };
 
   return (
     <>
@@ -42,9 +59,16 @@ export function CommandMenu({ ...props }: DialogProps) {
         </kbd>
       </Button>
       <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput placeholder="Type a command or search..." />
+        <CommandInput
+          onInput={handleInputChange}
+          placeholder="Type a command or search..."
+        />
         <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
+          <CommandEmpty>
+            <Link to={`/search?term=${term}&minPrice=0&maxPrice=10000`}>
+              Search for {term}?
+            </Link>
+          </CommandEmpty>
           <CommandGroup heading="Suggestions">
             <CommandItem>Collectibles</CommandItem>
             <CommandItem>Clothing</CommandItem>

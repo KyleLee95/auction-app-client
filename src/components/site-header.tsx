@@ -14,7 +14,8 @@ import {
 import { CommandMenu } from "@/components/ui/command-menu";
 import { MobileNav } from "@/components/mobile-menu";
 import { cn } from "@/lib/utils";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 const ListItem = React.forwardRef<
   React.ElementRef<"a">,
   React.ComponentPropsWithoutRef<"a">
@@ -82,7 +83,19 @@ function HeaderMenuList() {
 
 type Props = { className?: string };
 
+const searchAuctions = async (term: string) => {
+  const res = await fetch(
+    `/api/auctions/search?term=${term}&minPrice=0&maxPrice=1000`
+  );
+  const data = await res.json();
+  return data;
+};
+
 function SiteHeader({ className }: Props) {
+  // const { isLoading, isError, isPending, data } = useQuery({
+  //   queryFn: () => searchAuctions(),
+  //   queryKey: ["auctions"],
+  // });
   const categories = [
     { label: "Autos", value: "autos" },
     {
