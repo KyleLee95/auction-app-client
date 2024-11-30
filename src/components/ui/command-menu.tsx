@@ -12,6 +12,18 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { type DialogProps } from "@radix-ui/react-dialog";
 
+const categories = [
+  { label: "Autos", value: "autos" },
+  {
+    label: "Clothing, Shoes & Accessories",
+    value: "clothing-shoes-accessories",
+  },
+  { label: "Electronics", value: "electronics" },
+  { label: "Sporting Goods", value: "sporting-goods" },
+  { label: "Jewely & Watches", value: "jewelry-watches" },
+  { label: "Collectibles", value: "collectibles" },
+];
+
 export function CommandMenu({ ...props }: DialogProps) {
   const [open, setOpen] = React.useState(false);
   const [term, setTerm] = React.useState("");
@@ -70,11 +82,18 @@ export function CommandMenu({ ...props }: DialogProps) {
             </Link>
           </CommandEmpty>
           <CommandGroup heading="Suggestions">
-            <CommandItem>Collectibles</CommandItem>
-            <CommandItem>Clothing</CommandItem>
-            <CommandItem>Jewelry</CommandItem>
-            <CommandItem>Electronics</CommandItem>
-            <CommandItem>Motors</CommandItem>
+            {categories.map((category) => {
+              return (
+                <Link
+                  to={`/search?category=${category.value}&minPrice=0&maxPrice=10000`}
+                  onClick={() => setOpen(!open)}
+                >
+                  <CommandItem key={category.value}>
+                    {category.label}
+                  </CommandItem>
+                </Link>
+              );
+            })}
           </CommandGroup>
         </CommandList>
       </CommandDialog>
