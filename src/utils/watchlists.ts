@@ -1,5 +1,5 @@
 /* Types */
-import { type CompleteWatchList } from "../types";
+import { type CompleteWatchList } from "@/types";
 
 export async function fetchUserWatchlists(userId: string): Promise<{
   watchlists: CompleteWatchList[];
@@ -32,3 +32,43 @@ export async function fetchWatchlistById(watchlistId: string): Promise<{
   const data = await res.json();
   return data;
 }
+
+export const removeAuctionFromUserWatchlist = async (
+  watchlistId: number,
+  auctionId: number
+) => {
+  const res = await fetch(
+    `/api/watchlists/${watchlistId}/auction/${auctionId}`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  if (!res.ok) {
+    console.error(res.statusText);
+  }
+  const data = await res.json();
+  return data;
+};
+
+export const addAuctionToUserWatchlist = async (
+  userId: string,
+  auctionId: number
+) => {
+  const res = await fetch(
+    `/api/watchlists/addAuction?userId=${userId}&auctionId=${auctionId}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  if (!res.ok) {
+    console.error(res.statusText);
+  }
+  const data = await res.json();
+  return data;
+};

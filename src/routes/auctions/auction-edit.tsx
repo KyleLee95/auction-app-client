@@ -15,6 +15,7 @@ import { DateTimePicker } from "@/components/date-time-picker";
 import { FormCombobox } from "@/components/form-combobox";
 import { CompleteAuction } from "@/types/auction";
 import { CompleteCategory } from "@/types/category";
+import { updateAuctionById } from "@/utils/auctions";
 import { toast } from "@/hooks/use-toast";
 
 import { useMutation } from "@tanstack/react-query";
@@ -68,15 +69,7 @@ function AuctionEdit() {
         sellerId: user.userId,
         categories: categoriesData,
       };
-
-      const res = await fetch(`/api/auctions/${auction.id}`, {
-        method: "PUT",
-        body: JSON.stringify(payload),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await res.json();
+      const data = await updateAuctionById(auction.id as number, payload);
       return data;
     },
     mutationKey: ["auctions"],

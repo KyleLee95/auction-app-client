@@ -2,8 +2,6 @@ import { Button } from "@/components/ui/button";
 import { CompleteAuction } from "@/types/auction";
 import { Countdown } from "@/components/countdown-timer";
 import { Link } from "react-router-dom";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { AuthUser } from "aws-amplify/auth";
 
 export function AuctionCard({
   auction,
@@ -11,7 +9,6 @@ export function AuctionCard({
   auction: CompleteAuction;
   showRemoveButton?: boolean;
   watchlistId?: number;
-  user: AuthUser;
 }) {
   return (
     <div className="flex flex-col items-stretch p-4 border rounded-md shadow-sm bg-white dark:bg-zinc-950 text-gray-900 dark:text-gray-100 w-full my-4 gap-4">

@@ -1,4 +1,5 @@
-import { IBidModelWithAuction, type CompleteAuction } from "../types";
+import { type CompleteAuction } from "@/types/auction";
+import { IBidModelWithAuction } from "@/types/bid";
 
 export async function searchAuctions(
   params: string
@@ -53,6 +54,21 @@ export async function fetchAuctionById(auctionId: string): Promise<{
   if (!res.ok) {
     console.error("fetch auctions error", res.statusText);
   }
+  const data = await res.json();
+  return data;
+}
+
+export async function updateAuctionById(
+  auctionId: number,
+  payload: any
+): Promise<{}> {
+  const res = await fetch(`/api/auctions/${auctionId}`, {
+    method: "PUT",
+    body: JSON.stringify(payload),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
   const data = await res.json();
   return data;
 }

@@ -7,9 +7,8 @@ import { CompleteCategoriesOnWatchLists } from "@/types/categoriesonwatchlists";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Link } from "react-router-dom";
 function DashboardWatchlistList() {
-  const { watchlists }: { watchlists: CompleteWatchList[] } =
-    useOutletContext();
-  const userWatchlist = watchlists[0];
+  const { watchlists }: { watchlists: CompleteWatchList } = useOutletContext();
+  const userWatchlist = watchlists;
   const {
     auctions,
     categories,

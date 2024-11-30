@@ -12,6 +12,11 @@ import {
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { CompleteAuction } from "@/types/auction";
 import { Countdown } from "@/components/countdown-timer";
+import { AuthUser } from "aws-amplify/auth";
+import {
+  addAuctionToUserWatchlist,
+  removeAuctionFromUserWatchlist,
+} from "@/utils/watchlists";
 
 const QuantitySelect = ({ auction }: { auction: CompleteAuction }) => {
   return (
@@ -48,56 +53,22 @@ const images = [
   },
 ];
 
-const removeAuctionFromUserWatchlist = async (
-  watchlistId: number,
-  auctionId: number
-) => {
-  const res = await fetch(
-    `/api/watchlists/${watchlistId}/auction/${auctionId}`,
-    {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
-  if (!res.ok) {
-    console.error(res.statusText);
-    return;
-  }
-  const data = await res.json();
-  return data;
-};
-
-const addAuctionToUserWatchlist = async (userId: string, auctionId: number) => {
-  const res = await fetch(
-    `/api/watchlists/addAuction?userId=${userId}&auctionId=${auctionId}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
-  if (!res.ok) {
-    console.error(res.statusText);
-    return;
-  }
-  const data = await res.json();
-  return data;
-};
-
 function AuctionDetail() {
-  const { user, auction } = useOutletContext();
+  const {
+    user,
+    auction,
+    isOnWatchlist,
+  }: { user: AuthUser; auction: CompleteAuction; isOnWatchlist: boolean } =
+    useOutletContext();
   const numBids = auction.bids.length;
   const minBidAmount =
     numBids > 0 ? auction.bids[0].amount : auction.startPrice;
 
   const queryClient = useQueryClient();
 
-  const removeAuctionFromUserMutation = useMutation({
-    mutationFn: async () =>
-      await removeAuctionFromUserWatchlist(auction.id as number),
+  const removeAuctionFromWatchlistMutation = useMutation({
+    mutationFn: async () => {},
+    // await removeAuctionFromUserWatchlist("watchlistId", auction.id as number)
     mutationKey: ["auctionsOnWatchlists"],
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: ["auctionsOnWatchlists"] });
@@ -105,10 +76,10 @@ function AuctionDetail() {
   });
 
   function handleRemoveAuctionFromWatchlist() {
-    removeAuctionFromUserMutation.mutate();
+    // removeAuctionFromUserMutation.mutate();
   }
 
-  const addAuctionToUserWatchlistMutation = useMutation({
+  const addAuctionToWatchlistMutation = useMutation({
     mutationFn: async () =>
       await addAuctionToUserWatchlist(user.userId, auction.id as number),
     mutationKey: ["auctionsONWatchlists"],
@@ -118,8 +89,7 @@ function AuctionDetail() {
   });
 
   function handleAddAuctionToUserWatchlist() {
-    console.log("?");
-    addAuctionToUserWatchlistMutation.mutate();
+    // addAuctionToUserWatchlistMutation.mutate();
   }
 
   return (
@@ -146,7 +116,7 @@ function AuctionDetail() {
 
             <BidModal
               user={user}
-              auctionId={auction.id}
+              auctionId={auction.id as number}
               minBidAmount={minBidAmount}
             />
 
@@ -162,25 +132,27 @@ function AuctionDetail() {
               </>
             ) : null}
 
-            <Button
-              type="button"
-              onClick={() => {
-                console.log("click?");
-              }}
-            >
-              Add To Watchlist
-            </Button>
-
-            <Button
-              type="button"
-              variant="destructive"
-              className="w-full md:w-auto"
-              onClick={() => {
-                console.log("click?");
-              }}
-            >
-              Remove from Watchlist
-            </Button>
+            {isOnWatchlist ? (
+              <Button
+                type="button"
+                variant="destructive"
+                className="w-full md:w-auto"
+                onClick={() => {
+                  console.log("click?");
+                }}
+              >
+                Remove from Watchlist
+              </Button>
+            ) : (
+              <Button
+                type="button"
+                onClick={() => {
+                  console.log("click?");
+                }}
+              >
+                Add To Watchlist
+              </Button>
+            )}
           </div>
         </div>
       </div>

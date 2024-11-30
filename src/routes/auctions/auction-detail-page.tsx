@@ -15,6 +15,17 @@ const fetchCategories = async () => {
   const { categories }: { categories: any } = data;
   return { categories: categories };
 };
+
+const checkIfAuctionIsOnWatchlist = async (
+  userId: string,
+  auctionId: string
+) => {
+  const res = await fetch(
+    `/api/watchlists/check?userId=${userId}&auctionId=${auctionId}`
+  );
+  const data = await res.json();
+  return data;
+};
 function AuctionPage() {
   const { auctionId } = useParams();
   const { user } = useAuthenticator();
@@ -28,6 +39,11 @@ function AuctionPage() {
       {
         queryKey: ["auctions", auctionId],
         queryFn: () => fetchAuctionById(auctionId as string),
+      },
+      {
+        queryKey: ["isOnWatchlist", auctionId],
+        queryFn: () =>
+          checkIfAuctionIsOnWatchlist(user.userId, auctionId as string),
       },
     ],
 
@@ -59,7 +75,8 @@ function AuctionPage() {
   }
   const categories = queryResults?.data[0]?.categories;
   const auction = queryResults?.data[1]?.auctions[0];
-  return <Outlet context={{ categories, auction, user }} />;
+  const isOnWatchlist = queryResults?.data[2].isOnWatchlist;
+  return <Outlet context={{ categories, auction, user, isOnWatchlist }} />;
 }
 
 export { AuctionPage };
