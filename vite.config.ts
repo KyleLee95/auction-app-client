@@ -6,6 +6,8 @@ import * as dotenv from "dotenv";
 dotenv.config();
 const isDev = process.env.DEV === "true";
 const apiGatewayHost = isDev ? "localhost" : "api-gateway";
+
+console.log(isDev, apiGatewayHost);
 export default defineConfig({
   build: {
     sourcemap: false,
