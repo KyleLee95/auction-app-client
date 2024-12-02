@@ -62,17 +62,17 @@ function AuctionCreateForm({
   });
 
   const formSchema = z.object({
-    title: z.string().default("title"),
-    description: z.string().default("description"),
-    startPrice: z.number().default(0.0),
-    buyItNowPrice: z.number().default(0.0),
-    startTime: z.date().default(new Date(Date.now())),
-    endTime: z.date().default(new Date(Date.now())),
-    shippingPrice: z.number().default(15.99),
-    isActive: z.boolean().default(false),
-    quantity: z.coerce.number().int().default(1),
-    buyItNowEnabled: z.coerce.boolean().default(true),
-    categories: z.array(z.string()).default([]),
+    title: z.string(),
+    description: z.string(),
+    startPrice: z.number(),
+    buyItNowPrice: z.number(),
+    startTime: z.date(),
+    shippingPrice: z.number(),
+    endTime: z.date(),
+    isActive: z.boolean(),
+    quantity: z.coerce.number().int(),
+    buyItNowEnabled: z.coerce.boolean(),
+    categories: z.array(z.string()),
   });
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

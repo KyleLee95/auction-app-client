@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
 // https://vite.dev/config/
+const isDev = process.env.DEV === "true";
 export default defineConfig({
   build: {
     sourcemap: false,
