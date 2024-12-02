@@ -22,6 +22,9 @@ import { WatchlistEdit } from "./routes/watchlists/watchlist-list-edit";
 import { ErrorPage } from "@/routes/error-page";
 import { Index } from "@/routes/index";
 
+import { UserProfile } from "@/routes/users/user-info";
+import { AdminFunctionalities } from "./routes/admin/admin-panel";
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<RootLayout />} errorElement={<ErrorPage />}>
@@ -49,6 +52,9 @@ const router = createBrowserRouter(
             element={<WatchlistEdit />}
           />
         </Route>
+        <Route path="/user" element={<UserProfile />} />
+
+        <Route path="/adminPanel" element={<AdminFunctionalities />} />
       </Route>
     </Route>
   ),

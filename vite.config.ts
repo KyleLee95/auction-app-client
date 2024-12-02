@@ -38,6 +38,10 @@ export default defineConfig({
         target: `http://${apiGatewayHost}:42069`,
         changeOrigin: true,
       },
+      "/api/user": {
+        target: "http://localhost:42069",
+        changeOrigin: true,
+      },
     },
   },
 });
