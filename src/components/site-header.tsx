@@ -14,7 +14,8 @@ import {
 import { CommandMenu } from "@/components/ui/command-menu";
 import { MobileNav } from "@/components/mobile-menu";
 import { cn } from "@/lib/utils";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 const ListItem = React.forwardRef<
   React.ElementRef<"a">,
   React.ComponentPropsWithoutRef<"a">
@@ -40,7 +41,7 @@ const ListItem = React.forwardRef<
     </li>
   );
 });
-ListItem.displayName = "ListItem";
+ListItem.labelvalue = "ListItem";
 
 function HeaderMenuList() {
   return (
@@ -82,22 +83,34 @@ function HeaderMenuList() {
 
 type Props = { className?: string };
 
+const searchAuctions = async (term: string) => {
+  const res = await fetch(
+    `/api/auctions/search?term=${term}&minPrice=0&maxPrice=1000`
+  );
+  const data = await res.json();
+  return data;
+};
+
 function SiteHeader({ className }: Props) {
+  // const { isLoading, isError, isPending, data } = useQuery({
+  //   queryFn: () => searchAuctions(),
+  //   queryKey: ["auctions"],
+  // });
   const categories = [
-    { display: "Autos", name: "autos" },
+    { label: "Autos", value: "autos" },
     {
-      display: "Clothing, Shoes & Accessories",
-      name: "clothing-shoes-accessories",
+      label: "Clothing, Shoes & Accessories",
+      value: "clothing-shoes-accessories",
     },
-    { display: "Electronics", name: "electronics" },
-    { display: "Sporting Goods", name: "sporting-goods" },
-    { display: "Jewely & Watches", name: "jewelry-watches" },
-    { display: "Collectibles", name: "collectibles" },
+    { label: "Electronics", value: "electronics" },
+    { label: "Sporting Goods", value: "sporting-goods" },
+    { label: "Jewely & Watches", value: "jewelry-watches" },
+    { label: "Collectibles", value: "collectibles" },
   ];
 
   interface Category {
-    display: string;
-    name: string;
+    label: string;
+    value: string;
   }
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 dark:border-border">
@@ -151,13 +164,15 @@ function SiteHeader({ className }: Props) {
             </NavigationMenuItem>
             {categories.map((category: Category) => {
               return (
-                <NavigationMenuItem key={category.name}>
+                <NavigationMenuItem key={category.value}>
                   <NavigationMenuLink
                     className={navigationMenuTriggerStyle()}
                     asChild
                   >
-                    <Link to={`/search?category=${category.name}`}>
-                      {category.display}
+                    <Link
+                      to={`/search?categories=${category.value}&order=asc&minPrice=0&maxPrice=10000`}
+                    >
+                      {category.label}
                     </Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>

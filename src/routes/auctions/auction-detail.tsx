@@ -1,6 +1,4 @@
 import { Link, useOutletContext } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { fetchAuctionById } from "@/utils/auctions";
 import { Button } from "@/components/ui/button";
 import { ImageCarousel } from "@/components/image-carousel";
 import { BidModal } from "@/components/bid-modal";
@@ -11,8 +9,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { CompleteAuction } from "@/types/auction";
 import { Countdown } from "@/components/countdown-timer";
+import { AuthUser } from "aws-amplify/auth";
+import {
+  addAuctionToUserWatchlist,
+  removeAuctionFromUserWatchlist,
+} from "@/utils/watchlists";
 
 const QuantitySelect = ({ auction }: { auction: CompleteAuction }) => {
   return (
@@ -48,10 +52,47 @@ const images = [
     alt: "test",
   },
 ];
+
 function AuctionDetail() {
-  const context = useOutletContext();
-  const { user, auction } = context;
-  const hasBids = auction?.bids?.length;
+  const {
+    user,
+    auction,
+    isOnWatchlist,
+  }: { user: AuthUser; auction: CompleteAuction; isOnWatchlist: boolean } =
+    useOutletContext();
+  const numBids = auction.bids.length;
+  const minBidAmount =
+    numBids > 0 ? auction.bids[0].amount : auction.startPrice;
+
+  const queryClient = useQueryClient();
+
+  const removeAuctionFromWatchlistMutation = useMutation({
+    mutationFn: () => removeAuctionFromUserWatchlist(user.userId, auction.id),
+    mutationKey: ["isOnWatchlist", auction?.id?.toString()],
+    onSuccess() {
+      queryClient.invalidateQueries({
+        queryKey: ["isOnWatchlist", auction.id?.toString()],
+      });
+    },
+  });
+
+  function handleRemoveAuctionFromWatchlist() {
+    removeAuctionFromWatchlistMutation.mutate();
+  }
+
+  const addAuctionToWatchlistMutation = useMutation({
+    mutationFn: () => addAuctionToUserWatchlist(user.userId, auction.id),
+    mutationKey: ["isOnWatchlist", auction?.id?.toString()],
+    onSuccess() {
+      queryClient.invalidateQueries({
+        queryKey: ["isOnWatchlist", auction?.id?.toString()],
+      });
+    },
+  });
+
+  function handleAddAuctionToUserWatchlist() {
+    addAuctionToWatchlistMutation.mutate();
+  }
 
   return (
     <div className="flex flex-wrap mt-10">
@@ -62,29 +103,51 @@ function AuctionDetail() {
       >
         <h1 className="text-xl">{auction.title}</h1>
         <h2>
-          $
-          {hasBids
-            ? auction.bids[auction.bids.length - 1].amount
-            : auction.startPrice}
+          ${numBids > 0 ? auction?.bids[0]?.amount : auction.startPrice} + $
+          {auction.shippingPrice} shipping
         </h2>
-        <span>{hasBids ? hasBids : 0} bids</span>
+        <span>{numBids} bids</span>
         <Countdown endTime={auction.endTime} />
         <p className="my-4">{auction.description}</p>
         <div id="user-action-group" className="my-4">
           <QuantitySelect auction={auction} />
           <div id="btn-group" className="my-4">
-            {auction.buyItNowEnabled ? <Button>Add to Cart</Button> : null}
+            {auction.buyItNowEnabled ? (
+              <Button className="my-4 w-11/12">Add to Cart</Button>
+            ) : null}
 
-            <BidModal />
+            <BidModal
+              user={user}
+              auctionId={auction.id as number}
+              minBidAmount={minBidAmount}
+            />
 
             {user?.userId === auction.sellerId ? (
-              <Link to={`/auctions/${auction.id}/edit`}>
-                <Button className="my-4 w-11/12">Edit </Button>
-              </Link>
+              <>
+                <Link to={`/auctions/${auction.id}/edit`}>
+                  <Button className="my-4 w-11/12">Edit </Button>
+                </Link>
+                <Button className="w-11/12" disabled={numBids > 0}>
+                  {" "}
+                  Delete{" "}
+                </Button>
+              </>
             ) : null}
-            {user?.userId === auction.sellerId ? (
-              <Button className="w-11/12"> Delete </Button>
-            ) : null}
+
+            {isOnWatchlist ? (
+              <Button
+                type="button"
+                variant="destructive"
+                className="w-full md:w-auto"
+                onClick={handleRemoveAuctionFromWatchlist}
+              >
+                Remove from Watchlist
+              </Button>
+            ) : (
+              <Button type="button" onClick={handleAddAuctionToUserWatchlist}>
+                Add To Watchlist
+              </Button>
+            )}
           </div>
         </div>
       </div>

@@ -9,8 +9,8 @@ import {
   NavigationMenuLink,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { type CompleteAuction } from "@/types";
-import { type CompleteBid } from "@/types";
+import { type CompleteAuction } from "@/types/auction";
+import { type CompleteBid } from "@/types/bid";
 import { AuthUser } from "aws-amplify/auth";
 import { fetchUserWatchlists } from "@/utils/watchlists";
 
@@ -22,7 +22,6 @@ export interface DashboardOutletProps extends OutletProps {
 
 function DashboardPage() {
   const { user } = useAuthenticator();
-  console.log("user", user);
 
   const queryResults = useQueries({
     queries: [
@@ -47,7 +46,6 @@ function DashboardPage() {
   const isError = queryResults.error.some((result) => result === true);
   const isLoading = queryResults.loading.some((result) => result === true);
 
-  console.log(queryResults);
   if (isLoading) {
     return "Loading...";
   }
@@ -60,7 +58,7 @@ function DashboardPage() {
 
   return (
     <Authenticator>
-      <div className="flex flex-row flex-wrap mx-auto h-full min-h-72">
+      <div className="flex flex-row flex-wrap mx-auto h-full min-h-72 w-full max-w-screen-lg">
         <div className="flex-none w-22 border rounded border-gray-800">
           <NavigationMenu orientation="vertical">
             <NavigationMenuList className="flex-col items-start justify-center space-x-0">

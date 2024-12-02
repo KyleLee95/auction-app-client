@@ -1,11 +1,10 @@
-import { IBidModelWithAuction, type CompleteAuction } from "../types";
-
-export type AuctionsSortBy = "" | "" | "";
+import { type CompleteAuction } from "@/types/auction";
+import { IBidModelWithAuction } from "@/types/bid";
 
 export async function searchAuctions(
-  category: string
+  params: string
 ): Promise<{ auctions: CompleteAuction[] }> {
-  const res = await fetch(`/api/auctions/search?category=${category}`, {
+  const res = await fetch(`/api/auctions/search?${params}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -16,7 +15,6 @@ export async function searchAuctions(
     console.error("fetch auctions error", res.statusText);
   }
   const { auctions } = await res.json();
-  console.log("auctions from search?", auctions);
   return { auctions: auctions };
 }
 
@@ -27,10 +25,6 @@ export async function fetchUserAuctions(
   auctions: CompleteAuction[];
   bidOnAuctions: IBidModelWithAuction[];
 }> {
-  // {
-  //   filterBy,
-  //   sortBy,
-  // }: { filterBy?: string; sortBy: AuctionsSortBy } = {}
   const res = await fetch(
     `/api/auctions?userId=${userId}&includeBidOn=${includeBidOn}`,
     {
@@ -60,6 +54,21 @@ export async function fetchAuctionById(auctionId: string): Promise<{
   if (!res.ok) {
     console.error("fetch auctions error", res.statusText);
   }
+  const data = await res.json();
+  return data;
+}
+
+export async function updateAuctionById(
+  auctionId: number,
+  payload: any
+): Promise<{}> {
+  const res = await fetch(`/api/auctions/${auctionId}`, {
+    method: "PUT",
+    body: JSON.stringify(payload),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
   const data = await res.json();
   return data;
 }

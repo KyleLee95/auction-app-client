@@ -1,14 +1,25 @@
 import { useOutletContext } from "react-router-dom";
-import { useState } from "react";
 import { CompleteAuction } from "@/types/auction";
-import { AuctionCard } from "@/components";
-function SearchPageResultsFeed() {
-  const { auctions } = useOutletContext();
 
+import { AuctionCard } from "@/components/auction-card";
+
+function SearchPageResultsFeed() {
+  const { user, watchlistId, auctions } = useOutletContext();
+
+  if (auctions?.length === 0) {
+    return <div className="flex-col">No Auctions Found!</div>;
+  }
   return (
     <div className="flex-col">
       {auctions.map((auction: CompleteAuction) => {
-        return <AuctionCard key={auction.id} auction={auction} />;
+        return (
+          <AuctionCard
+            watchlistId={watchlistId}
+            showRemoveButton={false}
+            key={auction.id}
+            auction={auction}
+          />
+        );
       })}
     </div>
   );

@@ -1,11 +1,9 @@
 import * as z from "zod";
+import { type CompleteAuction, RelatedAuctionModel } from "./auction";
 import {
-  type CompleteAuction,
   type CompleteCategoriesOnWatchLists,
-  RelatedAuctionModel,
   RelatedCategoriesOnWatchListsModel,
-} from "./index";
-
+} from "./categoriesonwatchlists";
 export const CategoryModelInput = z.object({
   label: z.string(),
   value: z.string(),

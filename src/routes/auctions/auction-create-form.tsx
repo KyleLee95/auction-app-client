@@ -6,39 +6,48 @@ import {
   FormMessage,
   FormDescription,
   FormItem,
-  Textarea,
-  Button,
-  Checkbox,
-  Input,
-} from "@/components/ui";
-import { DateTimePicker, FormCombobox } from "@/components";
-import { toast } from "@/hooks/use-toast";
+} from "@/components/ui/form";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { CompleteCategory } from "@/types/category";
+import { DateTimePicker } from "@/components/date-time-picker";
+import { FormCombobox } from "@/components/form-combobox";
 
 import { useMutation } from "@tanstack/react-query";
 
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { AuthUser } from "aws-amplify/auth";
+import { useNavigate } from "react-router-dom";
 
-const formSchema = z.object({
-  title: z.string().default("title"),
-  description: z.string().default("description"),
-  startPrice: z.number().default(0.0), // Accepts number from client
-  startTime: z.date().default(new Date(Date.now())),
-  endTime: z.date().default(new Date(Date.now())),
-  shippingPrice: z.number().default(15.99),
-  isActive: z.boolean().default(false),
-  quantity: z.coerce.number().int().default(1),
-  buyItNowEnabled: z.coerce.boolean().default(true),
-  categories: z.array(z.string()).default([]),
-});
-
-function AuctionCreateForm({ categories }: { categories: any }) {
+function AuctionCreateForm({
+  categories,
+  user,
+}: {
+  categories: CompleteCategory[];
+  user: AuthUser;
+}) {
+  const navigate = useNavigate();
   const submitForm = useMutation({
     mutationFn: async (formData: any) => {
+      const categoriesData = categories.filter((category: any) => {
+        if (formData.categories.includes(category.value)) {
+          return category;
+        }
+      });
+
+      const payload = {
+        ...formData,
+        sellerId: user.userId,
+        categories: categoriesData,
+      };
+
       const res = await fetch(`/api/auctions`, {
         method: "POST",
-        body: JSON.stringify({ ...formData }),
+        body: JSON.stringify(payload),
         headers: {
           "Content-Type": "application/json",
         },
@@ -46,20 +55,25 @@ function AuctionCreateForm({ categories }: { categories: any }) {
       const data = await res.json();
       return data;
     },
+    mutationKey: ["auctions"],
+    onSuccess: (data) => {
+      navigate(`/auctions/${data.auctions[0].id}`);
+    },
   });
 
-  const onSubmit = (data: any) => {
-    submitForm.mutate(data);
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
-  };
-
+  const formSchema = z.object({
+    title: z.string(),
+    description: z.string(),
+    startPrice: z.number(),
+    buyItNowPrice: z.number(),
+    startTime: z.date(),
+    shippingPrice: z.number(),
+    endTime: z.date(),
+    isActive: z.boolean(),
+    quantity: z.coerce.number().int(),
+    buyItNowEnabled: z.coerce.boolean(),
+    categories: z.array(z.string()),
+  });
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -68,13 +82,18 @@ function AuctionCreateForm({ categories }: { categories: any }) {
       description: "A helpful description",
       shippingPrice: 10.99,
       startPrice: 10.99,
+      buyItNowPrice: 10.99,
       quantity: 1,
       startTime: new Date(Date.now()),
       endTime: new Date(Date.now()),
       title: "An accurate title",
-      categories: categories,
+      categories: [],
     },
   });
+
+  const onSubmit = (data: any) => {
+    submitForm.mutate(data);
+  };
 
   return (
     <Form {...form}>
@@ -170,6 +189,33 @@ function AuctionCreateForm({ categories }: { categories: any }) {
                 </FormItem>
               )}
             />
+
+            {form.getValues("buyItNowEnabled") ? (
+              <FormField
+                control={form.control}
+                name="buyItNowPrice"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Buy It Now Price</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="shadcn"
+                        type="number"
+                        {...field}
+                        onChange={(e) => {
+                          field.onChange(Number(e.target.value));
+                        }}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      The initial price of the item. This price will be used as
+                      the Buy It Now price, if the option is enabled
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ) : null}
 
             <FormField
               control={form.control}

@@ -1,11 +1,6 @@
 import * as z from "zod";
-import {
-  type CompleteWatchList,
-  RelatedWatchListModel,
-  type CompleteCategory,
-  RelatedCategoryModel,
-} from "./index";
-
+import { type CompleteCategory, RelatedCategoryModel } from "./category";
+import { type CompleteWatchList, RelatedWatchListModel } from "./watchlist";
 export const CategoriesOnWatchListsModel = z.object({
   watchlistId: z.number().int(),
   categoryId: z.number().int(),

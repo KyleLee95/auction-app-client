@@ -1,5 +1,3 @@
-import React from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   Form,
   FormField,
@@ -8,65 +6,103 @@ import {
   FormMessage,
   FormDescription,
   FormItem,
-} from "@/components/ui";
-import { useOutletContext } from "react-router-dom";
-import { DateTimePicker } from "@/components/date-time-picker";
+} from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
+import { DateTimePicker } from "@/components/date-time-picker";
+import { FormCombobox } from "@/components/form-combobox";
+import { CompleteAuction } from "@/types/auction";
+import { CompleteCategory } from "@/types/category";
+import { updateAuctionById } from "@/utils/auctions";
+import { toast } from "@/hooks/use-toast";
+
+import { useMutation } from "@tanstack/react-query";
+import { useOutletContext } from "react-router-dom";
+
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Combobox } from "@/components/ui/combobox";
-const formSchema = z.object({
-  title: z.string().default("title"),
-  description: z.string().default("description"),
-  startPrice: z.number().default(0.0), // Accepts number from client
-  startTime: z.date().default(new Date(Date.now())),
-  endTime: z.date().default(new Date(Date.now())),
-  shippingPrice: z.number().default(15.99),
-  isActive: z.boolean().default(false),
-  quantity: z.coerce.number().int().default(1),
-  buyItNowEnabled: z.coerce.boolean().default(true),
-  categories: z.array(z.string()).default([]),
-});
+
+import { AuthUser } from "aws-amplify/auth";
 
 function AuctionEdit() {
-  const { user, auction }: { user: any; auction: any } = useOutletContext();
+  const {
+    user,
+    auction,
+    categories,
+  }: {
+    user: AuthUser;
+    auction: CompleteAuction;
+    categories: CompleteCategory[];
+  } = useOutletContext();
 
-  const mutation = useMutation({
+  const formSchema = z.object({
+    title: z.string().default("title"),
+    description: z.string().default("description"),
+    startPrice: z.number().default(0.0),
+    buyItNowPrice: z.number().default(0.0),
+    startTime: z.date().default(new Date(Date.now())),
+    endTime: z.date().default(new Date(Date.now())),
+    shippingPrice: z.number().default(15.99),
+    isActive: z.boolean().default(false),
+    quantity: z.coerce.number().int().default(1),
+    buyItNowEnabled: z.coerce.boolean().default(true),
+    categories: z.array(z.string()).default(
+      auction.categories.map((category) => {
+        return category.label;
+      })
+    ),
+  });
+
+  const submitForm = useMutation({
     mutationFn: async (formData: any) => {
-      const res = await fetch(`/api/auctions/${auction.id}`, {
-        method: "PUT",
-        body: JSON.stringify({ ...auction, ...formData }),
-        headers: {
-          "Content-Type": "application/json",
-        },
+      const categoriesData = categories.filter((category: any) => {
+        if (formData.categories.includes(category.value)) {
+          return category;
+        }
       });
-      const data = await res.json();
+
+      const payload = {
+        ...formData,
+        sellerId: user.userId,
+        categories: categoriesData,
+      };
+      const data = await updateAuctionById(auction.id as number, payload);
       return data;
     },
+    mutationKey: ["auctions"],
   });
 
   const onSubmit = (data: any) => {
-    mutation.mutate(data);
+    submitForm.mutate(data);
+    toast({
+      title: "You submitted the following values:",
+      description: (
+        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+        </pre>
+      ),
+    });
   };
 
-  const startTime = new Date(auction.startTime);
-  const endTime = new Date(auction.endTime);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      isActive: Boolean(auction.isActive),
+      isActive: auction.isActive,
       buyItNowEnabled: auction.buyItNowEnabled,
       description: auction.description,
       shippingPrice: auction.shippingPrice,
       startPrice: auction.startPrice,
+      buyItNowPrice: auction.buyItNowPrice,
       quantity: auction.quantity,
-      startTime: startTime,
-      endTime: endTime,
+      startTime: new Date(auction.startTime),
+      endTime: new Date(auction.endTime),
       title: auction.title,
+      categories: auction.categories.map((categoryObj) => {
+        return categoryObj.category.value;
+      }),
     },
   });
 
@@ -149,7 +185,6 @@ function AuctionEdit() {
                 <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                   <FormControl>
                     <Checkbox
-                      onChange={field.onChange}
                       checked={field.value}
                       onCheckedChange={field.onChange}
                     />
@@ -165,6 +200,33 @@ function AuctionEdit() {
                 </FormItem>
               )}
             />
+
+            {form.getValues("buyItNowEnabled") ? (
+              <FormField
+                control={form.control}
+                name="buyItNowPrice"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Buy It Now Price</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="shadcn"
+                        type="number"
+                        {...field}
+                        onChange={(e) => {
+                          field.onChange(Number(e.target.value));
+                        }}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      The initial price of the item. This price will be used as
+                      the Buy It Now price, if the option is enabled
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ) : null}
 
             <FormField
               control={form.control}
@@ -280,6 +342,16 @@ function AuctionEdit() {
                 </FormItem>
               )}
             />
+            <FormCombobox
+              items={categories}
+              defaultItems={auction.categories}
+              path={"categories"}
+              label={"categories"}
+              resourceName={"categories"}
+              description={
+                "Add tags to categorize your auction and help users find it."
+              }
+            />
 
             <div className="mt-6 flex items-center justify-end gap-x-6">
               <Button type="submit">Submit</Button>
@@ -291,4 +363,5 @@ function AuctionEdit() {
     </Form>
   );
 }
+
 export { AuctionEdit };

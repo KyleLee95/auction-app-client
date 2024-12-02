@@ -2,19 +2,17 @@
 
 ## Auctions
 
-- [ ] Dashboard Auction Screens
-- [ ] Single Auction Page
-- [ ] Auction Edit Page
+- [x] Dashboard Auction Screens
+- [x] Single Auction Page
   - [ ] Buyer
   - [ ] Admin
+- [x] Auction Edit Page
 
 ## User/Auth
 
 - [ ] Integrate amplify
-  - [ ] Cognito Auth
-  - [ ] AWS MQ for notifications
-  - [ ] Setup Amplify sandbox
-  - [ ] Connect to AWS event bridge
+  - [x] Cognito Auth
+  - [x] Setup Amplify sandbox
 
 ## Admin
 

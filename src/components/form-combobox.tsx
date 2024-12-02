@@ -8,21 +8,28 @@ import {
   FormLabel,
   FormDescription,
   FormMessage,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
+} from "@/components/ui/form";
+import {
   Command,
   CommandItem,
   CommandList,
   CommandEmpty,
   CommandInput,
   CommandGroup,
-  Button,
-} from "@/components/ui";
+} from "@/components/ui/command";
+
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
+import { Button } from "@/components/ui/button";
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/main";
 import { cn } from "@/lib/utils";
 export type LabelValuePair = {
+  id: number;
   value: string;
   label: string;
 };
@@ -30,6 +37,7 @@ export type LabelValuePair = {
 export type FormComboboxProps<T> = {
   path: Path<T>;
   items: LabelValuePair[];
+  defaultItems?: LabelValuePair[];
   resourceName: string;
   label?: string;
   description?: string;
@@ -39,6 +47,7 @@ function FormCombobox<T extends FieldValues>({
   path,
   label,
   items,
+  defaultItems,
   description,
   resourceName,
 }: FormComboboxProps<T>) {
@@ -129,9 +138,9 @@ function FormCombobox<T extends FieldValues>({
                 </CommandEmpty>
                 <CommandGroup>
                   <CommandList>
-                    {items.map(({ value, label }) => (
+                    {items.map(({ id, value, label }) => (
                       <CommandItem
-                        key={value}
+                        key={id}
                         value={value}
                         onSelect={(value) => {
                           const currentValues: string[] = field.value || [];
