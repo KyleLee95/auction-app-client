@@ -131,7 +131,7 @@ function SiteHeader({ className }: Props) {
 
           <nav className="flex items-center gap-0.5">
             <Button variant="ghost" size="icon" className="h-8  px-0">
-              <Link to="/">
+              <Link to="/shopping-cart">
                 <Icons.cart className="h-4 w-4" />
                 <span className="sr-only">cart</span>
               </Link>

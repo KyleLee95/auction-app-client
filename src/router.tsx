@@ -19,6 +19,7 @@ import { SearchPageResultsFeed } from "@/routes/search/search-feed";
 import { WatchlistPage } from "./routes/watchlists/watchlist-page";
 import { WatchlistEdit } from "./routes/watchlists/watchlist-list-edit";
 
+import { CartPage } from "./routes/shopping-cart/cart-page";
 import { ErrorPage } from "@/routes/error-page";
 import { Index } from "@/routes/index";
 
@@ -52,6 +53,9 @@ const router = createBrowserRouter(
             element={<WatchlistEdit />}
           />
         </Route>
+
+        <Route path="/shopping-cart" element={<CartPage />} />
+
         <Route path="/user" element={<UserProfile />} />
 
         <Route path="/adminPanel" element={<AdminFunctionalities />} />

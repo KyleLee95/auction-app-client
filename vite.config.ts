@@ -44,6 +44,11 @@ export default defineConfig({
         target: `http://${apiGatewayHost}:42069`,
         changeOrigin: true,
       },
+      "/api/cart": {
+        target: `http://127.0.0.1:8000`,  // Database backend running at 127.0.0.1:8000
+        changeOrigin: true,
+        secure: false, // if your backend uses HTTPS, you can set this to `true`
+      },
     },
   },
 });
