@@ -18,6 +18,7 @@ import { SearchPage } from "@/routes/search/search-page";
 import { SearchPageResultsFeed } from "@/routes/search/search-feed";
 import { WatchlistPage } from "./routes/watchlists/watchlist-page";
 import { WatchlistEdit } from "./routes/watchlists/watchlist-list-edit";
+import { CartPage } from "@/routes/cart/cart-page";
 
 import { ErrorPage } from "@/routes/error-page";
 import { Index } from "@/routes/index";
@@ -41,6 +42,7 @@ const router = createBrowserRouter(
           <Route path="/auctions/:auctionId/edit" element={<AuctionEdit />} />
         </Route>
         <Route path="/create" element={<AuctionCreatePage />} />
+        <Route path="/cart" element={<CartPage />} />
 
         <Route path="/search" element={<SearchPage />}>
           <Route path="" element={<SearchPageResultsFeed />} />

@@ -2,6 +2,8 @@ import { Button } from "@/components/ui/button";
 import { CompleteAuction } from "@/types/auction";
 import { Countdown } from "@/components/countdown-timer";
 import { Link } from "react-router-dom";
+import { addItemToCart } from "@/utils/cartlist";
+import { useAuthenticator } from "@aws-amplify/ui-react";
 
 export function AuctionCard({
   auction,
@@ -10,6 +12,8 @@ export function AuctionCard({
   showRemoveButton?: boolean;
   watchlistId?: number;
 }) {
+  const { user } = useAuthenticator();
+
   return (
     <div className="flex flex-col items-stretch p-4 border rounded-md shadow-sm bg-white dark:bg-zinc-950 text-gray-900 dark:text-gray-100 w-full my-4 gap-4">
       {/* Top Section: Image and Details */}
@@ -57,11 +61,26 @@ export function AuctionCard({
           <Button variant="default" asChild className="w-full">
             <Link to={`/auctions/${auction.id}`}>Place Bid</Link>
           </Button>
-          {auction.buyItNowEnabled ? (
-            <Button variant="default" asChild className="w-full">
-              <Link to={`/auctions/${auction.id}`}> Buy It Now </Link>
+        {auction.buyItNowEnabled ? (
+            <Button
+                onClick={async () => {
+                    const userId = user?.userId || '';
+                    const success = await addItemToCart(userId, auction);
+                    if (success) {
+                        // Display success message
+                        const successMessage = document.createElement('div');
+                        successMessage.textContent = 'Add to cart successfully';
+                        successMessage.className = 'fixed bottom-4 right-4 bg-green-500 text-white p-2 rounded';
+                        document.body.appendChild(successMessage);
+                        setTimeout(() => {
+                            document.body.removeChild(successMessage);
+                        }, 3000);
+                    }
+                }}
+            >
+                Buy It Now
             </Button>
-          ) : null}
+        ) : null}
         </div>
       </div>
       {/* Footer Section */}
