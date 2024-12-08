@@ -17,6 +17,7 @@ import {
   addAuctionToUserWatchlist,
   removeAuctionFromUserWatchlist,
 } from "@/utils/watchlists";
+import { addItemToCart } from "@/utils/cartlist";
 
 const QuantitySelect = ({ auction }: { auction: CompleteAuction }) => {
   return (
@@ -113,7 +114,25 @@ function AuctionDetail() {
           <QuantitySelect auction={auction} />
           <div id="btn-group" className="my-4">
             {auction.buyItNowEnabled ? (
-              <Button className="my-4 w-11/12">Add to Cart</Button>
+            <Button
+                className="my-4 w-11/12"
+                onClick={async () => {
+                    const userId = user?.userId || '';
+                    const success = await addItemToCart(userId, auction);
+                    if (success) {
+                        // Display success message
+                        const successMessage = document.createElement('div');
+                        successMessage.textContent = 'Add to cart successfully';
+                        successMessage.className = 'fixed bottom-4 right-4 bg-green-500 text-white p-2 rounded';
+                        document.body.appendChild(successMessage);
+                        setTimeout(() => {
+                            document.body.removeChild(successMessage);
+                        }, 3000);
+                    }
+                }}
+            >
+                Add to Cart
+            </Button>
             ) : null}
 
             <BidModal
