@@ -22,8 +22,9 @@ export async function fetchUserCart(userId: string): Promise<any> {
     }
 }
 
-export async function addItemToCart(userId: string, item: CompleteAuction): Promise<boolean> {
+export async function addItemToCart(userId: string, item: CompleteAuction, quantity: number): Promise<boolean> {
     try {
+        item.cartQuantity = quantity;
         const res = await fetch(`/api/cart`, {
             method: "POST",
             headers: {

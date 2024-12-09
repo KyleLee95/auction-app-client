@@ -74,6 +74,7 @@ export interface CompleteAuction {
   bids: CompleteBid[];
   categories: CompleteCategory[];
   watchlist: CompleteWatchList[];
+  cartQuantity?: number;
 }
 
 export interface IncludeAuction {
