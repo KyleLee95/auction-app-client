@@ -17,8 +17,16 @@ import { ControllerRenderProps, FieldValues, useForm } from "react-hook-form";
 import { z } from "zod";
 import { CheckedState } from "@radix-ui/react-checkbox";
 import { useAuthenticator } from "@aws-amplify/ui-react";
+import {
+  Select,
+  SelectItem,
+  SelectValue,
+  SelectTrigger,
+  SelectContent,
+} from "@/components/ui/select";
 
 const FormSchema = z.object({
+  orderBy: z.array(z.string()),
   categories: z
     .array(z.string())
     .refine((value) => value.some((item) => item), {
@@ -120,6 +128,34 @@ export function CheckboxList({
     );
   }
 
+  function handleSort(field: ControllerRenderProps<FieldValues, "orderBy">) {
+    //checked refers to the *change* in state of the checkbox
+    //i.e. when a user clicks on a checkbox, the value of checked will be true.
+    // if (checked) {
+    //   setSearchParams(
+    //     (prev) => {
+    //       prev.append("categories", category.value);
+    //       return prev;
+    //     },
+    //     { preventScrollReset: true }
+    //   );
+    //
+    //   return field.onChange([...field.value, category.value]);
+    // }
+    //
+    // setSearchParams(
+    //   (prev) => {
+    //     prev.delete("categories", category.value);
+    //     return prev;
+    //   },
+    //   { preventScrollReset: true }
+    // );
+    //
+    return field.onChange(
+      field.value?.filter((value) => value !== category.value)
+    );
+  }
+
   return (
     <Form {...form}>
       <form
@@ -128,6 +164,25 @@ export function CheckboxList({
         }}
         className="space-y-8"
       >
+        <FormField
+          control={form.control}
+          name="orderBy"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-base">Order By</FormLabel>
+              <FormDescription>Order Auctions by:</FormDescription>
+              <Select onValueChange={field.onChange} defaultValue="desc">
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Price" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="desc">Highest</SelectItem>
+                  <SelectItem value="asc">Lowest</SelectItem>
+                </SelectContent>
+              </Select>
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="categories"
