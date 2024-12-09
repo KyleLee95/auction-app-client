@@ -3,17 +3,17 @@ import { CompleteAuction } from "@/types/auction";
 import { Countdown } from "@/components/countdown-timer";
 import { Link } from "react-router-dom";
 import { addItemToCart } from "@/utils/cartlist";
-import { useAuthenticator } from "@aws-amplify/ui-react";
+import { AuthUser } from "aws-amplify/auth";
 
 export function AuctionCard({
   auction,
+  user,
 }: {
+  user: AuthUser;
   auction: CompleteAuction;
   showRemoveButton?: boolean;
   watchlistId?: number;
 }) {
-  const { user } = useAuthenticator();
-
   return (
     <div className="flex flex-col items-stretch p-4 border rounded-md shadow-sm bg-white dark:bg-zinc-950 text-gray-900 dark:text-gray-100 w-full my-4 gap-4">
       {/* Top Section: Image and Details */}
@@ -39,8 +39,8 @@ export function AuctionCard({
           </p>
           <p className="text-xl font-bold mt-2">
             $
-            {auction?.bids?.length > 0
-              ? auction.bids[auction.bids.length - 1].amount
+            {auction?.bids?.length
+              ? auction.bids[0].amount
               : auction.startPrice}
             <span className="text-sm font-normal text-gray-600 dark:text-gray-400">
               + ${auction.shippingPrice} shipping
@@ -61,26 +61,27 @@ export function AuctionCard({
           <Button variant="default" asChild className="w-full">
             <Link to={`/auctions/${auction.id}`}>Place Bid</Link>
           </Button>
-        {auction.buyItNowEnabled ? (
+          {auction.buyItNowEnabled ? (
             <Button
-                onClick={async () => {
-                    const userId = user?.userId || '';
-                    const success = await addItemToCart(userId, auction);
-                    if (success) {
-                        // Display success message
-                        const successMessage = document.createElement('div');
-                        successMessage.textContent = 'Add to cart successfully';
-                        successMessage.className = 'fixed bottom-4 right-4 bg-green-500 text-white p-2 rounded';
-                        document.body.appendChild(successMessage);
-                        setTimeout(() => {
-                            document.body.removeChild(successMessage);
-                        }, 3000);
-                    }
-                }}
+              onClick={async () => {
+                const userId = user?.userId || "";
+                const success = await addItemToCart(userId, auction);
+                if (success) {
+                  // Display success message
+                  const successMessage = document.createElement("div");
+                  successMessage.textContent = "Add to cart successfully";
+                  successMessage.className =
+                    "fixed bottom-4 right-4 bg-green-500 text-white p-2 rounded";
+                  document.body.appendChild(successMessage);
+                  setTimeout(() => {
+                    document.body.removeChild(successMessage);
+                  }, 3000);
+                }
+              }}
             >
-                Buy It Now
+              Buy It Now
             </Button>
-        ) : null}
+          ) : null}
         </div>
       </div>
       {/* Footer Section */}

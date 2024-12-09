@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite DEV=TRUE",
+    "dev": "DEV=TRUE vite",
     "dev-host": "vite --host",
     "start": "vite",
     "build": "tsc -b && vite build",

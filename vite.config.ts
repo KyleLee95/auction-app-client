@@ -2,10 +2,11 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
 // https://vite.dev/config/
-import * as dotenv from "dotenv";
-dotenv.config();
-const isDev = process.env.DEV === "TRUE";
-const apiGatewayHost = isDev ? "localhost" : "api-gateway";
+// import * as dotenv from "dotenv";
+// dotenv.config();
+// const isDev = process.env.DEV === "TRUE";
+// const apiGatewayHost = isDev ? "localhost" : "api-gateway";
+const apiGatewayHost = "localhost";
 export default defineConfig({
   build: {
     sourcemap: false,

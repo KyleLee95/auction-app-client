@@ -14,6 +14,7 @@ function SearchPageResultsFeed() {
       {auctions.map((auction: CompleteAuction) => {
         return (
           <AuctionCard
+            user={user}
             watchlistId={watchlistId}
             showRemoveButton={false}
             key={auction.id}
