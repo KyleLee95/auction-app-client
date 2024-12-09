@@ -158,11 +158,11 @@ const AuctionButtonGroup = ({
         </Button>
         <Button
           type="button"
-          variant={auction.flagged ? "destructive" : "default"}
+          variant={auction.flagged ? "secondary" : "destructive"}
           className="mb-2 w-11/12"
           onClick={handleFlagAuction}
         >
-          {auction.flagged ? "Flag Auction" : "Unflag Auction"}
+          {auction.flagged ? "Unflag Auction" : "Flag Auction"}
         </Button>
 
         {isAuctionSeller ? (
