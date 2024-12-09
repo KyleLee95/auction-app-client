@@ -47,7 +47,17 @@ export function AuctionCard({
             </span>
           </p>
           <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-            <Countdown endTime={auction.endTime} />
+            {auction.isActive ? (
+              <Countdown
+                isActive={auction.isActive}
+                endTime={auction.endTime}
+              />
+            ) : (
+              <Countdown
+                endTime={auction.startTime}
+                isActive={auction.isActive}
+              />
+            )}
             {/* TODO: get this information from user service */}
             <span className="text-blue-600 dark:text-blue-400">
               username here

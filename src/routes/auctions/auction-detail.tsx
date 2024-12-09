@@ -54,19 +54,20 @@ const images = [
   },
 ];
 
-function AuctionDetail() {
-  const {
-    user,
-    auction,
-    isOnWatchlist,
-  }: { user: AuthUser; auction: CompleteAuction; isOnWatchlist: boolean } =
-    useOutletContext();
-  const numBids = auction.bids.length;
-  const minBidAmount =
-    numBids > 0 ? auction.bids[0].amount : auction.startPrice;
-
+const AuctionButtonGroup = ({
+  numBids,
+  auction,
+  user,
+  minBidAmount,
+  isOnWatchlist,
+}: {
+  numBids: number;
+  auction: CompleteAuction;
+  user: AuthUser;
+  minBidAmount: Number;
+  isOnWatchlist: boolean;
+}) => {
   const queryClient = useQueryClient();
-
   const removeAuctionFromWatchlistMutation = useMutation({
     mutationFn: () => removeAuctionFromUserWatchlist(user.userId, auction.id),
     mutationKey: ["isOnWatchlist", auction?.id?.toString()],
@@ -96,6 +97,85 @@ function AuctionDetail() {
   }
 
   return (
+    <div id="user-action-group" className="my-4">
+      <QuantitySelect auction={auction} />
+      <div id="btn-group" className="my-4">
+        {auction.buyItNowEnabled ? (
+          <Button
+            className="my-4 w-11/12"
+            onClick={async () => {
+              const userId = user?.userId || "";
+              const success = await addItemToCart(userId, auction);
+              if (success) {
+                // Display success message
+                const successMessage = document.createElement("div");
+                successMessage.textContent = "Add to cart successfully";
+                successMessage.className =
+                  "fixed bottom-4 right-4 bg-green-500 text-white p-2 rounded";
+                document.body.appendChild(successMessage);
+                setTimeout(() => {
+                  document.body.removeChild(successMessage);
+                }, 3000);
+              }
+            }}
+          >
+            Add to Cart
+          </Button>
+        ) : null}
+
+        <BidModal
+          user={user}
+          auctionId={auction.id as number}
+          minBidAmount={minBidAmount}
+        />
+
+        {user?.userId === auction.sellerId ? (
+          <>
+            <Link to={`/auctions/${auction.id}/edit`}>
+              <Button className="my-4 w-11/12">Edit </Button>
+            </Link>
+            <Button className="w-11/12" disabled={numBids > 0}>
+              {" "}
+              Delete{" "}
+            </Button>
+          </>
+        ) : null}
+
+        {isOnWatchlist ? (
+          <Button
+            type="button"
+            variant="destructive"
+            className="my-4 w-11/12"
+            onClick={handleRemoveAuctionFromWatchlist}
+          >
+            Remove from Watchlist
+          </Button>
+        ) : (
+          <Button
+            type="button"
+            className="my-4 w-11/12"
+            onClick={handleAddAuctionToUserWatchlist}
+          >
+            Add To Watchlist
+          </Button>
+        )}
+      </div>
+    </div>
+  );
+};
+
+function AuctionDetail() {
+  const {
+    user,
+    auction,
+    isOnWatchlist,
+  }: { user: AuthUser; auction: CompleteAuction; isOnWatchlist: boolean } =
+    useOutletContext();
+  const numBids = auction.bids.length;
+  const minBidAmount =
+    numBids > 0 ? auction.bids[0].amount : auction.startPrice;
+
+  return (
     <div className="flex flex-wrap mt-10">
       <ImageCarousel images={images} />
       <div
@@ -104,71 +184,26 @@ function AuctionDetail() {
       >
         <h1 className="text-xl">{auction.title}</h1>
         <h2>
-          ${numBids > 0 ? auction?.bids[0]?.amount : auction.startPrice} + $
+          ${numBids > 0 ? minBidAmount : auction.startPrice} + $
           {auction.shippingPrice} shipping
         </h2>
+
         <span>{numBids} bids</span>
-        <Countdown endTime={auction.endTime} />
+
+        {auction.isActive ? (
+          <Countdown endTime={auction.endTime} isActive={auction.isActive} />
+        ) : (
+          <Countdown endTime={auction.startTime} isActive={auction.isActive} />
+        )}
         <p className="my-4">{auction.description}</p>
-        <div id="user-action-group" className="my-4">
-          <QuantitySelect auction={auction} />
-          <div id="btn-group" className="my-4">
-            {auction.buyItNowEnabled ? (
-            <Button
-                className="my-4 w-11/12"
-                onClick={async () => {
-                    const userId = user?.userId || '';
-                    const success = await addItemToCart(userId, auction);
-                    if (success) {
-                        // Display success message
-                        const successMessage = document.createElement('div');
-                        successMessage.textContent = 'Add to cart successfully';
-                        successMessage.className = 'fixed bottom-4 right-4 bg-green-500 text-white p-2 rounded';
-                        document.body.appendChild(successMessage);
-                        setTimeout(() => {
-                            document.body.removeChild(successMessage);
-                        }, 3000);
-                    }
-                }}
-            >
-                Add to Cart
-            </Button>
-            ) : null}
 
-            <BidModal
-              user={user}
-              auctionId={auction.id as number}
-              minBidAmount={minBidAmount}
-            />
-
-            {user?.userId === auction.sellerId ? (
-              <>
-                <Link to={`/auctions/${auction.id}/edit`}>
-                  <Button className="my-4 w-11/12">Edit </Button>
-                </Link>
-                <Button className="w-11/12" disabled={numBids > 0}>
-                  {" "}
-                  Delete{" "}
-                </Button>
-              </>
-            ) : null}
-
-            {isOnWatchlist ? (
-              <Button
-                type="button"
-                variant="destructive"
-                className="w-full md:w-auto"
-                onClick={handleRemoveAuctionFromWatchlist}
-              >
-                Remove from Watchlist
-              </Button>
-            ) : (
-              <Button type="button" onClick={handleAddAuctionToUserWatchlist}>
-                Add To Watchlist
-              </Button>
-            )}
-          </div>
-        </div>
+        <AuctionButtonGroup
+          numBids={numBids}
+          minBidAmount={minBidAmount}
+          auction={auction}
+          isOnWatchlist={isOnWatchlist}
+          user={user}
+        />
       </div>
     </div>
   );
