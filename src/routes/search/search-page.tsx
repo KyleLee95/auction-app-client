@@ -17,8 +17,16 @@ import { ControllerRenderProps, FieldValues, useForm } from "react-hook-form";
 import { z } from "zod";
 import { CheckedState } from "@radix-ui/react-checkbox";
 import { useAuthenticator } from "@aws-amplify/ui-react";
+import {
+  Select,
+  SelectItem,
+  SelectValue,
+  SelectTrigger,
+  SelectContent,
+} from "@/components/ui/select";
 
 const FormSchema = z.object({
+  order: z.string(),
   categories: z
     .array(z.string())
     .refine((value) => value.some((item) => item), {
@@ -42,6 +50,43 @@ const priceRanges = [
   { label: "$10,000", value: { minPrice: 0, maxPrice: 10000 } },
 ];
 
+const OrderBySelect = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const sortOptions = [
+    { display: "Ending (Soonest to Longest)", value: "asc" },
+    { display: "Ending (Longest to Soonest)", value: "desc" },
+  ];
+
+  const handleOrderByChange = (value: string) => {
+    setSearchParams((prev) => {
+      prev.set("order", value);
+      return prev;
+    });
+  };
+
+  return (
+    <div className="mb-4">
+      <h3 className="text-base">Order By</h3>
+      <Select
+        onValueChange={(value) => handleOrderByChange(value)}
+        defaultValue={searchParams.get("order") || "desc"}
+      >
+        <SelectTrigger className="w-[200px]">
+          <SelectValue placeholder="Order By" />
+        </SelectTrigger>
+        <SelectContent>
+          {sortOptions.map((option) => (
+            <SelectItem key={option.value} value={option.value}>
+              {option.display}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  );
+};
+
 export function CheckboxList({
   categories,
 }: {
@@ -52,6 +97,7 @@ export function CheckboxList({
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
+      order: "",
       categories: Array.from(searchParams.values()),
       priceRange: {
         minPrice: parseFloat(searchParams.get("minPrice") || "0"),
@@ -128,6 +174,17 @@ export function CheckboxList({
         }}
         className="space-y-8"
       >
+        <FormField
+          control={form.control}
+          name="order"
+          render={() => (
+            <FormItem>
+              <FormLabel className="text-base">Order By</FormLabel>
+              <FormDescription>Order Auctions by:</FormDescription>
+              <OrderBySelect />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="categories"

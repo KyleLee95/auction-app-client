@@ -58,11 +58,20 @@ export async function fetchAuctionById(auctionId: string): Promise<{
   return data;
 }
 
-export async function updateAuctionById(
-  auctionId: number,
-  payload: any
-): Promise<{}> {
+export async function updateAuctionById(auctionId: number, payload: any) {
   const res = await fetch(`/api/auctions/${auctionId}`, {
+    method: "PUT",
+    body: JSON.stringify(payload),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const data = await res.json();
+  return data;
+}
+
+export async function flagAuction(auctionId: number, payload: any) {
+  const res = await fetch(`/api/auctions/${auctionId}/flag`, {
     method: "PUT",
     body: JSON.stringify(payload),
     headers: {
