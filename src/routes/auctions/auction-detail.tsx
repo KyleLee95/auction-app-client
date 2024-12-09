@@ -18,6 +18,7 @@ import {
   removeAuctionFromUserWatchlist,
 } from "@/utils/watchlists";
 import { addItemToCart } from "@/utils/cartlist";
+import { flagAuction } from "@/utils/auctions";
 
 const QuantitySelect = ({ auction }: { auction: CompleteAuction }) => {
   return (
@@ -64,9 +65,10 @@ const AuctionButtonGroup = ({
   numBids: number;
   auction: CompleteAuction;
   user: AuthUser;
-  minBidAmount: Number;
+  minBidAmount: number;
   isOnWatchlist: boolean;
 }) => {
+  const isAuctionSeller = user?.userId === auction.sellerId;
   const queryClient = useQueryClient();
   const removeAuctionFromWatchlistMutation = useMutation({
     mutationFn: () => removeAuctionFromUserWatchlist(user.userId, auction.id),
@@ -94,6 +96,20 @@ const AuctionButtonGroup = ({
 
   function handleAddAuctionToUserWatchlist() {
     addAuctionToWatchlistMutation.mutate();
+  }
+
+  const flagAuctionMutation = useMutation({
+    mutationFn: (payload: any) => flagAuction(auction.id as number, payload),
+    mutationKey: ["auctions", auction?.id?.toString()],
+    onSuccess() {
+      queryClient.invalidateQueries({
+        queryKey: ["auctions", auction?.id?.toString()],
+      });
+    },
+  });
+
+  function handleFlagAuction() {
+    flagAuctionMutation.mutate({ isFlagged: !auction.flagged });
   }
 
   return (
@@ -128,37 +144,43 @@ const AuctionButtonGroup = ({
           auctionId={auction.id as number}
           minBidAmount={minBidAmount}
         />
+        <Button
+          type="button"
+          className="my-4 w-11/12"
+          variant={isOnWatchlist ? "destructive" : "default"}
+          onClick={
+            isOnWatchlist
+              ? handleRemoveAuctionFromWatchlist
+              : handleAddAuctionToUserWatchlist
+          }
+        >
+          {isOnWatchlist ? "Remove from Watchlist" : "Add To Watchlist"}
+        </Button>
+        <Button
+          type="button"
+          variant={auction.flagged ? "destructive" : "default"}
+          className="mb-2 w-11/12"
+          onClick={handleFlagAuction}
+        >
+          {auction.flagged ? "Flag Auction" : "Unflag Auction"}
+        </Button>
 
-        {user?.userId === auction.sellerId ? (
+        {isAuctionSeller ? (
           <>
             <Link to={`/auctions/${auction.id}/edit`}>
-              <Button className="my-4 w-11/12">Edit </Button>
+              <Button variant="secondary" className="my-2 w-11/12">
+                Edit{" "}
+              </Button>
             </Link>
-            <Button className="w-11/12" disabled={numBids > 0}>
-              {" "}
-              Delete{" "}
+            <Button
+              className="w-11/12"
+              variant="destructive"
+              disabled={numBids > 0}
+            >
+              Delete
             </Button>
           </>
         ) : null}
-
-        {isOnWatchlist ? (
-          <Button
-            type="button"
-            variant="destructive"
-            className="my-4 w-11/12"
-            onClick={handleRemoveAuctionFromWatchlist}
-          >
-            Remove from Watchlist
-          </Button>
-        ) : (
-          <Button
-            type="button"
-            className="my-4 w-11/12"
-            onClick={handleAddAuctionToUserWatchlist}
-          >
-            Add To Watchlist
-          </Button>
-        )}
       </div>
     </div>
   );
