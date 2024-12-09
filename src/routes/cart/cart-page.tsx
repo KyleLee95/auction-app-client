@@ -28,7 +28,7 @@ function CartPage() {
         return "No item in cart";
     }
 
-    const totalPrice = data.reduce((sum, auction) => sum + auction.buyItNowPrice, 0);
+    const totalPrice = data.reduce((sum, auction) => sum + (auction.buyItNowPrice * (auction.cartQuantity || 1)), 0);
     const totalShippingPrice = data.reduce((sum, auction) => sum + auction.shippingPrice, 0);
     const tax = totalPrice * 0.08;
     const totalPayment = totalPrice + totalShippingPrice + tax;
@@ -40,31 +40,35 @@ function CartPage() {
                 {data.map((auction: CompleteAuction) => (
                     <div key={auction.id} className="border p-4 mb-4 flex flex-col md:flex-row h-48">
                         <div className="flex-shrink-0 w-full md:w-1/4 h-full">
-                            <img
-                                src="./150.png"
-                                alt="Auction item image"
-                                className="w-full h-full rounded-md object-cover"
-                            />
+                            <a href={`/auctions/${auction.id}`}>
+                                <img
+                                    src="./150.png"
+                                    alt="Auction item image"
+                                    className="w-full h-full rounded-md object-cover"
+                                />
+                            </a>
                         </div>
                         <div className="flex-1 px-4 py-2">
-                            <h3 className="font-bold text-lg">{auction.title}</h3>
+                            <a href={`/auctions/${auction.id}`}>
+                                <h3 className="font-bold text-lg">{auction.title}</h3>
+                            </a>
                             <p>{auction.description}</p>
                             <p>Price: ${auction.buyItNowPrice}</p>
                             <p>Shipping Price: ${auction.shippingPrice}</p>
-                            <p>Quantity: 1</p>
+                            <p>Quantity: {auction.cartQuantity || 1}</p>
                         </div>
                         <div className="flex flex-col items-end justify-end mt-4 md:mt-0">
-                        <Button
-                            onClick={async () => {
-                                const success = await removeItemFromCart(userId, auction);
-                                if (success) {
-                                    // Optionally, you can refetch the cart data or update the state to remove the item from the UI
-                                    window.location.reload();
-                                }
-                            }}
-                        >
-                            Remove from Cart
-                        </Button>
+                            <Button
+                                onClick={async () => {
+                                    const success = await removeItemFromCart(userId, auction);
+                                    if (success) {
+                                        // Optionally, you can refetch the cart data or update the state to remove the item from the UI
+                                        window.location.reload();
+                                    }
+                                }}
+                            >
+                                Remove from Cart
+                            </Button>
                         </div>
                     </div>
                 ))}

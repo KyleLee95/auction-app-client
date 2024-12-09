@@ -22,18 +22,16 @@ export async function fetchUserCart(userId: string): Promise<any> {
   }
 }
 
-export async function addItemToCart(
-  userId: string,
-  item: CompleteAuction
-): Promise<boolean> {
-  try {
-    const res = await fetch(`/api/cart`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ userId, item, action: "add" }),
-    });
+export async function addItemToCart(userId: string, item: CompleteAuction, quantity: number): Promise<boolean> {
+    try {
+        item.cartQuantity = quantity;
+        const res = await fetch(`/api/cart`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ userId, item, action: "add" }),
+        });
 
     if (!res.ok) {
       console.error("add item to cart error", res.statusText);

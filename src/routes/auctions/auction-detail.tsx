@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ImageCarousel } from "@/components/image-carousel";
@@ -20,22 +21,24 @@ import {
 import { addItemToCart } from "@/utils/cartlist";
 import { flagAuction } from "@/utils/auctions";
 
-const QuantitySelect = ({ auction }: { auction: CompleteAuction }) => {
+const QuantitySelect = ({
+  auction,
+  setQuantity,
+}: {
+  auction: CompleteAuction;
+  setQuantity: (quantity: number) => void;
+}) => {
   return (
-    <Select>
+    <Select onValueChange={(value) => setQuantity(Number(value))}>
       <SelectTrigger className="w-[280px]">
         <SelectValue placeholder="Select a quantity" />
       </SelectTrigger>
       <SelectContent>
-        {Array.from({ length: auction.quantity }, (_, i) => i + 1).map(
-          (num) => {
-            return (
-              <SelectItem key={num} value={String(num)}>
-                {num}
-              </SelectItem>
-            );
-          }
-        )}
+        {Array.from({ length: auction.quantity }, (_, i) => i + 1).map((num) => (
+          <SelectItem key={num} value={String(num)}>
+            {num}
+          </SelectItem>
+        ))}
       </SelectContent>
     </Select>
   );
@@ -47,7 +50,6 @@ const images = [
     src: "https://i.ebayimg.com/images/g/d2UAAOSwuydmWSOT/s-l1600.jpg",
     alt: "test",
   },
-
   {
     id: 2,
     src: "https://i.ebayimg.com/images/g/rZ0AAOSw6HdmWSOT/s-l1600.jpg",
@@ -68,8 +70,10 @@ const AuctionButtonGroup = ({
   minBidAmount: number;
   isOnWatchlist: boolean;
 }) => {
+  const [selectedQuantity, setSelectedQuantity] = useState(1);
   const isAuctionSeller = user?.userId === auction.sellerId;
   const queryClient = useQueryClient();
+
   const removeAuctionFromWatchlistMutation = useMutation({
     mutationFn: () => removeAuctionFromUserWatchlist(user.userId, auction.id),
     mutationKey: ["isOnWatchlist", auction?.id?.toString()],
@@ -114,18 +118,18 @@ const AuctionButtonGroup = ({
 
   return (
     <div id="user-action-group" className="my-4">
-      <QuantitySelect auction={auction} />
+      <QuantitySelect auction={auction} setQuantity={setSelectedQuantity} />
       <div id="btn-group" className="my-4">
         {auction.buyItNowEnabled ? (
           <Button
             className="my-4 w-11/12"
             onClick={async () => {
               const userId = user?.userId || "";
-              const success = await addItemToCart(userId, auction);
+              const success = await addItemToCart(userId, auction, selectedQuantity);
               if (success) {
                 // Display success message
                 const successMessage = document.createElement("div");
-                successMessage.textContent = "Add to cart successfully";
+                successMessage.textContent = "Added to cart successfully";
                 successMessage.className =
                   "fixed bottom-4 right-4 bg-green-500 text-white p-2 rounded";
                 document.body.appendChild(successMessage);
