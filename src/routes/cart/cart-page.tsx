@@ -101,27 +101,27 @@ function CartPage() {
         <Button
           className="mt-1.5"
           onClick={async () => {
+            const auction = data[0];
+            console.log(data[0]);
+
+            const newQty = auction.quantity - auction.cartQuantity;
+            const updatedAuction = await fetch(
+              `/api/auctions/${auction.id}/quantity`,
+              {
+                method: "PUT",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ quantity: newQty }),
+              }
+            );
+
+            console.log("updatedAuction", await updatedAuction.json());
+
             const paymentAppURL = `http://localhost:3000/checkout?amount=${totalPayment.toFixed(
               2
             )}`;
             const paymentWindow = window.open(paymentAppURL, "_blank");
-
-            // const { auction } = data;
-            //
-            // const newQty = auction.quantity - auction.cartQuantity;
-            // const updatedAuction = await fetch(`/api/auctions/${auction.id}`, {
-            //   method: "PUT",
-            //   headers: {
-            //     "Content-Type": "application/json",
-            //   },
-            //   body: JSON.stringify({ ...auction, quantity: newQty }),
-            // });
-            //
-            // if (!updatedAuction.ok) {
-            //   console.error(error);
-            //   return;
-            // }
-            // console.log("updatedAuction", await updatedAuction.json());
 
             window.addEventListener("message", async (event) => {
               console.log(event.origin);
@@ -130,9 +130,11 @@ function CartPage() {
               console.log(event);
               const { success } = event.data; // Extract the success status
               console.log(success);
+
               if (success) {
-                console.log("Payment succeeded!");
                 const success = await checkoutCart(userId);
+                console.log("Payment succeeded!");
+
                 if (!success) {
                   console.error("Error checking out cart");
                 }
