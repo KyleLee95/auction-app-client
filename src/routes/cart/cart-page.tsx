@@ -117,7 +117,14 @@ function CartPage() {
             );
 
             console.log("updatedAuction", await updatedAuction.json());
-
+            if (updatedAuction.quantity === 0) {
+              await fetch(`/api/auctions/${auction.id}/closedAuction`, {
+                method: "PUT",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              });
+            }
             const paymentAppURL = `http://localhost:3000/checkout?amount=${totalPayment.toFixed(
               2
             )}`;
