@@ -106,22 +106,22 @@ function CartPage() {
             )}`;
             const paymentWindow = window.open(paymentAppURL, "_blank");
 
-            const { auction } = data;
-
-            const newQty = auction.quantity - auction.cartQuantity;
-            const updatedAuction = await fetch(`/api/auctions/${auction.id}`, {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ ...auction, quantity: newQty }),
-            });
-
-            if (!updatedAuction.ok) {
-              console.error(error);
-              return;
-            }
-            console.log("updatedAuction", await updatedAuction.json());
+            // const { auction } = data;
+            //
+            // const newQty = auction.quantity - auction.cartQuantity;
+            // const updatedAuction = await fetch(`/api/auctions/${auction.id}`, {
+            //   method: "PUT",
+            //   headers: {
+            //     "Content-Type": "application/json",
+            //   },
+            //   body: JSON.stringify({ ...auction, quantity: newQty }),
+            // });
+            //
+            // if (!updatedAuction.ok) {
+            //   console.error(error);
+            //   return;
+            // }
+            // console.log("updatedAuction", await updatedAuction.json());
 
             window.addEventListener("message", async (event) => {
               console.log(event.origin);
@@ -150,4 +150,3 @@ function CartPage() {
 }
 
 export { CartPage };
-
