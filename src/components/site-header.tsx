@@ -16,6 +16,7 @@ import { MobileNav } from "@/components/mobile-menu";
 import { cn } from "@/lib/utils";
 import { Link, useParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useAuthenticator } from "@aws-amplify/ui-react";
 const ListItem = React.forwardRef<
   React.ElementRef<"a">,
   React.ComponentPropsWithoutRef<"a">
@@ -92,10 +93,12 @@ const searchAuctions = async (term: string) => {
 };
 
 function SiteHeader({ className }: Props) {
-  // const { isLoading, isError, isPending, data } = useQuery({
-  //   queryFn: () => searchAuctions(),
-  //   queryKey: ["auctions"],
-  // });
+  const admins = [
+    "018b7510-60b1-702a-0011-b3ce89d869df",
+    "01cb6540-a0b1-70f8-cbb0-a492f1047990",
+    "c1bba5c0-b001-7085-7a2e-e74d5399c3d1",
+    "21cb2500-e001-7080-8d8a-5056bbfa6494",
+  ];
   const categories = [
     { label: "Autos", value: "autos" },
     {
@@ -107,6 +110,7 @@ function SiteHeader({ className }: Props) {
     { label: "Jewely & Watches", value: "jewelry-watches" },
     { label: "Collectibles", value: "collectibles" },
   ];
+  const { user } = useAuthenticator();
 
   interface Category {
     label: string;
@@ -174,14 +178,16 @@ function SiteHeader({ className }: Props) {
 
             {/* TODO */}
             {/* ONLY DO IF THE USER IS AN ADMIN */}
-            <NavigationMenuItem>
-              <NavigationMenuLink
-                className={navigationMenuTriggerStyle()}
-                asChild
-              >
-                <Link to="/adminPanel">ADMIN panel</Link>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
+            {admins.includes(user.username) ? (
+              <NavigationMenuItem>
+                <NavigationMenuLink
+                  className={navigationMenuTriggerStyle()}
+                  asChild
+                >
+                  <Link to="/adminPanel">ADMIN panel</Link>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+            ) : null}
 
             {categories.map((category: Category) => {
               return (
