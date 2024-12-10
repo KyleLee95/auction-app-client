@@ -51,6 +51,10 @@ export default defineConfig({
         target: `http://${apiGatewayHost}:3001`,
         changeOrigin: true,
       },
+      "/api/metrics": {
+        target: `http://${apiGatewayHost}:8085`,
+        changeOrigin: true,
+      },
       "/api/create-payment-intent": {
         target: `http://${apiGatewayHost}:4242`,
         changeOrigin: true,
