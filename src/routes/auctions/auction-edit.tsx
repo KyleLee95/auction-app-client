@@ -19,7 +19,7 @@ import { updateAuctionById } from "@/utils/auctions";
 import { toast } from "@/hooks/use-toast";
 
 import { useMutation } from "@tanstack/react-query";
-import { useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -37,6 +37,7 @@ function AuctionEdit() {
     auction: CompleteAuction;
     categories: CompleteCategory[];
   } = useOutletContext();
+  const navigate = useNavigate();
 
   const formSchema = z.object({
     title: z.string().default("title"),
@@ -63,7 +64,6 @@ function AuctionEdit() {
           return category;
         }
       });
-
       const payload = {
         ...formData,
         sellerId: user.userId,
@@ -73,6 +73,9 @@ function AuctionEdit() {
       return data;
     },
     mutationKey: ["auctions"],
+    onSuccess: (data) => {
+      navigate(`/auctions/${data.auctions[0].id}`);
+    },
   });
 
   const onSubmit = (data: any) => {
