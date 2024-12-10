@@ -13,6 +13,7 @@ import { type CompleteAuction } from "@/types/auction";
 import { type CompleteBid } from "@/types/bid";
 import { AuthUser } from "aws-amplify/auth";
 import { fetchUserWatchlists } from "@/utils/watchlists";
+import { fetchUserMetrics } from "@/utils/metrics";
 
 export interface DashboardOutletProps extends OutletProps {
   auctions: CompleteAuction[];
@@ -33,6 +34,10 @@ function DashboardPage() {
         queryKey: ["watchlists", user.userId],
         queryFn: () => fetchUserWatchlists(user.userId),
       },
+      {
+        queryKey: ["metrics", user.userId],
+        queryFn: () => fetchUserMetrics(user.userId),
+      }  
     ],
     combine: (results) => {
       return {

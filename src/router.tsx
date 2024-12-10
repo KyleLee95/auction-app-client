@@ -26,6 +26,8 @@ import { Index } from "@/routes/index";
 import { UserProfile } from "@/routes/users/user-info";
 import { AdminFunctionalities } from "./routes/admin/admin-panel";
 
+import { DashboardMetricsList } from "@/routes/dashboard/dashboard-metrics-list";
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<RootLayout />} errorElement={<ErrorPage />}>
@@ -35,6 +37,7 @@ const router = createBrowserRouter(
           <Route path="my-auctions/" element={<DashboardAuctionList />} />
           <Route path="bid-on/" element={<DashboardBidOnList />} />
           <Route path="watchlists/" element={<DashboardWatchlistList />} />
+          <Route path="metrics/" element={<DashboardMetricsList />} /> 
         </Route>
 
         <Route path="auctions" element={<AuctionPage />}>
